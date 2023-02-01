@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "GL/glew.h"
 
@@ -10,7 +11,7 @@ class ShaderProgram {
 
 public:
 
-	ShaderProgram(const std::vector<Shader*>& shaders);
+	ShaderProgram(const Shader& vertShader, const Shader& fragShader);
 	~ShaderProgram();
 
 	GLuint GetID() const;

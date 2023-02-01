@@ -5,15 +5,18 @@
 #include "Window.h"
 #include "render/Renderer.h"
 #include "scene/Scene.h"
+#include "render/VertexBuffer.h"
+#include "render/IndexBuffer.h"
+#include "render/VertexArray.h"
 
 #include <iostream>
 #include "GLFW/glfw3.h"
 
-Application::Application()
-	: m_Window(new Window()), m_Scene(new Scene())
+#include "iostream"
+
+void Application::Run()
 {
-	Renderer::InitRenderer();
-	Renderer::SetClearColor({ 0.0, 0.0, 1.0 });
+	Init();
 
 	std::vector<Vertex> verts = {
 		{{ -0.5, -0.5, 0.0 }, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 0 },
@@ -22,31 +25,43 @@ Application::Application()
 		{{ 0.5, -0.5, 0.0 }, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 0 }
 	};
 
-	std::vector<unsigned> indecies = {
+	std::vector<unsigned> indices = {
 		0, 1, 2,
-		0,3,2
+		0, 3, 2
 	};
 
-	VertexArray vao(verts, indecies, PrimitiveType::Triangles);
+	std::shared_ptr<VertexBuffer> vbo = std::make_shared<VertexBuffer>(verts);
+	std::shared_ptr<IndexBuffer> ebo = std::make_shared<IndexBuffer>(indices);
 
-	float targetFrameRate = 2;
-	float frame_start = glfwGetTime();
+	VertexArray vao(vbo, ebo, PrimitiveType::Triangles);
 
-	while (!m_Window->ShouldClose()) {
+	double targetFrameRate = 30, frame_start = glfwGetTime();
+
+	while (!Window::ShouldClose()) {
 
 		while (glfwGetTime() < frame_start + 1 / targetFrameRate);
 		frame_start = glfwGetTime();
-		std::cout << frame_start << std::endl;
+
 		Renderer::BeginRender();
 		Renderer::Render(vao);
 
-		Renderer::FinishRender(m_Window);
-		m_Window->PollEvents();
+		Renderer::FinishRender();
+		Window::PollEvents();
 	}
+	Terminate();
 }
 
-Application::~Application()
+void Application::Terminate()
 {
-	delete m_Scene;
-	delete m_Window;
+	Scene::Destroy();
+	Renderer::Destroy();
+	Window::Destroy();
+}
+
+void Application::Init() {
+	Window::Init();
+	Renderer::Init();
+	Scene::Init();
+
+	Renderer::SetClearColor({ 0.0, 0.0, 1.0 });
 }

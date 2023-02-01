@@ -1,8 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
-#include "Vertex.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 enum class PrimitiveType {
 	Triangles,
@@ -14,19 +16,21 @@ class VertexArray {
 
 public:
 
-	VertexArray(const std::vector<Vertex>& vertices, const std::vector<unsigned>& indices, PrimitiveType type);
+	VertexArray(std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer, PrimitiveType type);
 	~VertexArray();
 
 	inline PrimitiveType GetPrimitiveType() const { return m_PrimitiveType; }
-	inline int GetVertexCount() const { return m_VertCount; }
-	inline int GetIndexCount() const { return m_IndexCount; }
+	inline size_t GetVertexCount() const { return m_VertexBuffer->GetVertexCount(); }
+	inline size_t GetIndexCount() const { return m_IndexBuffer? m_IndexBuffer->GetIndexCount() : 0; }
 
 	void Bind() const;
 
 private:
 
 	GLuint m_ID;
-	unsigned m_VertCount, m_IndexCount;
 	PrimitiveType m_PrimitiveType;
+
+	std::shared_ptr<VertexBuffer> m_VertexBuffer;
+	std::shared_ptr<IndexBuffer> m_IndexBuffer;
 
 };

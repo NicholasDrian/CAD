@@ -6,22 +6,14 @@
 
 #include "../utils/OpenGLUtils.h"
 
-VertexArray::VertexArray(const std::vector<Vertex>& vertices, const std::vector<unsigned>& indices, PrimitiveType type) 
-	: m_VertCount(vertices.size()), m_IndexCount(indices.size()), m_PrimitiveType(type), m_ID(0)
+VertexArray::VertexArray(std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer, PrimitiveType type) 
+	: m_PrimitiveType(type), m_ID(0), m_VertexBuffer(vertexBuffer), m_IndexBuffer(indexBuffer)
 {
 	GLCall(glGenVertexArrays(1, &m_ID));
 	Bind();
 
-	GLuint vertexBuffer;
-	GLCall(glGenBuffers(1, &vertexBuffer));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW));
-	if (type != PrimitiveType::Points) {
-		GLuint indexBuffer;
-		GLCall(glGenBuffers(1, &indexBuffer));
-		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer));
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * indices.size(), indices.data(), GL_STATIC_DRAW));
-	}
+	m_VertexBuffer->Bind();
+	if (m_IndexBuffer) m_IndexBuffer->Bind();
 
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glEnableVertexAttribArray(1));
@@ -33,11 +25,9 @@ VertexArray::VertexArray(const std::vector<Vertex>& vertices, const std::vector<
 	GLCall(glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Color)));
 	GLCall(glVertexAttribIPointer(3, 1, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_ID)));
 
-
 }
 
 VertexArray::~VertexArray() {
-	//need to delete buffers still
 	GLCall(glDeleteVertexArrays(1, &m_ID));
 }
 

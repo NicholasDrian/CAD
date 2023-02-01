@@ -5,8 +5,6 @@
 
 #include "glm/glm.hpp"
 
-#include <vector>
-
 class Window;
 
 enum class RenderMode {
@@ -18,20 +16,29 @@ class Renderer {
 
 public:
 
-	static void InitRenderer();
-	static void DestroyRenderer();
+	static void Init();
+	static void Destroy();
 
 	static void SetClearColor(glm::vec3 color);
 	static void BeginRender();
-	static void FinishRender(Window* window);
+	static void FinishRender();
 	static void Render(const VertexArray& vertexArray);
 	static void SetRenderMode(RenderMode mode);
 
-	static std::vector<std::pair<const char*, ShaderType>> GetShaderPaths(RenderMode mode);
+	static std::pair<const char*, const char*> GetShaderPaths();
 
 private:
 
+	static void InitFrameBuffer();
+	static void DestroyFrameBuffer();
+
 	static RenderMode m_RenderMode;
 	static ShaderProgram* m_Program;
+
+	static GLuint m_FrameBuffer;
+	static GLuint m_ColorAttachment;
+	static GLuint m_IDAttachment;
+
+	static GLint m_Width, m_Height;
 
 };

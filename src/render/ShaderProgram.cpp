@@ -5,11 +5,10 @@
 #include "../utils/OpenGLUtils.h"
 
 
-ShaderProgram::ShaderProgram(const std::vector<Shader*>& shaders) {
+ShaderProgram::ShaderProgram(const Shader& vertShader, const Shader& fragShader) {
 	m_ID = GLResult(glCreateProgram());
-	for (Shader* shader : shaders) {
-		GLCall(glAttachShader(m_ID, shader->GetID()));
-	}
+	GLCall(glAttachShader(m_ID, vertShader.GetID()));
+	GLCall(glAttachShader(m_ID, fragShader.GetID()));
 	GLCall(glLinkProgram(m_ID));
 
 #ifdef CAD_DEBUG

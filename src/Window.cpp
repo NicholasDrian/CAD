@@ -5,13 +5,16 @@
 
 #include "GLFW/glfw3.h"
 
-Window::Window(unsigned width, unsigned height)
-    : m_Width(width), m_Height(height)
+#include <iostream>
+
+GLFWwindow* Window::m_Window = nullptr;
+
+void Window::Init(unsigned width, unsigned height)
 {
     if (!glfwInit()) {
         throw std::runtime_error("Failed to initialize glfw!");
     }
-    m_Window = glfwCreateWindow(m_Width, m_Height, "CAD", nullptr, nullptr);
+    m_Window = glfwCreateWindow(width, height, "CAD", nullptr, nullptr);
     if (!m_Window) {
         throw std::runtime_error("Failed to create window!");
     }
@@ -21,7 +24,7 @@ Window::Window(unsigned width, unsigned height)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 }
 
-Window::~Window()
+void Window::Destroy()
 {
     glfwTerminate();
 }
@@ -38,4 +41,15 @@ void Window::PollEvents()
 
 void Window::SwapBuffers() {
     glfwSwapBuffers(m_Window);
+}
+
+std::pair<unsigned, unsigned> Window::GetSize() {
+    int width, height;
+    glfwGetWindowSize(m_Window, &width, &height);
+    return { width, height };
+}
+
+float Window::GetAspect() {
+    auto [width, height] = GetSize();
+    return float(width) / float(height);
 }

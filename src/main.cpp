@@ -4,6 +4,6 @@
 
 int main() {
 
-	Application app;
+	Application::Run();
 
 }

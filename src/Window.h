@@ -1,23 +1,27 @@
 #pragma once
 
+#include <utility>
+
 struct GLFWwindow;
 
 class Window {
 
 public:
 
-	Window(unsigned width = 800, unsigned height = 600);
-	~Window();
+	static void Init(unsigned width = 800, unsigned height = 600);
+	static void Destroy();
 
-	bool ShouldClose();
+	static bool ShouldClose();
 
-	void PollEvents();
+	static void PollEvents();
 
-	void SwapBuffers();
+	static void SwapBuffers();
+
+	static std::pair<unsigned, unsigned> GetSize();
+	static float GetAspect();
 
 private:
 
-	unsigned m_Width, m_Height;
-	GLFWwindow* m_Window;
+	static GLFWwindow* m_Window;
 
 };	

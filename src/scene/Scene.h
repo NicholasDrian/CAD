@@ -1,16 +1,20 @@
 #pragma once
 
-class Camera;
+#include <memory>
+
+#include "Camera.h"
 
 class Scene {
 
 public:
 
-	Scene();
-	~Scene();
+	static void Init();
+	static void Destroy();
+
+	static void Render();
 
 private:
 
-	Camera* m_Camera;
+	static Camera* m_Camera;
 
 };

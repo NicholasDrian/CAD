@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 class Window;
 class Scene;
 
@@ -7,12 +9,11 @@ class Application {
 
 public:
 
-	Application();
-	~Application();
+	static void Run();
+	static void Terminate();
 
 private:
 
-	Window* m_Window;
-	Scene* m_Scene;
+	static void Init();
 
 };
