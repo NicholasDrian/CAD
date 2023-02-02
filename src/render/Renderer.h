@@ -25,6 +25,8 @@ public:
 	static void Render(const VertexArray& vertexArray);
 	static void SetRenderMode(RenderMode mode);
 
+	static void WindowResize(int width, int height);
+
 	static std::pair<const char*, const char*> GetShaderPaths();
 
 private:
@@ -40,5 +42,7 @@ private:
 	static GLuint m_IDAttachment;
 
 	static GLint m_Width, m_Height;
+
+	static GLuint m_ViewProjLocation;
 
 };

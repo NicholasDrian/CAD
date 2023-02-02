@@ -8,6 +8,7 @@ project "CAD"
 	language "C++"
 	targetdir "build/bin/%{cfg.architecture}-%{cfg.buildcfg}"
 	objdir "build/bin-int/%{cfg.architecture}-%{cfg.buildcfg}"
+	cppdialect "C++17"
 
 	files {
 		"src/**.h", 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Window.h"
+#include "events/EventManager.h"
 #include "stdexcept"
 
 #include "GLFW/glfw3.h"
@@ -22,6 +23,8 @@ void Window::Init(unsigned width, unsigned height)
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+
+    glfwSetWindowSizeCallback(m_Window, &EventManager::WindowResize);
 }
 
 void Window::Destroy()

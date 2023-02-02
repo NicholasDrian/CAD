@@ -14,6 +14,8 @@ public:
 	ShaderProgram(const Shader& vertShader, const Shader& fragShader);
 	~ShaderProgram();
 
+	void Bind();
+
 	GLuint GetID() const;
 
 private:

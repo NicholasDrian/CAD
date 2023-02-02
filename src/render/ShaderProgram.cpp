@@ -24,6 +24,11 @@ ShaderProgram::~ShaderProgram()
 	GLCall(glDeleteProgram(m_ID));
 }
 
+void ShaderProgram::Bind()
+{
+	GLCall(glUseProgram(m_ID));
+}
+
 GLuint ShaderProgram::GetID() const
 {
 	return m_ID;

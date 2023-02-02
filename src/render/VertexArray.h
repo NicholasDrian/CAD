@@ -16,7 +16,7 @@ class VertexArray {
 
 public:
 
-	VertexArray(std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer, PrimitiveType type);
+	VertexArray(VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer, PrimitiveType type);
 	~VertexArray();
 
 	inline PrimitiveType GetPrimitiveType() const { return m_PrimitiveType; }
@@ -30,7 +30,7 @@ private:
 	GLuint m_ID;
 	PrimitiveType m_PrimitiveType;
 
-	std::shared_ptr<VertexBuffer> m_VertexBuffer;
-	std::shared_ptr<IndexBuffer> m_IndexBuffer;
+	VertexBuffer* m_VertexBuffer;
+	IndexBuffer* m_IndexBuffer;
 
 };

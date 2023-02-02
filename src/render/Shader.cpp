@@ -38,7 +38,6 @@ Shader::Shader(const char* path, ShaderType type) {
 
 Shader::~Shader()
 {
-	//throw std::runtime_error("rsdsvasd");
 	GLCall(glDeleteShader(m_ID));
 }
 

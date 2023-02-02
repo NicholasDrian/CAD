@@ -4,11 +4,15 @@
 #include "Shader.h"
 #include "../Window.h"
 #include "../utils/OpenGLUtils.h"
+#include "../scene/Scene.h"
 
 #include "GL/glew.h"
+#include "glm/glm.hpp"
 
 #include <stdexcept>
 #include <utility>
+
+#include "iostream"
 
 ShaderProgram* Renderer::m_Program = nullptr;
 RenderMode Renderer::m_RenderMode = RenderMode::None;
@@ -17,6 +21,8 @@ GLuint Renderer::m_FrameBuffer = 0;
 GLuint Renderer::m_ColorAttachment = 0;
 GLuint Renderer::m_IDAttachment = 0;
 GLint Renderer::m_Width, Renderer::m_Height;
+
+GLuint Renderer::m_ViewProjLocation = 0;
 
 void Renderer::Init()
 {
@@ -36,12 +42,15 @@ void Renderer::SetClearColor(glm::vec3 color) {
 }
 
 void Renderer::BeginRender() {
-	GLCall(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_FrameBuffer));
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+	GLCall(glUniformMatrix4fv(m_ViewProjLocation, 1, GL_FALSE, &Scene::GetCamera()->GetViewProj()[0][0]));
 }
 
 void Renderer::FinishRender() {
 	GLCall(glBindFramebuffer(GL_READ_FRAMEBUFFER, m_FrameBuffer));
+	GLCall(glReadBuffer(GL_COLOR_ATTACHMENT0));
 	GLCall(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0));
 	GLCall(glBlitFramebuffer(0, 0, m_Width, m_Height, 0, 0, m_Width, m_Height, GL_COLOR_BUFFER_BIT, GL_NEAREST));
 	Window::SwapBuffers();
@@ -69,6 +78,8 @@ void Renderer::SetRenderMode(RenderMode mode)
 		auto [vertPath, fragPath] = GetShaderPaths();
 		delete m_Program;
 		m_Program = new ShaderProgram(Shader(vertPath, ShaderType::VertexShader), Shader(fragPath, ShaderType::FragmentShader));
+		m_Program->Bind();
+		m_ViewProjLocation = GLResult(glGetUniformLocation(m_Program->GetID(), "view_proj"));
 	}
 }
 
@@ -109,6 +120,15 @@ void Renderer::InitFrameBuffer()
 		throw std::runtime_error("Incomplete frame buffer!");
 #endif
 
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+
+}
+
+void Renderer::WindowResize(int width, int height) {
+	m_Width = width; m_Height = height;
+	DestroyFrameBuffer();
+	InitFrameBuffer();
+	glViewport(0, 0, m_Width, m_Height);
 }
 
 void Renderer::Destroy() {
@@ -118,8 +138,17 @@ void Renderer::Destroy() {
 
 void Renderer::DestroyFrameBuffer()
 {
-	GLCall(glDeleteTextures(1, &m_ColorAttachment));
-	GLCall(glDeleteTextures(1, &m_IDAttachment));
-	GLCall(glDeleteFramebuffers(1, &m_FrameBuffer));
+	if (m_ColorAttachment) {
+		GLCall(glDeleteTextures(1, &m_ColorAttachment));
+		m_ColorAttachment = 0;
+	}
+	if (m_IDAttachment) {
+		GLCall(glDeleteTextures(1, &m_IDAttachment));
+		m_IDAttachment = 0;
+	}
+	if (m_FrameBuffer) {
+		GLCall(glDeleteFramebuffers(1, &m_FrameBuffer));
+		m_FrameBuffer = 0;
+	}
 }
 
