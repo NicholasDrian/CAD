@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ShaderProgram.h"
+//#include "shaders/ShaderProgram.h"
+#include "shaders/ShaderManager.h"
 #include "VertexArray.h"
 
 #include "glm/glm.hpp"
@@ -35,14 +36,11 @@ private:
 	static void DestroyFrameBuffer();
 
 	static RenderMode m_RenderMode;
-	static ShaderProgram* m_Program;
+	static ShaderManager* m_ShaderManager;
 
 	static GLuint m_FrameBuffer;
 	static GLuint m_ColorAttachment;
 	static GLuint m_IDAttachment;
-
 	static GLint m_Width, m_Height;
-
-	static GLuint m_ViewProjLocation;
 
 };

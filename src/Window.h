@@ -20,6 +20,8 @@ public:
 	static std::pair<unsigned, unsigned> GetSize();
 	static float GetAspect();
 
+	static inline GLFWwindow* GetGLFWWindow() { return m_Window; }
+
 private:
 
 	static GLFWwindow* m_Window;

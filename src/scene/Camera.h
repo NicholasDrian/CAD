@@ -8,9 +8,11 @@ public:
 
 	Camera(glm::vec3 position, glm::vec3 focalPoint, glm::vec3 up, float fovy);
 
-	void LoopUp(int delta);
-	void LookRight(int delta);
-	void Zoom(int delta);
+	void TurnUp(int delta);
+	void TurnRight(int delta);
+	void ZoomIn(int delta);
+	void PanUp(int delta);
+	void PanRight(int delta);
 
 	glm::mat4 GetViewProj() const;
 
@@ -19,7 +21,8 @@ private:
 	glm::vec3 m_Position, m_FocalPoint, m_Up;
 	float m_Fovy;
 
-	const float m_SensitivityRotation = 0.005f;
-	const float m_SensitivityZoom = 0.005f;
+	const float m_SensitivityRotation = 0.002f;
+	const float m_SensitivityZoom = 0.996f;
+	const float m_SensitivityPan = 0.003f;
 
 };

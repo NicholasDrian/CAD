@@ -2,7 +2,7 @@
 
 #include "Shader.h"
 
-#include "../utils/OpenGLUtils.h"
+#include "../OpenGLUtils.h"
 
 #include <fstream>
 #include <sstream>
@@ -24,11 +24,10 @@ Shader::Shader(const char* path, ShaderType type) {
 		throw std::runtime_error("failed to open shader file!");
 	}
 	const char* cString = source.c_str();
-	//std::cout << m_ID << '\n';
 	m_ID = GLResult(glCreateShader(GetGLShaderType(type)));
-	//std::cout << m_ID << "\n\n";
 	GLCall(glShaderSource(m_ID, 1, &cString, NULL));
 	GLCall(glCompileShader(m_ID));
+
 #ifdef CAD_DEBUG
 	GLint compiled;
 	GLCall(glGetShaderiv(m_ID, GL_COMPILE_STATUS, &compiled));

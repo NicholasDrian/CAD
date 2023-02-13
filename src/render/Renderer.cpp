@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Renderer.h"
-#include "Shader.h"
+#include "shaders/Shader.h"
 #include "../Window.h"
-#include "../utils/OpenGLUtils.h"
+#include "OpenGLUtils.h"
 #include "../scene/Scene.h"
+#include "shaders/ShaderManager.h"
 
 #include "GL/glew.h"
 #include "glm/glm.hpp"
@@ -14,15 +15,13 @@
 
 #include "iostream"
 
-ShaderProgram* Renderer::m_Program = nullptr;
+ShaderManager* Renderer::m_ShaderManager = new ShaderManager();
 RenderMode Renderer::m_RenderMode = RenderMode::None;
 
 GLuint Renderer::m_FrameBuffer = 0;
 GLuint Renderer::m_ColorAttachment = 0;
 GLuint Renderer::m_IDAttachment = 0;
 GLint Renderer::m_Width, Renderer::m_Height;
-
-GLuint Renderer::m_ViewProjLocation = 0;
 
 void Renderer::Init()
 {
@@ -33,8 +32,10 @@ void Renderer::Init()
 	if (glewInit() != GLEW_OK) {
 		throw std::runtime_error("Failed to initialize glew!");
 	}
+	m_ShaderManager->Init();
 	SetRenderMode(RenderMode::Default);
 	InitFrameBuffer();
+	SetClearColor({ 0.8, 0.8, 1.0 });
 }
 
 void Renderer::SetClearColor(glm::vec3 color) {
@@ -44,8 +45,7 @@ void Renderer::SetClearColor(glm::vec3 color) {
 void Renderer::BeginRender() {
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-	GLCall(glUniformMatrix4fv(m_ViewProjLocation, 1, GL_FALSE, &Scene::GetCamera()->GetViewProj()[0][0]));
+	m_ShaderManager->UpdateViewProj();
 }
 
 void Renderer::FinishRender() {
@@ -75,11 +75,11 @@ void Renderer::SetRenderMode(RenderMode mode)
 {
 	if (m_RenderMode != mode) {
 		m_RenderMode = mode;
-		auto [vertPath, fragPath] = GetShaderPaths();
+		/*auto [vertPath, fragPath] = GetShaderPaths();
 		delete m_Program;
 		m_Program = new ShaderProgram(Shader(vertPath, ShaderType::VertexShader), Shader(fragPath, ShaderType::FragmentShader));
-		m_Program->Bind();
-		m_ViewProjLocation = GLResult(glGetUniformLocation(m_Program->GetID(), "view_proj"));
+		m_Program->Bind();*/
+		m_ShaderManager->Bind(ShaderProgramType::ColoredShader);
 	}
 }
 
@@ -87,7 +87,7 @@ std::pair<const char*, const char*> Renderer::GetShaderPaths()
 {
 	switch (m_RenderMode) {
 	case RenderMode::Default:
-		return { "src/render/shaders/default.vert", "src/render/shaders/default.frag" };
+		return { "src/render/shaders/shaders/default.vert", "src/render/shaders/shaders/default.frag" };
 	default:
 		throw std::runtime_error("Unimplemented Render Mode");
 	}
@@ -120,8 +120,6 @@ void Renderer::InitFrameBuffer()
 		throw std::runtime_error("Incomplete frame buffer!");
 #endif
 
-	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-
 }
 
 void Renderer::WindowResize(int width, int height) {
@@ -133,7 +131,7 @@ void Renderer::WindowResize(int width, int height) {
 
 void Renderer::Destroy() {
 	DestroyFrameBuffer();
-	delete m_Program;
+	delete m_ShaderManager;
 }
 
 void Renderer::DestroyFrameBuffer()

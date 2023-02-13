@@ -5,6 +5,8 @@
 #include "Window.h"
 #include "render/Renderer.h"
 #include "scene/Scene.h"
+#include "events/EventManager.h"
+#include "gui/GUI.h"
 
 #include "GLFW/glfw3.h"
 
@@ -18,14 +20,17 @@ void Application::Run()
 		frame_start = glfwGetTime();
 		Renderer::BeginRender();
 		Scene::Render();
+		GUI::Render();
 		Renderer::FinishRender();
-		Window::PollEvents();
+		EventManager::Tick();
+
 	}
 	Terminate();
 }
 
 void Application::Terminate()
 {
+	GUI::Destroy();
 	Scene::Destroy();
 	Renderer::Destroy();
 	Window::Destroy();
@@ -35,5 +40,6 @@ void Application::Init() {
 	Window::Init();
 	Renderer::Init();
 	Scene::Init();
-	Renderer::SetClearColor({ 1.0, 0.0, 1.0 });
+	GUI::Init();
+
 }

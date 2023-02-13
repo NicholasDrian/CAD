@@ -2,7 +2,7 @@
 
 #include "IndexBuffer.h"
 
-#include "../utils/OpenGLUtils.h"
+#include "OpenGLUtils.h"
 
 IndexBuffer::IndexBuffer(const std::vector<unsigned>& indices) : m_IndexCount(indices.size()), m_ID(0) {
 

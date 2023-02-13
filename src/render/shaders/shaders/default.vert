@@ -8,7 +8,10 @@ layout (location = 3) in int id;
 out vec3 frag_color;
 out flat int frag_id;
 
-uniform mat4 view_proj;
+layout (std140, binding = 0) uniform global
+{
+    mat4 view_proj;
+};
 
 void main() 
 {

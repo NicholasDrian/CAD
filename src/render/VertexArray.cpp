@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "../utils/OpenGLUtils.h"
+#include "OpenGLUtils.h"
 
 VertexArray::VertexArray(VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer, PrimitiveType type) 
 	: m_PrimitiveType(type), m_ID(0), m_VertexBuffer(vertexBuffer), m_IndexBuffer(indexBuffer)
