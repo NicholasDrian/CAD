@@ -15,7 +15,6 @@
 
 #include "iostream"
 
-ShaderManager* Renderer::m_ShaderManager = new ShaderManager();
 RenderMode Renderer::m_RenderMode = RenderMode::None;
 
 GLuint Renderer::m_FrameBuffer = 0;
@@ -33,7 +32,7 @@ void Renderer::Init()
 	if (glewInit() != GLEW_OK) {
 		throw std::runtime_error("Failed to initialize glew!");
 	}
-	m_ShaderManager->Init();
+	ShaderManager::Init();
 	SetRenderMode(RenderMode::Default);
 	InitFrameBuffer();
 	SetClearColor({ 0.8, 0.8, 1.0 });
@@ -46,7 +45,7 @@ void Renderer::SetClearColor(glm::vec3 color) {
 void Renderer::BeginRender() {
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-	m_ShaderManager->UpdateViewProj();
+	ShaderManager::UpdateViewProj();
 }
 
 void Renderer::FinishRender() {
@@ -57,21 +56,21 @@ void Renderer::FinishRender() {
 	Window::SwapBuffers();
 }
 
-void Renderer::Render(VertexArray* vertexArray)
-{
-	vertexArray->Bind();
-	switch (vertexArray->GetPrimitiveType()) {
-	case PrimitiveType::Triangle:
-		GLCall(glDrawElements(GL_TRIANGLES, (GLsizei) vertexArray->GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
-		break;
-	case PrimitiveType::Line:
-		throw std::runtime_error("todo");
-		break;
-	case PrimitiveType::Point:
-		throw std::runtime_error("todo");
-		break;
-	}
-}
+//void Renderer::Render(VertexArray* vertexArray)
+//{
+//	vertexArray->Bind();
+//	switch (vertexArray->GetPrimitiveType()) {
+//	case PrimitiveType::Triangle:
+//		GLCall(glDrawElements(GL_TRIANGLES, (GLsizei) vertexArray->GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
+//		break;
+//	case PrimitiveType::Line:
+//		throw std::runtime_error("todo");
+//		break;
+//	case PrimitiveType::Point:
+//		throw std::runtime_error("todo");
+//		break;
+//	}
+//}
 void Renderer::SetRenderMode(RenderMode mode)
 {
 	if (m_RenderMode != mode) {
@@ -80,7 +79,9 @@ void Renderer::SetRenderMode(RenderMode mode)
 		delete m_Program;
 		m_Program = new ShaderProgram(Shader(vertPath, ShaderType::VertexShader), Shader(fragPath, ShaderType::FragmentShader));
 		m_Program->Bind();*/
-		m_ShaderManager->Bind(ShaderProgramType::ColoredShader);
+		//m_ShaderManager->Bind(ShaderProgramType::ColoredShader);
+
+		// TODO : wire frame, ghosted...
 	}
 }
 
@@ -132,7 +133,7 @@ void Renderer::WindowResize(int width, int height) {
 
 void Renderer::Destroy() {
 	DestroyFrameBuffer();
-	delete m_ShaderManager;
+	ShaderManager::Destroy();
 }
 
 void Renderer::DestroyFrameBuffer()

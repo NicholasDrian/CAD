@@ -36,7 +36,7 @@ private:
 	static void DestroyFrameBuffer();
 
 	static RenderMode m_RenderMode;
-	static ShaderManager* m_ShaderManager;
+	//static ShaderManager* m_ShaderManager;
 
 	static GLuint m_FrameBuffer;
 	static GLuint m_ColorAttachment;

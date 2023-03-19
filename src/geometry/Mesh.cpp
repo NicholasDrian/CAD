@@ -10,5 +10,5 @@ Mesh::Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>
 }
 
 void Mesh::Render() const {
-	Renderer::Render(m_VertexArray.get());
+	m_VertexArray->Render();
 }

@@ -10,19 +10,17 @@ class ShaderManager {
 
 public:
 
-	ShaderManager();
-	~ShaderManager();
+	static void Init();
+	static void Destroy();
 
-	void Init();
+	static void Bind(ShaderProgramType type);
 
-	void Bind(ShaderProgramType type);
-
-	void UpdateViewProj();
+	static void UpdateViewProj();
 
 private:
 
-	ShaderProgramType m_BoundProgram;
-	std::unordered_map<ShaderProgramType, ShaderProgram> m_Programs;
-	GLuint m_GlobalShaderUniforms;
+	inline static ShaderProgramType m_BoundProgram = ShaderProgramType::None;
+	inline static std::unordered_map<ShaderProgramType, ShaderProgram> m_Programs;
+	inline static GLuint m_GlobalShaderUniforms;
 
 };

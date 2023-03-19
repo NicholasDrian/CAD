@@ -1,6 +1,8 @@
 #pragma once 
 
 #include "VertexArrayColoredTriangle.h"
+#include "shaders/ShaderManager.h"
+
 #include<iostream>
 
 
@@ -51,16 +53,19 @@ VertexArrayColoredTriangle::VertexArrayColoredTriangle(const std::vector<glm::ve
 
 VertexArrayColoredTriangle::~VertexArrayColoredTriangle() 
 {
-	if (!glIsBuffer(m_IndexBufferID)) std::cout << "wtf" << '\n';
 	GLCall(glDeleteBuffers(1, &m_IndexBufferID));
 	GLCall(glDeleteBuffers(1, &m_VertexBufferID));
 	GLCall(glDeleteVertexArrays(1, &m_ID));
 
 }
 
+void VertexArrayColoredTriangle::Render() const {
+	ShaderManager::Bind(ShaderProgramType::ColoredTriShader);
+	Bind();
+	GLCall(glDrawElements(GL_TRIANGLES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
+}
+
 void VertexArrayColoredTriangle::Bind() const 	
 {
-	if (!glIsBuffer(m_IndexBufferID)) std::cout << "wtf" << '\n';
-
 	GLCall(glBindVertexArray(m_ID));
 }

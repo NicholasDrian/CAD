@@ -8,7 +8,8 @@
 
 enum class ShaderProgramType {
 	None,
-	ColoredShader,
+	ColoredTriShader,
+	ColoredLineShader,
 	TexturedShader
 };
 

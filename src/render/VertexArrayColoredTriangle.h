@@ -22,6 +22,7 @@ public:
 	~VertexArrayColoredTriangle();
 
 	virtual void Bind() const override;
+	virtual void Render() const override;
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Triangle; }
 	virtual bool IsSelectable() const override { return m_Selectable; }
 	virtual unsigned GetIndexCount() const override { return m_IndexCount; };

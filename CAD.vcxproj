@@ -520,8 +520,10 @@
     <ClInclude Include="src\render\OpenGLUtils.h" />
     <ClInclude Include="src\render\Renderer.h" />
     <ClInclude Include="src\render\VertexArray.h" />
+    <ClInclude Include="src\render\VertexArrayColoredLines.h" />
     <ClInclude Include="src\render\VertexArrayColoredTriangle.h" />
-    <ClInclude Include="src\render\shaders\ColoredShader.h" />
+    <ClInclude Include="src\render\shaders\ColoredLineShader.h" />
+    <ClInclude Include="src\render\shaders\ColoredTriShader.h" />
     <ClInclude Include="src\render\shaders\Shader.h" />
     <ClInclude Include="src\render\shaders\ShaderManager.h" />
     <ClInclude Include="src\render\shaders\ShaderProgram.h" />
@@ -547,8 +549,10 @@
     <ClCompile Include="src\render\OpenGLUtils.cpp" />
     <ClCompile Include="src\render\Renderer.cpp" />
     <ClCompile Include="src\render\VertexArray.cpp" />
+    <ClCompile Include="src\render\VertexArrayColoredLines.cpp" />
     <ClCompile Include="src\render\VertexArrayColoredTriangle.cpp" />
-    <ClCompile Include="src\render\shaders\ColoredShader.cpp" />
+    <ClCompile Include="src\render\shaders\ColoredLineShader.cpp" />
+    <ClCompile Include="src\render\shaders\ColoredTriShader.cpp" />
     <ClCompile Include="src\render\shaders\Shader.cpp" />
     <ClCompile Include="src\render\shaders\ShaderManager.cpp" />
     <ClCompile Include="src\render\shaders\ShaderProgram.cpp" />
@@ -558,8 +562,10 @@
     <ClCompile Include="src\scene\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\render\shaders\shaders\default.frag" />
-    <None Include="src\render\shaders\shaders\default.vert" />
+    <None Include="src\render\shaders\shaders\ColoredLine.frag" />
+    <None Include="src\render\shaders\shaders\ColoredLine.vert" />
+    <None Include="src\render\shaders\shaders\ColoredTri.frag" />
+    <None Include="src\render\shaders\shaders\ColoredTri.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

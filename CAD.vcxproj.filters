@@ -1329,10 +1329,16 @@
     <ClInclude Include="src\render\VertexArray.h">
       <Filter>src\render</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\VertexArrayColoredLines.h">
+      <Filter>src\render</Filter>
+    </ClInclude>
     <ClInclude Include="src\render\VertexArrayColoredTriangle.h">
       <Filter>src\render</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\shaders\ColoredShader.h">
+    <ClInclude Include="src\render\shaders\ColoredLineShader.h">
+      <Filter>src\render\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\shaders\ColoredTriShader.h">
       <Filter>src\render\shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\render\shaders\Shader.h">
@@ -1406,10 +1412,16 @@
     <ClCompile Include="src\render\VertexArray.cpp">
       <Filter>src\render</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\VertexArrayColoredLines.cpp">
+      <Filter>src\render</Filter>
+    </ClCompile>
     <ClCompile Include="src\render\VertexArrayColoredTriangle.cpp">
       <Filter>src\render</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\shaders\ColoredShader.cpp">
+    <ClCompile Include="src\render\shaders\ColoredLineShader.cpp">
+      <Filter>src\render\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\shaders\ColoredTriShader.cpp">
       <Filter>src\render\shaders</Filter>
     </ClCompile>
     <ClCompile Include="src\render\shaders\Shader.cpp">
@@ -1435,10 +1447,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\render\shaders\shaders\default.frag">
+    <None Include="src\render\shaders\shaders\ColoredLine.frag">
       <Filter>src\render\shaders\shaders</Filter>
     </None>
-    <None Include="src\render\shaders\shaders\default.vert">
+    <None Include="src\render\shaders\shaders\ColoredLine.vert">
+      <Filter>src\render\shaders\shaders</Filter>
+    </None>
+    <None Include="src\render\shaders\shaders\ColoredTri.frag">
+      <Filter>src\render\shaders\shaders</Filter>
+    </None>
+    <None Include="src\render\shaders\shaders\ColoredTri.vert">
       <Filter>src\render\shaders\shaders</Filter>
     </None>
   </ItemGroup>
