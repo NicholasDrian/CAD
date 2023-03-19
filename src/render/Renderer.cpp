@@ -25,6 +25,7 @@ GLint Renderer::m_Width, Renderer::m_Height;
 
 void Renderer::Init()
 {
+
 	std::pair<unsigned, unsigned> size = Window::GetSize();
 	m_Width = size.first;
 	m_Height = size.second;
@@ -56,17 +57,17 @@ void Renderer::FinishRender() {
 	Window::SwapBuffers();
 }
 
-void Renderer::Render(const VertexArray& vertexArray)
+void Renderer::Render(VertexArray* vertexArray)
 {
-	vertexArray.Bind();
-	switch (vertexArray.GetPrimitiveType()) {
-	case PrimitiveType::Triangles:
-		GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)vertexArray.GetIndexCount(), GL_UNSIGNED_INT, 0));
+	vertexArray->Bind();
+	switch (vertexArray->GetPrimitiveType()) {
+	case PrimitiveType::Triangle:
+		GLCall(glDrawElements(GL_TRIANGLES, (GLsizei) vertexArray->GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
 		break;
-	case PrimitiveType::Lines:
+	case PrimitiveType::Line:
 		throw std::runtime_error("todo");
 		break;
-	case PrimitiveType::Points:
+	case PrimitiveType::Point:
 		throw std::runtime_error("todo");
 		break;
 	}

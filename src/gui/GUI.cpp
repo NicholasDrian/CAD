@@ -5,7 +5,6 @@
 #include "../Window.h"
 #include "Style.h"
 
-#include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
@@ -35,28 +34,38 @@ void GUI::Destroy() {
     ImGui::DestroyContext();
 }
 
-void GUI::Render() {
-
+void GUI::BeginRender() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
 
     ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
+ 
+}
+
+void GUI::Render() {
+
+    BeginRender();
 
 
-    ImGui::ShowDemoWindow();
-    bool open = false;
     static bool m_ShowDisplayOptions = false;
     static bool m_ShowGenerator = false;
     static bool m_ShowStats = false;
 
     if (ImGui::BeginMainMenuBar())
     {
+        static char* buff = (char*) calloc(128, 1);
+        if (ImGui::InputText("", buff, 128, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_EscapeClearsAll)) {
+            std::cout << buff << std::endl;
+        }
+
         if (ImGui::BeginMenu("Menu"))
         {
-            if (ImGui::MenuItem("Load New Animation", NULL))
-                open = true;
+            if (ImGui::MenuItem("Load New Animation", NULL)) {
+
+            }
+                
 
             ImGui::EndMenu();
         }
@@ -78,18 +87,6 @@ void GUI::Render() {
         ImGui::EndMainMenuBar();
     }
 
-
-    /*const auto size = Window::GetSize();
-    int controls_width = size.first;
-    if ((controls_width /= 3) < 300) { controls_width = 300; }
-    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(
-        ImVec2(static_cast<float>(controls_width), static_cast<float>(size.second - 20)),
-        ImGuiCond_Always
-    );
-
-    ImGui::SetNextWindowBgAlpha(0.7f);
-    ImGui::Begin("Controls", NULL, ImGuiWindowFlags_NoResize);*/
     ImGui::Begin("Controls", NULL, ImGuiWindowFlags_NoResize);
 
     ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
@@ -113,6 +110,13 @@ void GUI::Render() {
         ImGui::EndTabBar();
     }
 
+    EndRender();
+    
+}
+
+void GUI::EndRender() {
+
+
     ImGui::End();
 
     ImGui::Render();
@@ -125,5 +129,4 @@ void GUI::Render() {
     ImGui::UpdatePlatformWindows();
     ImGui::RenderPlatformWindowsDefault();
     glfwMakeContextCurrent(backup_current_context);
-    
 }

@@ -4,7 +4,7 @@
 
 #include "GLFW/glfw3.h"
 
-class GLFWwindow;
+struct GLFWwindow;
 
 class EventManager {
 

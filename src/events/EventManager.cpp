@@ -3,7 +3,7 @@
 #include "EventManager.h"
 #include "../Window.h"
 #include "../scene/Scene.h"
-
+#include "../gui/GUI.h"
 #include <iostream>
 
 bool EventManager::m_MouseButtonDown = false;
@@ -46,6 +46,11 @@ void EventManager::WindowResizeCallback(GLFWwindow* window, int width, int heigh
 
 void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int mods)
 {
+
+    // ignore mouse event if handled by gui...
+    ImGuiIO& io = GUI::GetIO();
+    if (io.WantCaptureMouse) return;
+
     double mouseX, mouseY;
     glfwGetCursorPos(Window::GetGLFWWindow(), &mouseX, &mouseY);
 

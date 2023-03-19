@@ -1,0 +1,10 @@
+﻿  Application.cpp
+  EventManager.cpp
+  Mesh.cpp
+  Renderer.cpp
+  VertexArrayColoredTriangle.cpp
+C:\Users\15303\Desktop\cs\CAD\src\render\VertexArrayColoredTriangle.cpp(13,1): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+  ShaderManager.cpp
+  Scene.cpp
+  Generating Code...
+  CAD.vcxproj -> C:\Users\15303\Desktop\cs\CAD\build\bin\x86_64-Debug\CAD.exe

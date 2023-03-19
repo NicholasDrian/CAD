@@ -23,7 +23,7 @@ public:
 	static void SetClearColor(glm::vec3 color);
 	static void BeginRender();
 	static void FinishRender();
-	static void Render(const VertexArray& vertexArray);
+	static void Render(VertexArray* vertexArray);
 	static void SetRenderMode(RenderMode mode);
 
 	static void WindowResize(int width, int height);

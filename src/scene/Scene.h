@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Camera.h"
+#include "../geometry/Renderable.h"
 
 class Renderable;
 
@@ -20,8 +21,8 @@ public:
 
 private:
 
-	static Camera* m_Camera;
+	inline static Camera* m_Camera;
 
-	static std::vector<std::unique_ptr<Renderable>> m_Contents;
+	inline static std::vector<std::unique_ptr<Renderable>> m_Contents;
 
 };

@@ -8,7 +8,7 @@ class Window {
 
 public:
 
-	static void Init(unsigned width = 800, unsigned height = 600);
+	static void Init(unsigned width = 1200, unsigned height = 800);
 	static void Destroy();
 
 	static bool ShouldClose();
