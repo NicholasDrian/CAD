@@ -5,5 +5,5 @@
 
 ColoredLineShader::ColoredLineShader()
 {
-	Init("src/render/shaders/shaders/ColoredTri.vert", "src/render/shaders/shaders/ColoredTri.frag");
+	Init("src/render/shaders/shaders/ColoredLine.vert", "src/render/shaders/shaders/ColoredLine.frag");
 }

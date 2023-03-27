@@ -1,4 +1,2 @@
-﻿  VertexArrayColoredLines.cpp
-C:\Users\15303\Desktop\cs\CAD\src\render\VertexArrayColoredLines.cpp(12,1): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc100.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\15303\Desktop\cs\CAD\build\bin\x86_64-Debug\vc100.pdb'; linking object as if no debug info
+﻿  Scene.cpp
   CAD.vcxproj -> C:\Users\15303\Desktop\cs\CAD\build\bin\x86_64-Debug\CAD.exe

@@ -20,7 +20,7 @@ public:
 
 private:
 
-	std::unique_ptr<VertexArrayColoredTriangle> m_VertexArray;
+	VertexArrayColoredTriangle m_VertexArray;
 
 	std::vector<glm::vec3> m_Positions, m_Normals, m_Colors;
 

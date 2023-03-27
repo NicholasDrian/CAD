@@ -12,7 +12,6 @@ class VertexArray {
 
 public:
 
-	virtual void Bind() const = 0;
 	virtual PrimitiveType GetPrimitiveType() const = 0;
 	virtual bool IsSelectable() const = 0;
 	virtual unsigned GetIndexCount() const = 0;

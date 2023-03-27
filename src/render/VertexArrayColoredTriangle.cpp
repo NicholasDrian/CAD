@@ -10,8 +10,8 @@ ColoredTriangleVertex::ColoredTriangleVertex(glm::vec3 Pos, glm::vec3 Norm, glm:
 	: pos(Pos), norm(Norm), col(Col), i(I) { }
 
 
-VertexArrayColoredTriangle::VertexArrayColoredTriangle(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indices, bool selectable) 
-	: m_IndexCount(indices.size()), m_Selectable(selectable)
+VertexArrayColoredTriangle::VertexArrayColoredTriangle(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indices, bool selectable)
+	: m_IndexCount(indices.size()), m_Selectable(selectable), m_Model(glm::mat4(1.0)), m_Selected(false)
 {
 
 	std::vector<ColoredTriangleVertex> data;
@@ -61,11 +61,7 @@ VertexArrayColoredTriangle::~VertexArrayColoredTriangle()
 
 void VertexArrayColoredTriangle::Render() const {
 	ShaderManager::Bind(ShaderProgramType::ColoredTriShader);
-	Bind();
-	GLCall(glDrawElements(GL_TRIANGLES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
-}
-
-void VertexArrayColoredTriangle::Bind() const 	
-{
+	ShaderManager::UpdateLocalUniforms(m_Model, m_Selectable, m_Selected);
 	GLCall(glBindVertexArray(m_ID));
+	GLCall(glDrawElements(GL_TRIANGLES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
 }

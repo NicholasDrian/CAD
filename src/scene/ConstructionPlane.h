@@ -1,21 +1,22 @@
 #pragma once
 
-#include <vector>
+#include "../render/VertexArrayColoredLines.h"
+#include "../geometry/Renderable.h"
 
-class ConstructionPlane {
+#include <vector>
+#include <memory>
+
+class ConstructionPlane : public Renderable {
 
 public:
 
-	ConstructionPlane(int majorSpacing, int majorCount, int minorSpacing, int minorCount);
+	ConstructionPlane(int majorCount, int minorCount, int spacing);
 
-	void Render();
+	void Render() const override;
 
 private:
 
-	int m_MajorSpacing, m_MinorSpacing;
-	int m_MajorCount, m_MinorCount;
-
-	std::vector<float> m_MajorLines;
-	std::vector<float> m_MinorLines;
+	std::unique_ptr<VertexArrayColoredLines> m_MajorLinesVertexArray;
+	std::unique_ptr<VertexArrayColoredLines> m_MinorLinesVertexArray;
 
 };

@@ -4,6 +4,7 @@
 
 #include "OpenGLUtils.h"
 #include "glm/vec3.hpp"
+#include "glm/matrix.hpp"
 #include <vector>
 
 struct ColoredTriangleVertex {
@@ -21,7 +22,6 @@ public:
 
 	~VertexArrayColoredTriangle();
 
-	virtual void Bind() const override;
 	virtual void Render() const override;
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Triangle; }
 	virtual bool IsSelectable() const override { return m_Selectable; }
@@ -34,6 +34,8 @@ private:
 	GLuint m_VertexBufferID;
 	GLuint m_IndexBufferID;
 	bool m_Selectable;
+	bool m_Selected;
 	unsigned m_IndexCount;
+	glm::mat4 m_Model;
 
 };

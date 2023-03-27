@@ -1,14 +1,15 @@
 #pragma once 
 
 #include "VertexArrayColoredLines.h"
+#include "shaders/ShaderManager.h"
 
 
 ColoredLineVertex::ColoredLineVertex(glm::vec3 Pos, glm::vec3 Col, uint32_t I)
 	: pos(Pos), col(Col), i(I) { }
 
 
-VertexArrayColoredLines::VertexArrayColoredLines(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indices, bool selectable)
-	: m_IndexCount(indices.size()), m_Selectable(selectable)
+VertexArrayColoredLines::VertexArrayColoredLines(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indices, float lineWidth, bool selectable)
+	: m_IndexCount(indices.size()), m_LineWidth(lineWidth), m_Selectable(selectable), m_Model(glm::mat4(1.0)), m_Selected(false)
 {
 
 	std::vector<ColoredLineVertex> data;
@@ -48,14 +49,12 @@ VertexArrayColoredLines::~VertexArrayColoredLines()
 	GLCall(glDeleteBuffers(1, &m_IndexBufferID));
 	GLCall(glDeleteBuffers(1, &m_VertexBufferID));
 	GLCall(glDeleteVertexArrays(1, &m_ID));
-
-}
-
-void VertexArrayColoredLines::Bind() const
-{
-	GLCall(glBindVertexArray(m_ID));
 }
 
 void VertexArrayColoredLines::Render() const {
-	//TODO
+	ShaderManager::Bind(ShaderProgramType::ColoredLineShader);
+	ShaderManager::UpdateLocalUniforms(m_Model, m_Selectable, m_Selected);
+	GLCall(glBindVertexArray(m_ID));
+	GLCall(glLineWidth(m_LineWidth));
+	GLCall(glDrawElements(GL_LINES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
 }

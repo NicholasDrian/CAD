@@ -3,7 +3,6 @@
 #include "Renderer.h"
 #include "shaders/Shader.h"
 #include "../Window.h"
-#include "OpenGLUtils.h"
 #include "../scene/Scene.h"
 #include "shaders/ShaderManager.h"
 
@@ -15,13 +14,6 @@
 
 #include "iostream"
 
-RenderMode Renderer::m_RenderMode = RenderMode::None;
-
-GLuint Renderer::m_FrameBuffer = 0;
-GLuint Renderer::m_ColorAttachment = 0;
-GLuint Renderer::m_IDAttachment = 0;
-GLint Renderer::m_Width, Renderer::m_Height;
-
 void Renderer::Init()
 {
 
@@ -32,10 +24,15 @@ void Renderer::Init()
 	if (glewInit() != GLEW_OK) {
 		throw std::runtime_error("Failed to initialize glew!");
 	}
+
+
 	ShaderManager::Init();
 	SetRenderMode(RenderMode::Default);
 	InitFrameBuffer();
-	SetClearColor({ 0.8, 0.8, 1.0 });
+	SetClearColor({ 0.7, 0.7, 0.8 });
+
+	GLCall(glEnable(GL_DEPTH_TEST));
+
 }
 
 void Renderer::SetClearColor(glm::vec3 color) {
@@ -45,7 +42,11 @@ void Renderer::SetClearColor(glm::vec3 color) {
 void Renderer::BeginRender() {
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-	ShaderManager::UpdateViewProj();
+
+	int val = 0;
+	GLCall(glClearBufferiv(GL_COLOR, 1, &val));
+
+	ShaderManager::UpdateGlobalUniforms();
 }
 
 void Renderer::FinishRender() {
@@ -56,42 +57,11 @@ void Renderer::FinishRender() {
 	Window::SwapBuffers();
 }
 
-//void Renderer::Render(VertexArray* vertexArray)
-//{
-//	vertexArray->Bind();
-//	switch (vertexArray->GetPrimitiveType()) {
-//	case PrimitiveType::Triangle:
-//		GLCall(glDrawElements(GL_TRIANGLES, (GLsizei) vertexArray->GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
-//		break;
-//	case PrimitiveType::Line:
-//		throw std::runtime_error("todo");
-//		break;
-//	case PrimitiveType::Point:
-//		throw std::runtime_error("todo");
-//		break;
-//	}
-//}
 void Renderer::SetRenderMode(RenderMode mode)
 {
 	if (m_RenderMode != mode) {
 		m_RenderMode = mode;
-		/*auto [vertPath, fragPath] = GetShaderPaths();
-		delete m_Program;
-		m_Program = new ShaderProgram(Shader(vertPath, ShaderType::VertexShader), Shader(fragPath, ShaderType::FragmentShader));
-		m_Program->Bind();*/
-		//m_ShaderManager->Bind(ShaderProgramType::ColoredShader);
-
-		// TODO : wire frame, ghosted...
-	}
-}
-
-std::pair<const char*, const char*> Renderer::GetShaderPaths()
-{
-	switch (m_RenderMode) {
-	case RenderMode::Default:
-		return { "src/render/shaders/shaders/default.vert", "src/render/shaders/shaders/default.frag" };
-	default:
-		throw std::runtime_error("Unimplemented Render Mode");
+		//TODO
 	}
 }
 
@@ -113,6 +83,13 @@ void Renderer::InitFrameBuffer()
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_IDAttachment, 0));
+
+	GLCall(glGenTextures(1, &m_DepthAttachment));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_DepthAttachment));
+	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, m_Width, m_Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachment, 0));
 
 	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	GLCall(glDrawBuffers(2, DrawBuffers));
@@ -151,4 +128,6 @@ void Renderer::DestroyFrameBuffer()
 		m_FrameBuffer = 0;
 	}
 }
+
+
 

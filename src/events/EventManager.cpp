@@ -51,11 +51,12 @@ void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int
     ImGuiIO& io = GUI::GetIO();
     if (io.WantCaptureMouse) return;
 
-    double mouseX, mouseY;
-    glfwGetCursorPos(Window::GetGLFWWindow(), &mouseX, &mouseY);
+    
 
-    if (action == GLFW_PRESS && !m_MouseButtonDown) 
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && !m_MouseButtonDown) 
     {
+        double mouseX, mouseY;
+        glfwGetCursorPos(Window::GetGLFWWindow(), &mouseX, &mouseY);
         m_MouseButtonDown = true;
         m_InitialMouseX = mouseX;
         m_InitialMouseY = mouseY;
@@ -64,10 +65,12 @@ void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int
         m_MouseButton = button;
         m_ClickModifiers = mods;
     }
-    if (action == GLFW_RELEASE && m_MouseButtonDown && button == m_MouseButton)
+    else if (action == GLFW_RELEASE && m_MouseButtonDown && button == m_MouseButton)
     {
+        double mouseX, mouseY;
+        glfwGetCursorPos(Window::GetGLFWWindow(), &mouseX, &mouseY);
         if (mouseX == m_InitialMouseX && mouseY == m_InitialMouseY) {
-            // TODO: Click!
+            std::cout << Renderer::ReadFrameBufferAtPixel(mouseX, mouseY) << std::endl;
         }
         m_MouseButtonDown = false;
     }

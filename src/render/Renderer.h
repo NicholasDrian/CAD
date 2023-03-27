@@ -1,8 +1,8 @@
 #pragma once
 
-//#include "shaders/ShaderProgram.h"
 #include "shaders/ShaderManager.h"
 #include "VertexArray.h"
+#include "OpenGLUtils.h"
 
 #include "glm/glm.hpp"
 
@@ -23,24 +23,29 @@ public:
 	static void SetClearColor(glm::vec3 color);
 	static void BeginRender();
 	static void FinishRender();
-	static void Render(VertexArray* vertexArray);
 	static void SetRenderMode(RenderMode mode);
 
-	static void WindowResize(int width, int height);
+	// Must be inline to be used in callback. not sure why
+	inline static int ReadFrameBufferAtPixel(int x, int y) {
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
+		GLCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
+		int val;
+		GLCall(glReadPixels(x, m_Height - y, 1, 1, GL_RED_INTEGER, GL_INT, &val));
+		return val;
+	}
 
-	static std::pair<const char*, const char*> GetShaderPaths();
+	static void WindowResize(int width, int height);
 
 private:
 
 	static void InitFrameBuffer();
 	static void DestroyFrameBuffer();
 
-	static RenderMode m_RenderMode;
-	//static ShaderManager* m_ShaderManager;
-
-	static GLuint m_FrameBuffer;
-	static GLuint m_ColorAttachment;
-	static GLuint m_IDAttachment;
-	static GLint m_Width, m_Height;
+	inline static RenderMode m_RenderMode  = RenderMode::None;
+	inline static GLuint m_FrameBuffer = 0;
+	inline static GLuint m_ColorAttachment = 0;
+	inline static GLuint m_IDAttachment = 0;
+	inline static GLuint m_DepthAttachment = 0;
+	inline static GLint m_Width = -1, m_Height = -1;
 
 };

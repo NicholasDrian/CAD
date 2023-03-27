@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ShaderProgram.h"
-
+#include "glm/matrix.hpp"
 #include "GL/glew.h"
 
 #include <unordered_map>
@@ -15,12 +15,13 @@ public:
 
 	static void Bind(ShaderProgramType type);
 
-	static void UpdateViewProj();
+	static void UpdateGlobalUniforms();
+	static void UpdateLocalUniforms(const glm::mat4& model, bool selectable, bool selected);
 
 private:
 
 	inline static ShaderProgramType m_BoundProgram = ShaderProgramType::None;
 	inline static std::unordered_map<ShaderProgramType, ShaderProgram> m_Programs;
-	inline static GLuint m_GlobalShaderUniforms;
+	inline static GLuint m_GlobalShaderUniforms, m_LocalShaderUniforms;
 
 };
