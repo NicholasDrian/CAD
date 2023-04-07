@@ -28,6 +28,8 @@ public:
 
 private:
 
+	inline static const float m_MaxExtend = 10000.0f;
+
 	inline static std::unordered_set<unsigned> m_Selected;
 	inline static std::unique_ptr<Camera> m_Camera;
 	inline static std::unordered_map<unsigned, std::unique_ptr<Renderable>> m_Contents;

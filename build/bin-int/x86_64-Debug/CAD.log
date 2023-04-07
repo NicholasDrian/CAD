@@ -1,16 +1,3 @@
-﻿  Application.cpp
-  CommandManager.cpp
-  FocusCommand.cpp
-  EventManager.cpp
-C:\Users\15303\Desktop\cs\CAD\src\events\EventManager.cpp(20,30): warning C4805: '|=': unsafe mix of type 'bool' and type 'int' in operation
-C:\Users\15303\Desktop\cs\CAD\src\events\EventManager.cpp(20,30): warning C4805: '|': unsafe mix of type 'bool' and type 'int' in operation
-C:\Users\15303\Desktop\cs\CAD\src\events\EventManager.cpp(69,53): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\15303\Desktop\cs\CAD\src\events\EventManager.cpp(69,45): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\15303\Desktop\cs\CAD\src\events\EventManager.cpp(73,44): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\15303\Desktop\cs\CAD\src\events\EventManager.cpp(73,36): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-  Renderer.cpp
-  ShaderManager.cpp
-  Camera.cpp
-  Scene.cpp
-  Generating Code...
+﻿  Camera.cpp
+C:\Users\15303\Desktop\cs\CAD\src\scene\Camera.cpp(87,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   CAD.vcxproj -> C:\Users\15303\Desktop\cs\CAD\build\bin\x86_64-Debug\CAD.exe

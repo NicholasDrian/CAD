@@ -40,7 +40,8 @@ project "CAD"
 	}
 
 	defines { 
-		"GLEW_STATIC" 
+		"GLEW_STATIC",
+		"GLM_FORCE_RADIANS"
 	}
 
 	filter "configurations:Debug"

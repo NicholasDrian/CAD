@@ -9,13 +9,15 @@ class Camera {
 
 public:
 
-	Camera(glm::vec3 position, glm::vec3 focalPoint, glm::vec3 up, float fovy);
+	Camera(glm::vec3 position, glm::vec3 focalPoint, float fovy);
 
 	void TurnUp(int delta);
 	void TurnRight(int delta);
 	void ZoomIn(int delta);
 	void PanUp(int delta);
 	void PanRight(int delta);
+
+	void RepositionFocal(const glm::vec3& newFocal);
 
 	Ray GetRayAtPixel(int x, int y) const;
 

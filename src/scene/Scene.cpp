@@ -7,7 +7,7 @@
 #include "../geometry/Renderable.h"
 #include "../geometry/Mesh.h"
 #include "../render/Renderer.h"
-
+#include "glm/gtc/constants.hpp"
 #include "glm/glm.hpp"
 #include "GLFW/glfw3.h"
 
@@ -24,7 +24,7 @@ void Scene::Init()
 	unsigned meshID = m_IDGenerator++;
 	m_Contents[meshID] = std::make_unique<Mesh>(positions, normals, colors, meshID, indecies, true);
 	m_ConstructionPlane = std::make_unique<ConstructionPlane>(10, 10, 1);
-	m_Camera = std::make_unique<Camera>(glm::vec3{ 0.0f, -50.0f, 50.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f }, 45.0f);
+	m_Camera = std::make_unique<Camera>(glm::vec3{ 0.0f, -50.0f, 50.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::pi<float>() / 3.0f);
 }
 
 void Scene::Render() {
