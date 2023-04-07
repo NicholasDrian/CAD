@@ -16,8 +16,8 @@ enum class ShaderProgramType {
 class ShaderProgram {
 
 public:
-
-	ShaderProgram();
+	ShaderProgram() = default;
+	ShaderProgram(ShaderProgramType type);
 	void Destroy();
 
 	void Bind();

@@ -25,14 +25,8 @@ public:
 	static void FinishRender();
 	static void SetRenderMode(RenderMode mode);
 
-	// Must be inline to be used in callback. not sure why
-	inline static int ReadFrameBufferAtPixel(int x, int y) {
-		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
-		GLCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
-		int val;
-		GLCall(glReadPixels(x, m_Height - y, 1, 1, GL_RED_INTEGER, GL_INT, &val));
-		return val;
-	}
+	static int ReadIDAtPixel(int x, int y);
+	static float ReadDistanceAtPixel(int x, int y);
 
 	static void WindowResize(int width, int height);
 

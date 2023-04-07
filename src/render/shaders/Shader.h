@@ -2,7 +2,7 @@
 
 #include "GL/glew.h"
 
-enum class ShaderType {
+enum class ShaderStage {
 	VertexShader,
 	FragmentShader
 };
@@ -11,12 +11,12 @@ class Shader {
 
 public:
 
-	Shader(const char* path, ShaderType type);
+	Shader(const char* path, ShaderStage type);
 	~Shader();
 
 	GLuint GetID() const;
 
-	static GLenum GetGLShaderType(ShaderType type);
+	static GLenum GetGLShaderType(ShaderStage type);
 
 private:
 

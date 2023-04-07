@@ -28,6 +28,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\commands">
+      <UniqueIdentifier>{2EC55070-1A28-E014-C3AD-18CBAFEFAB97}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\events">
       <UniqueIdentifier>{91766759-7D2E-A9A6-E635-8202D20C4497}</UniqueIdentifier>
     </Filter>
@@ -1305,10 +1308,25 @@
     <ClInclude Include="src\Window.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\commands\Command.h">
+      <Filter>src\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="src\commands\CommandManager.h">
+      <Filter>src\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="src\commands\FocusCommand.h">
+      <Filter>src\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="src\commands\TextParser.h">
+      <Filter>src\commands</Filter>
+    </ClInclude>
     <ClInclude Include="src\events\EventManager.h">
       <Filter>src\events</Filter>
     </ClInclude>
     <ClInclude Include="src\geometry\Mesh.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\geometry\Ray.h">
       <Filter>src\geometry</Filter>
     </ClInclude>
     <ClInclude Include="src\geometry\Renderable.h">
@@ -1335,12 +1353,6 @@
     <ClInclude Include="src\render\VertexArrayColoredTriangle.h">
       <Filter>src\render</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\shaders\ColoredLineShader.h">
-      <Filter>src\render\shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\shaders\ColoredTriShader.h">
-      <Filter>src\render\shaders</Filter>
-    </ClInclude>
     <ClInclude Include="src\render\shaders\Shader.h">
       <Filter>src\render\shaders</Filter>
     </ClInclude>
@@ -1348,9 +1360,6 @@
       <Filter>src\render\shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\render\shaders\ShaderProgram.h">
-      <Filter>src\render\shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\shaders\TexturedShader.h">
       <Filter>src\render\shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\Camera.h">
@@ -1391,10 +1400,25 @@
     <ClCompile Include="src\Window.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\commands\Command.cpp">
+      <Filter>src\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\CommandManager.cpp">
+      <Filter>src\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\FocusCommand.cpp">
+      <Filter>src\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\TextParser.cpp">
+      <Filter>src\commands</Filter>
+    </ClCompile>
     <ClCompile Include="src\events\EventManager.cpp">
       <Filter>src\events</Filter>
     </ClCompile>
     <ClCompile Include="src\geometry\Mesh.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry\Ray.cpp">
       <Filter>src\geometry</Filter>
     </ClCompile>
     <ClCompile Include="src\gui\GUI.cpp">
@@ -1418,12 +1442,6 @@
     <ClCompile Include="src\render\VertexArrayColoredTriangle.cpp">
       <Filter>src\render</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\shaders\ColoredLineShader.cpp">
-      <Filter>src\render\shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\shaders\ColoredTriShader.cpp">
-      <Filter>src\render\shaders</Filter>
-    </ClCompile>
     <ClCompile Include="src\render\shaders\Shader.cpp">
       <Filter>src\render\shaders</Filter>
     </ClCompile>
@@ -1431,9 +1449,6 @@
       <Filter>src\render\shaders</Filter>
     </ClCompile>
     <ClCompile Include="src\render\shaders\ShaderProgram.cpp">
-      <Filter>src\render\shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\shaders\TexturedShader.cpp">
       <Filter>src\render\shaders</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\Camera.cpp">

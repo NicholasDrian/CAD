@@ -85,12 +85,12 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 
 		}
 	}
-	m_MajorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(majorLines, majorColors, 420, majorIndices, 1.5f, false);
-	m_MinorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(minorLines, minorColors, 420, minorIndices, 1.0f, false);
+	m_MajorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(majorLines, majorColors, 420, majorIndices, 1.5f);
+	m_MinorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(minorLines, minorColors, 420, minorIndices, 1.0f);
 
 }
 
 void ConstructionPlane::Render() const {
-	m_MajorLinesVertexArray->Render();
-	m_MinorLinesVertexArray->Render();
+	m_MajorLinesVertexArray->Render(0, false, false);
+	m_MinorLinesVertexArray->Render(0, false, false);
 }

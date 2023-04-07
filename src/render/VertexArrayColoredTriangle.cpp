@@ -10,8 +10,8 @@ ColoredTriangleVertex::ColoredTriangleVertex(glm::vec3 Pos, glm::vec3 Norm, glm:
 	: pos(Pos), norm(Norm), col(Col), i(I) { }
 
 
-VertexArrayColoredTriangle::VertexArrayColoredTriangle(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indices, bool selectable)
-	: m_IndexCount(indices.size()), m_Selectable(selectable), m_Model(glm::mat4(1.0)), m_Selected(false)
+VertexArrayColoredTriangle::VertexArrayColoredTriangle(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indices)
+	: m_IndexCount(indices.size()), m_Model(glm::mat4(1.0))
 {
 
 	std::vector<ColoredTriangleVertex> data;
@@ -28,8 +28,8 @@ VertexArrayColoredTriangle::VertexArrayColoredTriangle(const std::vector<glm::ve
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID));
 	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(), indices.data(), GL_STATIC_DRAW));
 
-	GLCall(glGenVertexArrays(1, &m_ID));
-	GLCall(glBindVertexArray(m_ID));
+	GLCall(glGenVertexArrays(1, &m_RenderID));
+	GLCall(glBindVertexArray(m_RenderID));
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID));
 
@@ -55,13 +55,13 @@ VertexArrayColoredTriangle::~VertexArrayColoredTriangle()
 {
 	GLCall(glDeleteBuffers(1, &m_IndexBufferID));
 	GLCall(glDeleteBuffers(1, &m_VertexBufferID));
-	GLCall(glDeleteVertexArrays(1, &m_ID));
+	GLCall(glDeleteVertexArrays(1, &m_RenderID));
 
 }
 
-void VertexArrayColoredTriangle::Render() const {
+void VertexArrayColoredTriangle::Render(unsigned id, bool selectable, bool selected) const {
 	ShaderManager::Bind(ShaderProgramType::ColoredTriShader);
-	ShaderManager::UpdateLocalUniforms(m_Model, m_Selectable, m_Selected);
-	GLCall(glBindVertexArray(m_ID));
+	ShaderManager::UpdateLocalUniforms(m_Model, selectable, selected, id);
+	GLCall(glBindVertexArray(m_RenderID));
 	GLCall(glDrawElements(GL_TRIANGLES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
 }

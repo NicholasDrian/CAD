@@ -2,6 +2,7 @@
 
 #include "GUI.h"
 
+#include "../commands/CommandManager.h"
 #include "../Window.h"
 #include "Style.h"
 
@@ -55,10 +56,7 @@ void GUI::Render() {
 
     if (ImGui::BeginMainMenuBar())
     {
-        static char* buff = (char*) calloc(128, 1);
-        if (ImGui::InputText("", buff, 128, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_EscapeClearsAll)) {
-            std::cout << buff << std::endl;
-        }
+        ImGui::Text(CommandManager::GetInput().c_str());
 
         if (ImGui::BeginMenu("Menu"))
         {

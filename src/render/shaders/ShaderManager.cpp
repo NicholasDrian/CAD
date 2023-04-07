@@ -1,9 +1,6 @@
 #pragma once
 
 #include "ShaderManager.h"
-#include "ColoredTriShader.h"
-#include "ColoredLineShader.h"
-#include "TexturedShader.h"
 #include "../../scene/Scene.h"
 #include "../OpenGLUtils.h"
 
@@ -18,7 +15,7 @@ void ShaderManager::Init()
 
 	GLCall(glGenBuffers(1, &m_LocalShaderUniforms));
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_LocalShaderUniforms));
-	GLCall(glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) + 4, NULL, GL_DYNAMIC_DRAW));
+	GLCall(glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) + 4 + 4, NULL, GL_DYNAMIC_DRAW));
 	GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 1, m_LocalShaderUniforms));
 
 }
@@ -33,14 +30,16 @@ void ShaderManager::UpdateGlobalUniforms() {
 	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &Scene::GetCamera()->GetViewProj()[0][0]));
 }
 
-void ShaderManager::UpdateLocalUniforms(const glm::mat4& model, bool selectable, bool selected) {
+void ShaderManager::UpdateLocalUniforms(const glm::mat4& model, bool selectable, bool selected, unsigned id) {
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_LocalShaderUniforms));
 	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &model[0][0]));
 
 	int data = 0;
 	if (selectable) data |= (1 << 0);
 	if (selected)	data |= (1 << 1);
-	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), 4, &data));
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(int), &data));
+
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) + sizeof(int), sizeof(unsigned), &id));
 }
 
 void ShaderManager::Bind(ShaderProgramType type) 
@@ -48,17 +47,7 @@ void ShaderManager::Bind(ShaderProgramType type)
 	if (m_BoundProgram == type) return;
 	if (!m_Programs.contains(type)) 
 	{
-		switch (type) {
-		case ShaderProgramType::ColoredTriShader:
-			m_Programs[type] = ColoredTriShader();
-			break;
-		case ShaderProgramType::ColoredLineShader:
-			m_Programs[type] = ColoredLineShader();
-			break;
-		case ShaderProgramType::TexturedShader:
-			m_Programs[type] = TexturedShader();
-			break;
-		}
+		m_Programs[type] = ShaderProgram(type);
 	}
 	m_Programs[type].Bind();
 	m_BoundProgram = type;

@@ -11,7 +11,7 @@ class Mesh : public Renderable {
 
 public:
 
-	Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indecies);
+	Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indecies, bool selectable);
 
 	// TODO
 	//Mesh(const std::vector<glm::vec3>&& positions, const std::vector<glm::vec3>&& normals, const std::vector<glm::vec3>&& colors, uint32_t id, const std::vector<unsigned>&& indecies);

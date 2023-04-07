@@ -130,4 +130,24 @@ void Renderer::DestroyFrameBuffer()
 }
 
 
+int Renderer::ReadIDAtPixel(int x, int y) {
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
+	GLCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
+	int val;
+	GLCall(glReadPixels(x, m_Height - y, 1, 1, GL_RED_INTEGER, GL_INT, &val));
+	return val;
+}
 
+float Renderer::ReadDistanceAtPixel(int x, int y) {
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
+	//GLCall(glReadBuffer(GL_DEPTH_ATTACHMENT));
+	float depth;
+	GLCall(glReadPixels(x, m_Height - y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
+
+	const float zNorm = 2.0f * depth - 1.0f;
+	const float near = Camera::GetNearPlane();
+	const float far = Camera::GetFarPlane();
+	const float distance = 2.0f * near * far / (far + near - zNorm * (far - near));
+
+	return distance;
+}

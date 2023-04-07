@@ -14,11 +14,6 @@ public:
 	static void EndRender();
 
 
-	inline static ImGuiIO& GetIO() {
-		return ImGui::GetIO();
-	}
-
-private:
-
+	inline static ImGuiIO& GetIO() { return ImGui::GetIO(); }
 
 };

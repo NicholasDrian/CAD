@@ -1,6 +1,9 @@
 #pragma once 
 
 #include "glm/glm.hpp"
+#include "../geometry/Ray.h"
+
+//TODO: address numerical drift
 
 class Camera {
 
@@ -14,15 +17,23 @@ public:
 	void PanUp(int delta);
 	void PanRight(int delta);
 
+	Ray GetRayAtPixel(int x, int y) const;
+
 	glm::mat4 GetViewProj() const;
+
+	static float GetNearPlane() { return m_NearPlane; }
+	static float GetFarPlane() { return m_FarPlane; }
 
 private:
 
 	glm::vec3 m_Position, m_FocalPoint, m_Up;
 	float m_Fovy;
 
-	const float m_SensitivityRotation = 0.002f;
-	const float m_SensitivityZoom = 0.996f;
-	const float m_SensitivityPan = 0.003f;
+	inline static const float m_SensitivityRotation = 0.005f;
+	inline static const float m_SensitivityZoom = 0.996f;
+	inline static const float m_SensitivityPan = 0.003f;
+	
+	inline static const float m_NearPlane = 1.0f;
+	inline static const float m_FarPlane = 1000.0f;
 
 };

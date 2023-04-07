@@ -1,11 +1,11 @@
 #version 460
 
 in vec3 frag_color;
-in flat int frag_id;
+in flat unsigned int frag_id;
 in flat unsigned int frag_data;
 	   
 layout (location = 0) out vec4 out_color;
-layout (location = 1) out int out_id;
+layout (location = 1) out unsigned int out_id;
 
 void main() 
 {

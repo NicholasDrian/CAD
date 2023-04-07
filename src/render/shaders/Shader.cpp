@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-Shader::Shader(const char* path, ShaderType type) {
+Shader::Shader(const char* path, ShaderStage type) {
 	std::string source;
 	std::string line;
 	std::ifstream file(path);
@@ -45,12 +45,12 @@ GLuint Shader::GetID() const
 	return m_ID;
 }
 
-GLenum Shader::GetGLShaderType(ShaderType type)
+GLenum Shader::GetGLShaderType(ShaderStage type)
 {
 	switch (type) {
-	case ShaderType::VertexShader:
+	case ShaderStage::VertexShader:
 		return GL_VERTEX_SHADER;
-	case ShaderType::FragmentShader:
+	case ShaderStage::FragmentShader:
 		return GL_FRAGMENT_SHADER;
 	default:
 		throw std::runtime_error("Unimplemented Shader Type Error");

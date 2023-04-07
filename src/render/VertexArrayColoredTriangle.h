@@ -18,23 +18,20 @@ class VertexArrayColoredTriangle : public VertexArray {
 
 public:
 
-	VertexArrayColoredTriangle(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indecies, bool selectable = true);
+	VertexArrayColoredTriangle(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indecies);
 
 	~VertexArrayColoredTriangle();
 
-	virtual void Render() const override;
+	virtual void Render(unsigned id, bool selectable, bool selected) const override;
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Triangle; }
-	virtual bool IsSelectable() const override { return m_Selectable; }
 	virtual unsigned GetIndexCount() const override { return m_IndexCount; };
 
 private:
 
 	
-	GLuint m_ID;
+	GLuint m_RenderID;
 	GLuint m_VertexBufferID;
 	GLuint m_IndexBufferID;
-	bool m_Selectable;
-	bool m_Selected;
 	unsigned m_IndexCount;
 	glm::mat4 m_Model;
 
