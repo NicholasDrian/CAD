@@ -15,8 +15,10 @@ VertexArrayColoredLines::VertexArrayColoredLines(const std::vector<glm::vec3>& p
 	std::vector<ColoredLineVertex> data;
 	for (int i = 0; i < positions.size(); i++) {
 		data.emplace_back(positions[i], colors[i]);
-		//  TODO: id is a waste of space, should move to uniform and set durring bind
 	}
+
+	GLCall(glGenVertexArrays(1, &m_RenderID));
+	GLCall(glBindVertexArray(m_RenderID));
 
 	GLCall(glGenBuffers(1, &m_VertexBufferID));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID));
@@ -25,11 +27,6 @@ VertexArrayColoredLines::VertexArrayColoredLines(const std::vector<glm::vec3>& p
 	GLCall(glGenBuffers(1, &m_IndexBufferID));
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID));
 	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(), indices.data(), GL_STATIC_DRAW));
-
-	GLCall(glGenVertexArrays(1, &m_RenderID));
-	GLCall(glBindVertexArray(m_RenderID));
-	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID));
 
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glEnableVertexAttribArray(2));

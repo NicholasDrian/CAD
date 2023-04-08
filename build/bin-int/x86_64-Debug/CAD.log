@@ -1,3 +1,2 @@
-﻿  Camera.cpp
-C:\Users\15303\Desktop\cs\CAD\src\scene\Camera.cpp(87,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  Scene.cpp
   CAD.vcxproj -> C:\Users\15303\Desktop\cs\CAD\build\bin\x86_64-Debug\CAD.exe

@@ -14,6 +14,8 @@ public:
 
 	void Render() const override;
 
+	inline virtual unsigned GetID() const override { return 0U; }
+
 private:
 
 	std::unique_ptr<VertexArrayColoredLines> m_MajorLinesVertexArray;

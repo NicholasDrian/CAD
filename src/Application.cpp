@@ -7,6 +7,7 @@
 #include "scene/Scene.h"
 #include "events/EventManager.h"
 #include "gui/GUI.h"
+#include "commands/CommandManager.h"
 
 #include "GLFW/glfw3.h"
 
@@ -23,7 +24,7 @@ void Application::Run()
 		GUI::Render();
 		Renderer::FinishRender();
 		EventManager::Tick();
-
+		CommandManager::Tick();
 	}
 	Terminate();
 }

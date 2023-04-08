@@ -44,6 +44,11 @@ void Window::PollEvents()
     glfwPollEvents();
 }
 
+void Window::GetCursorPosition(double& x, double& y)
+{
+    return glfwGetCursorPos(m_Window, &x, &y);
+}
+
 void Window::SwapBuffers() {
     glfwSwapBuffers(m_Window);
 }

@@ -15,28 +15,15 @@ void FocusCommand::TextInput(const std::string& input) {
 	if (TextParser::ParseVector3F(input, focalPoint)) {
 		// TODO
 	}
-	CommandManager::TerminateActiveCommand();
+	m_Finished = true;
 }
 
 
 void FocusCommand::ClickInput(int x, int y) 
 {
-	int id = Renderer::ReadIDAtPixel(x, y);
-	Ray ray = Scene::GetCamera()->GetRayAtPixel(x, y);
-	ray.Print();
-	if (id == 0) {
-		glm::vec3 intersection;
-		bool intersected = ray.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, intersection);
-		if (intersected) {
-			Scene::GetCamera()->RepositionFocal(intersection);
-		}
-	}
-	else {
-		float distance = Renderer::ReadDistanceAtPixel(x, y);
-		glm::vec3 intersection = ray.At(distance);
+	glm::vec3 intersection;
+	if (Scene::IntersectScene(x, y, intersection)) {
 		Scene::GetCamera()->RepositionFocal(intersection);
 	}
-
-
-	CommandManager::TerminateActiveCommand();
+	m_Finished = true;
 }

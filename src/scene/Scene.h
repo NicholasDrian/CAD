@@ -8,6 +8,8 @@
 #include "../geometry/Renderable.h"
 #include "ConstructionPlane.h"
 
+#include "glm/glm.hpp"
+
 class Renderable;
 
 class Scene {
@@ -19,11 +21,18 @@ public:
 
 	static void Render();
 
+	static void AddToScene(std::unique_ptr<Renderable> obj);
+
 	static void HandleClick(int x, int y, int button, int mods);
 
 	static void DeleteSelection();
 
+	static bool IntersectScene(int x, int y, glm::vec3& outPoint);
+
+	inline static unsigned GetNewID() { return m_IDGenerator++; }
+
 	inline static Camera* GetCamera() { return m_Camera.get(); }
+
 	inline static void ClearSelection() { m_Selected.clear(); }
 
 private:

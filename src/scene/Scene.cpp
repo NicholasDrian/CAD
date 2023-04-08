@@ -20,9 +20,9 @@ void Scene::Init()
 	std::vector positions { glm::vec3{ 0.0f, 0.0f, 5.0f }, glm::vec3{ 20.0f, 0.0f, 5.0f }, glm::vec3{ 0.0f, 20.0f, 5.0f } };
 	std::vector normals { glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 20.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 20.0f, 0.0f } };
 	std::vector colors { glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f } };
-	std::vector indecies{ 0U, 1U, 2U };
-	unsigned meshID = m_IDGenerator++;
-	m_Contents[meshID] = std::make_unique<Mesh>(positions, normals, colors, meshID, indecies, true);
+	std::vector indices{ 0U, 1U, 2U };
+	std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(positions, normals, colors, indices);
+	AddToScene(std::move(mesh));
 	m_ConstructionPlane = std::make_unique<ConstructionPlane>(10, 10, 1);
 	m_Camera = std::make_unique<Camera>(glm::vec3{ 0.0f, -50.0f, 50.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::pi<float>() / 3.0f);
 }
@@ -32,6 +32,11 @@ void Scene::Render() {
 	for (const auto& entry : m_Contents) {
 		entry.second->Render();
 	}
+}
+
+void Scene::AddToScene(std::unique_ptr<Renderable> obj)
+{
+	m_Contents[obj->GetID()] = std::move(obj);
 }
 
 void Scene::Destroy()
@@ -46,7 +51,6 @@ void Scene::Destroy()
 void Scene::HandleClick(int x, int y, int button, int mods) 
 {
 	int id = Renderer::ReadIDAtPixel(x, y);
-
 	if (mods != GLFW_MOD_SHIFT && mods != GLFW_MOD_CONTROL) {
 		for (unsigned oldSelection : m_Selected) {
 			m_Contents[oldSelection]->m_Selected = false;
@@ -78,4 +82,19 @@ void Scene::DeleteSelection()
 		m_Contents.erase(i);
 	}
 	m_Selected.clear();
+}
+
+bool Scene::IntersectScene(int x, int y, glm::vec3& outPoint)
+{
+	int id = Renderer::ReadIDAtPixel(x, y);
+	Ray ray = m_Camera->GetRayAtPixel(x, y);
+
+	if (id == 0) {
+		ray.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, outPoint);
+		return ray.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, outPoint);
+	}
+	else {
+		outPoint = ray.At(Renderer::ReadDistanceAtPixel(x, y));
+		return true;
+	}
 }

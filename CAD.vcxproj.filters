@@ -1317,6 +1317,9 @@
     <ClInclude Include="src\commands\FocusCommand.h">
       <Filter>src\commands</Filter>
     </ClInclude>
+    <ClInclude Include="src\commands\PolyLineCommand.h">
+      <Filter>src\commands</Filter>
+    </ClInclude>
     <ClInclude Include="src\commands\TextParser.h">
       <Filter>src\commands</Filter>
     </ClInclude>
@@ -1324,6 +1327,12 @@
       <Filter>src\events</Filter>
     </ClInclude>
     <ClInclude Include="src\geometry\Mesh.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\geometry\NURBS.h">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\geometry\PolyLine.h">
       <Filter>src\geometry</Filter>
     </ClInclude>
     <ClInclude Include="src\geometry\Ray.h">
@@ -1409,6 +1418,9 @@
     <ClCompile Include="src\commands\FocusCommand.cpp">
       <Filter>src\commands</Filter>
     </ClCompile>
+    <ClCompile Include="src\commands\PolyLineCommand.cpp">
+      <Filter>src\commands</Filter>
+    </ClCompile>
     <ClCompile Include="src\commands\TextParser.cpp">
       <Filter>src\commands</Filter>
     </ClCompile>
@@ -1416,6 +1428,12 @@
       <Filter>src\events</Filter>
     </ClCompile>
     <ClCompile Include="src\geometry\Mesh.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry\NURBS.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry\PolyLine.cpp">
       <Filter>src\geometry</Filter>
     </ClCompile>
     <ClCompile Include="src\geometry\Ray.cpp">

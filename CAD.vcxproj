@@ -515,9 +515,12 @@
     <ClInclude Include="src\commands\Command.h" />
     <ClInclude Include="src\commands\CommandManager.h" />
     <ClInclude Include="src\commands\FocusCommand.h" />
+    <ClInclude Include="src\commands\PolyLineCommand.h" />
     <ClInclude Include="src\commands\TextParser.h" />
     <ClInclude Include="src\events\EventManager.h" />
     <ClInclude Include="src\geometry\Mesh.h" />
+    <ClInclude Include="src\geometry\NURBS.h" />
+    <ClInclude Include="src\geometry\PolyLine.h" />
     <ClInclude Include="src\geometry\Ray.h" />
     <ClInclude Include="src\geometry\Renderable.h" />
     <ClInclude Include="src\gui\GUI.h" />
@@ -547,9 +550,12 @@
     <ClCompile Include="src\commands\Command.cpp" />
     <ClCompile Include="src\commands\CommandManager.cpp" />
     <ClCompile Include="src\commands\FocusCommand.cpp" />
+    <ClCompile Include="src\commands\PolyLineCommand.cpp" />
     <ClCompile Include="src\commands\TextParser.cpp" />
     <ClCompile Include="src\events\EventManager.cpp" />
     <ClCompile Include="src\geometry\Mesh.cpp" />
+    <ClCompile Include="src\geometry\NURBS.cpp" />
+    <ClCompile Include="src\geometry\PolyLine.cpp" />
     <ClCompile Include="src\geometry\Ray.cpp" />
     <ClCompile Include="src\gui\GUI.cpp" />
     <ClCompile Include="src\main.cpp" />

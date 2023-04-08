@@ -16,4 +16,8 @@ public:
 
 	inline static ImGuiIO& GetIO() { return ImGui::GetIO(); }
 
+private:
+
+	inline static ImGuiContext* m_Context;
+
 };

@@ -3,6 +3,7 @@
 #include "CommandManager.h"
 
 #include "FocusCommand.h"
+#include "PolyLineCommand.h"
 #include "TextParser.h"
 #include "../scene/Scene.h"
 
@@ -36,14 +37,17 @@ void CommandManager::AddInput(int c) {
 		if (HasActiveCommand())
 		{
 			m_CurrentCommand->TextInput(m_TextInput);
+			if (m_CurrentCommand->IsFinished()) m_CurrentCommand.reset();
 		}
 		else 
 		{
+			if (m_TextInput.empty()) m_TextInput = m_PreviousCommand;
+
 			if (m_TextInput == "FOCUS") {
 				m_CurrentCommand = std::make_unique<FocusCommand>();
 			}
-			else if (m_TextInput == "") {
-
+			else if (m_TextInput == "POLYLINE") {
+				m_CurrentCommand = std::make_unique<PolyLineCommand>();
 			}
 			else if (m_TextInput == "") {
 
@@ -51,6 +55,7 @@ void CommandManager::AddInput(int c) {
 			else if (m_TextInput == "") {
 
 			}
+			m_PreviousCommand = m_TextInput;
 		}
 		m_TextInput.clear();
 	}
@@ -61,5 +66,18 @@ void CommandManager::AddInput(int c) {
 }
 
 void CommandManager::HandleClick(int x, int y) {
-	if (m_CurrentCommand) m_CurrentCommand->ClickInput(x, y);
+	if (m_CurrentCommand) {
+		m_CurrentCommand->ClickInput(x, y);
+		if (m_CurrentCommand->IsFinished()) m_CurrentCommand.reset();
+	}
+}
+
+void CommandManager::Tick() {
+	if (m_CurrentCommand) m_CurrentCommand->Tick();
+}
+
+std::string CommandManager::GetInstructions()
+{
+	if (m_CurrentCommand) return m_CurrentCommand->GetInstructions();
+	return "Command: ";
 }

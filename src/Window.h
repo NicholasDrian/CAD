@@ -15,6 +15,8 @@ public:
 
 	static void PollEvents();
 
+	static void GetCursorPosition(double& x, double& y);
+
 	static void SwapBuffers();
 
 	static std::pair<unsigned, unsigned> GetSize();
