@@ -1,3 +1,5 @@
 **.vs
 **.ini
 build/
+**.vcxproj*
+**.sln
