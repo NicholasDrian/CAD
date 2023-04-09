@@ -16,8 +16,7 @@ PolyLine::PolyLine(const std::vector<glm::vec3>& points, unsigned id)
 
 void PolyLine::Render() const
 {
-	if (m_Points.size()) 
-		m_VertexArray->Render(m_ID, m_Selectable, m_Selected);
+	m_VertexArray->Render(m_ID, m_Selectable, m_Selected);
 }
 
 void PolyLine::AddPoint(const glm::vec3& point)

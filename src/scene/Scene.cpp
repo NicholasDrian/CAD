@@ -6,6 +6,7 @@
 #include "../Window.h"
 #include "../geometry/Renderable.h"
 #include "../geometry/Mesh.h"
+#include "../geometry/NURBS.h"
 #include "../render/Renderer.h"
 #include "glm/gtc/constants.hpp"
 #include "glm/glm.hpp"
@@ -23,6 +24,12 @@ void Scene::Init()
 	std::vector indices{ 0U, 1U, 2U };
 	std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(positions, normals, colors, indices);
 	AddToScene(std::move(mesh));
+
+	std::vector<glm::vec3> points = { { 10.0f, 0.0f, 0.0f }, { 10.0f, 10.0f, 0.0f }, { 0.0f, 20.0f, 0.0f }, {100.0, -20.0, 0.0}, {100.0, 100.0, 0.0} };
+	std::unique_ptr<NURBS> curve = std::make_unique<NURBS>(points);
+	AddToScene(std::move(curve));
+
+
 	m_ConstructionPlane = std::make_unique<ConstructionPlane>(10, 10, 1);
 	m_Camera = std::make_unique<Camera>(glm::vec3{ 0.0f, -50.0f, 50.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::pi<float>() / 3.0f);
 }

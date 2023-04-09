@@ -19,6 +19,7 @@ void CommandManager::AddInput(int c) {
 		if (m_TextInput.size())
 			m_TextInput.clear();
 		else if (m_CurrentCommand)
+			m_CurrentCommand->TextInput(""),
 			m_CurrentCommand.reset();
 		else
 			Scene::ClearSelection();
