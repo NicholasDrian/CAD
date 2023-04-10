@@ -17,7 +17,7 @@ void EventManager::Tick()
         glfwGetCursorPos(Window::GetGLFWWindow(), &mouseX, &mouseY);
         int dx = int(mouseX - m_PreviousMouseX);
         int dy = int(mouseY - m_PreviousMouseY);
-        m_MouseDragged |= dx | dy;
+        m_MouseDragged = m_MouseDragged || dx || dy;
         switch (m_ClickModifiers) {
         case GLFW_MOD_SHIFT:
             if (dx) Scene::GetCamera()->PanRight(dx);
@@ -66,11 +66,11 @@ void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int
         if (!m_MouseDragged) { // click!
             if (CommandManager::HasActiveCommand()) 
             {
-                CommandManager::HandleClick(mouseX, mouseY);
+                CommandManager::HandleClick((int)mouseX, (int)mouseY);
             }
             else 
             {
-                Scene::HandleClick(mouseX, mouseY, button, mods);
+                Scene::HandleClick((int)mouseX, (int)mouseY, button, mods);
             }
         }
         m_MouseButtonDown = false;
@@ -86,6 +86,6 @@ void EventManager::KeyCallback(GLFWwindow* window, int key, int scancode, int ac
         // navigation key
     }
 
-    else if (action == GLFW_RELEASE)
+    else if (action == GLFW_PRESS || action == GLFW_REPEAT)
         CommandManager::AddInput(key);
 }

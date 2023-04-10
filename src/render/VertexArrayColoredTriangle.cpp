@@ -11,7 +11,7 @@ ColoredTriangleVertex::ColoredTriangleVertex(glm::vec3 Pos, glm::vec3 Norm, glm:
 
 
 VertexArrayColoredTriangle::VertexArrayColoredTriangle(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indices)
-	: m_IndexCount(indices.size()), m_Model(glm::mat4(1.0))
+	: m_IndexCount((unsigned)indices.size()), m_Model(glm::mat4(1.0))
 {
 
 	std::vector<ColoredTriangleVertex> data;

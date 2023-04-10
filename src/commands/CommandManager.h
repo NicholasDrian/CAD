@@ -16,6 +16,8 @@ public:
 	static void Tick();
 
 	static std::string GetInstructions();
+	
+	static void DrawButtons();
 
 	inline static bool HasActiveCommand() { return (bool)m_CurrentCommand; }
 

@@ -142,19 +142,14 @@ void GUI::Render() {
         ImGui::EndMainMenuBar();
     }
     if (HY_ImGui_BeginMainStatusBar()) {
+
+        CommandManager::DrawButtons();
+
         ImGui::Text(CommandManager::GetInstructions().c_str());
 
         ImGui::Text(CommandManager::GetInput().c_str());
         HY_ImGui_EndMainStatusBar();
     }
-  /*  if (ImGui::BeginMainMenuBar())
-    {
-        ImGui::Text(CommandManager::GetInstructions().c_str());
-
-        ImGui::Text(CommandManager::GetInput().c_str());
-
-        ImGui::EndMainMenuBar();
-    }*/
 
     ImGui::Begin("Controls", NULL, ImGuiWindowFlags_NoResize);
 

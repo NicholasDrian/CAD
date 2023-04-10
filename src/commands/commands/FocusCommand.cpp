@@ -1,12 +1,11 @@
 #pragma once
 
 #include "FocusCommand.h"
-#include "../scene/Camera.h"
-#include "../scene/Scene.h"
-#include "CommandManager.h"
-#include "TextParser.h"
+#include "../../scene/Camera.h"
+#include "../../scene/Scene.h"
+#include "../../render/Renderer.h"
+#include "../TextParser.h"
 #include "glm/gtx/intersect.hpp"
-#include "../render/Renderer.h"
 
 #include <iostream>
 

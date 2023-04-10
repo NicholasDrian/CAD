@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Command.h"
+#include "../Command.h"
 
 class FocusCommand : public Command {
 
@@ -9,6 +9,7 @@ public:
 	virtual void TextInput(const std::string& input) override;
 	virtual void ClickInput(int x, int y) override;
 	virtual bool IsFinished() const override { return m_Finished; };
+	inline virtual void Escape() override { m_Finished = true; }
 
 	inline virtual std::string GetInstructions() const override { return m_Instructions; }
 

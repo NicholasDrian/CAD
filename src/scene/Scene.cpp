@@ -91,6 +91,11 @@ void Scene::DeleteSelection()
 	m_Selected.clear();
 }
 
+void Scene::Delete(unsigned id)
+{
+	m_Contents.erase(id);
+}
+
 bool Scene::IntersectScene(int x, int y, glm::vec3& outPoint)
 {
 	int id = Renderer::ReadIDAtPixel(x, y);

@@ -5,8 +5,8 @@
 
 #include <stdexcept>
 
-const int MajorWidth = 0.1;
-const int MinorWidth = 0.05;
+const float MAJOR_WIDTH = 1.5f;
+const float MINOR_WIDTH = 1.0f;
 
 
 ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing)
@@ -17,8 +17,8 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 	std::vector<glm::vec3> majorLines, minorLines, majorColors, minorColors;
 	std::vector<unsigned> majorIndices, minorIndices;
 	int majorIndex = 0, minorIndex = 0;
-	float half = (float)majorCount * minorCount * spacing / 2.0;
-	float epsilon = 0.1;
+	float half = (float)majorCount * minorCount * spacing / 2.0f;
+	float epsilon = 0.1f;
 	glm::vec3 color(0.4, 0.4, 0.4);
 	for (int i = 0; i <= minorCount * majorCount; i++) {
 		if (i == majorCount * minorCount / 2.0) 
@@ -85,8 +85,8 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 
 		}
 	}
-	m_MajorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(majorLines, majorColors, GetID(), majorIndices, 1.5f);
-	m_MinorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(minorLines, minorColors, GetID(), minorIndices, 1.0f);
+	m_MajorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(majorLines, majorColors, GetID(), majorIndices, MAJOR_WIDTH);
+	m_MinorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(minorLines, minorColors, GetID(), minorIndices, MINOR_WIDTH);
 
 }
 

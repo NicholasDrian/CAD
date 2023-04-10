@@ -84,7 +84,7 @@ Ray Camera::GetRayAtPixel(int x, int y) const
 
 	//could cache size on screen resize
 	auto [xRes, yRes] = Window::GetSize();
-	float sizeY = 2.0 * glm::tan(m_Fovy / 2.0);
+	float sizeY = 2.0f * glm::tan(m_Fovy / 2.0f);
 	float sizeX = sizeY / yRes * xRes;
 
 	glm::vec3 screenPoint = center 

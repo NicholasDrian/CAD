@@ -2,20 +2,14 @@
 
 #include "NURBS.h"
 
-const unsigned SAMPLES_PER_EDGE = 10;
+const unsigned SAMPLES_PER_EDGE = 20;
 
 NURBS::NURBS(std::vector<glm::vec3> points, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
 	: m_Points(points), m_Weights(weights), m_Degree(degree), m_Knots(knots), m_ID(id)
 {
-	if (m_Weights.size() == 0) {
-		m_Weights = std::vector(points.size(), 1.0f);
-	}
-	if (knots.size() == 0) {
-		for (int i = 0; i <= m_Degree; i++) m_Knots.push_back(0.0f);
-		for (float i = 1.0f; i < m_Points.size() - m_Degree; i++)  m_Knots.push_back(i);
-		for (int i = 0; i <= m_Degree; i++) m_Knots.push_back((float)m_Points.size() - m_Degree);
-	}
-	for (float f : m_Knots) std::cout << f << ' '; std::cout << '\n';
+	while (m_Degree > m_Points.size() - 1) m_Degree--;
+	if (m_Weights.size() == 0) m_Weights = std::vector(points.size(), 1.0f);
+	UpdateKnotVector();
 	UpdateSamples();
 	UpdateVertexArray();
 }
@@ -25,10 +19,37 @@ void NURBS::Render() const
 	m_VertexArray->Render(m_ID, m_Selectable, m_Selected);
 }
 
+void NURBS::AddControlPoint(glm::vec3 point, bool incrementDegree)
+{
+	m_Points.push_back(point);
+	m_Degree += incrementDegree;
+	UpdateKnotVector();
+	UpdateSamples();
+	UpdateVertexArray();
+}
+
+void NURBS::ChangeDegree(unsigned degree)
+{
+	while (degree >= m_Points.size()) degree--;
+	m_Degree = degree;
+	UpdateKnotVector();
+	UpdateSamples();
+	UpdateVertexArray();
+}
+
 void NURBS::UpdateLastPoint(glm::vec3 point)
 {
 	m_Points.back() = point;
 	UpdateSamples(); // shouldnt need to update all samples
+	UpdateVertexArray();
+}
+
+void NURBS::RemoveLastPoint()
+{
+	m_Points.pop_back();
+	if (m_Degree > m_Points.size() - 1) m_Degree--;
+	UpdateKnotVector();
+	UpdateSamples();
 	UpdateVertexArray();
 }
 
@@ -39,22 +60,21 @@ std::vector<float> NURBS::BasisFuncs(float u) const
 	res[0] = 1.0;
 	auto left = [&](int j) { return u - m_Knots[i - j + 1]; };
 	auto right = [&](int j) { return m_Knots[i + j] - u; };
-	for (int j = 1; j <= m_Degree; j++) {
+	for (unsigned j = 1; j <= m_Degree; j++) {
 		float saved = 0.0;
-		for (int r = 0; r < j; r++) {
-			float temp = res[r] / (right(r + 1) + left(j - r));
-			res[r] = saved + right(r + 1) * temp;
+		for (unsigned r = 0; r < j; r++) {
+			float temp = res[r] / (right(r + 1U) + left(j - r));
+			res[r] = saved + right(r + 1U) * temp;
 			saved = left(j - r) * temp;
 		}
 		res[j] = saved;
 	}
-	//for (float f : res) std::cout << f << ' '; std::cout << std::endl;
 	return res;
 }
 
 int NURBS::KnotSpan(float u) const
 {
-	int n = m_Knots.size() - m_Degree - 2;
+	int n = (int)m_Knots.size() - m_Degree - 2;
 	if (u == m_Knots[n + 1]) return n;
 	int low = m_Degree, high = n + 1;
 	int mid = (low + high) / 2;
@@ -67,38 +87,41 @@ int NURBS::KnotSpan(float u) const
 	return mid;
 }
 
-// this could very welll be wrong :/
+
 glm::vec3 NURBS::Sample(float t) const
 {
 	float u = t * (m_Knots.back() - m_Knots[0]);
+	int knotSpan = KnotSpan(u);
 	std::vector<float> basisFuncs = BasisFuncs(u);
-	glm::vec3 res = {0.0,0.0,0.0};
-	for (int i = 0; i <= m_Degree; i++) {
-		res += basisFuncs[i] * m_Points[KnotSpan(u) - m_Degree + i];
-		
-		std::cout << res.x << ' ' << res.y << ' ' << res.z << ' ' << std::endl;
+	glm::vec3 res = { 0.0f, 0.0f, 0.0f };
+	for (unsigned i = 0; i <= m_Degree; i++) {
+		res += basisFuncs[i] * m_Points[knotSpan - m_Degree + i];
 	}
-	std::cout << '\n';
 	return res;
+}
+
+void NURBS::UpdateKnotVector()
+{
+	m_Knots.clear();
+	for (unsigned i = 0; i <= m_Degree; i++) m_Knots.push_back(0.0f);
+	for (float i = 1.0f; i < m_Points.size() - m_Degree; i++)  m_Knots.push_back(i);
+	for (unsigned i = 0; i <= m_Degree; i++) m_Knots.push_back((float)m_Points.size() - m_Degree);
 }
 
 void NURBS::UpdateSamples()
 {
 	m_Samples.clear();
 	m_Colors.clear();
-	int sampleCount = SAMPLES_PER_EDGE * (m_Points.size() - 1);
+	m_Indecies.clear();
+	int sampleCount = SAMPLES_PER_EDGE * ((int)m_Points.size() - 1);
 	for (int i = 0; i <= sampleCount; i++) {
 		m_Samples.push_back(Sample((float)i / sampleCount));
-		m_Colors.push_back({ 0.0,0.0,0.0 });
+		m_Colors.push_back({ 0.0f, 0.0f, 0.0f });
 		m_Indecies.push_back(i);
 		m_Indecies.push_back(i + 1);
 	}
 	m_Indecies.pop_back();
 	m_Indecies.pop_back();
-
-	for (const auto& p : m_Samples) {
-		//std::cout << p.x << ' ' << p.y << ' ' << p.z << std::endl;
-	}
 }
 
 void NURBS::UpdateVertexArray()

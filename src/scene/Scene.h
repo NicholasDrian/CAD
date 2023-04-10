@@ -26,6 +26,7 @@ public:
 	static void HandleClick(int x, int y, int button, int mods);
 
 	static void DeleteSelection();
+	static void Delete(unsigned id);
 
 	static bool IntersectScene(int x, int y, glm::vec3& outPoint);
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PolyLineCommand.h"
-#include "../Window.h"
+#include "../../Window.h"
 
 #include "glm/glm.hpp"
 
@@ -9,9 +9,19 @@
 void PolyLineCommand::TextInput(const std::string& input)
 {
 	if (input == "") {
-		m_PolyLine->m_Selectable = true;
-		m_PolyLine->RemoveLast();
+		if (m_PolyLine) {
+			if (m_PolyLine->GetNumControlPoints() < 3) {
+				Scene::Delete(m_PolyLine->GetID());
+			}
+			else {
+				m_PolyLine->m_Selectable = true;
+				m_PolyLine->RemoveLast();
+			}
+		}
 		m_Finished = true;
+	}
+	else {
+		//todo
 	}
 }
 
@@ -41,4 +51,12 @@ void PolyLineCommand::Tick()
 			m_PolyLine->UpdateLast(intersection);
 		}
 	}
+}
+
+void PolyLineCommand::Escape()
+{
+	if (m_PolyLine) {
+		Scene::Delete(m_PolyLine->GetID());
+	}
+	m_Finished = true;
 }

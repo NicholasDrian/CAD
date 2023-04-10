@@ -21,6 +21,8 @@ public:
 
 	void UpdateLast(const glm::vec3& point);
 
+	inline size_t GetNumControlPoints() const { return m_Points.size(); }
+
 	inline virtual unsigned GetID() const override { return m_ID; };
 
 

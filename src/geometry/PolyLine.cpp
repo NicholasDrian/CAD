@@ -23,8 +23,8 @@ void PolyLine::AddPoint(const glm::vec3& point)
 {
 	m_Points.push_back(point);
 	m_Colors.push_back({ 0.0f, 0.0f, 0.0f });
-	m_Indecies.push_back(m_Points.size() - 2);
-	m_Indecies.push_back(m_Points.size() - 1);
+	m_Indecies.push_back((unsigned)m_Points.size() - 2U);
+	m_Indecies.push_back((unsigned)m_Points.size() - 1U);
 	UpdateVertexArray();
 }
 

@@ -2,8 +2,9 @@
 
 #include "CommandManager.h"
 
-#include "FocusCommand.h"
-#include "PolyLineCommand.h"
+#include "commands/FocusCommand.h"
+#include "commands/PolyLineCommand.h"
+#include "commands/CurveCommand.h"
 #include "TextParser.h"
 #include "../scene/Scene.h"
 
@@ -18,10 +19,9 @@ void CommandManager::AddInput(int c) {
 	{
 		if (m_TextInput.size())
 			m_TextInput.clear();
-		else if (m_CurrentCommand)
-			m_CurrentCommand->TextInput(""),
-			m_CurrentCommand.reset();
-		else
+		else if (m_CurrentCommand) {
+			m_CurrentCommand->Escape();
+		} else
 			Scene::ClearSelection();
 	}
 	else if (c == GLFW_KEY_DELETE) {
@@ -38,7 +38,6 @@ void CommandManager::AddInput(int c) {
 		if (HasActiveCommand())
 		{
 			m_CurrentCommand->TextInput(m_TextInput);
-			if (m_CurrentCommand->IsFinished()) m_CurrentCommand.reset();
 		}
 		else 
 		{
@@ -50,8 +49,8 @@ void CommandManager::AddInput(int c) {
 			else if (m_TextInput == "POLYLINE") {
 				m_CurrentCommand = std::make_unique<PolyLineCommand>();
 			}
-			else if (m_TextInput == "") {
-
+			else if (m_TextInput == "CURVE") {
+				m_CurrentCommand = std::make_unique<CurveCommand>();
 			}
 			else if (m_TextInput == "") {
 
@@ -64,6 +63,7 @@ void CommandManager::AddInput(int c) {
 	{
 		m_TextInput += c;
 	}
+	if (m_CurrentCommand && m_CurrentCommand->IsFinished()) m_CurrentCommand.reset();
 }
 
 void CommandManager::HandleClick(int x, int y) {
@@ -81,4 +81,9 @@ std::string CommandManager::GetInstructions()
 {
 	if (m_CurrentCommand) return m_CurrentCommand->GetInstructions();
 	return "Command: ";
+}
+
+void CommandManager::DrawButtons()
+{
+	if (m_CurrentCommand) m_CurrentCommand->DrawButtons();
 }

@@ -9,7 +9,7 @@ ColoredLineVertex::ColoredLineVertex(glm::vec3 Pos, glm::vec3 Col)
 
 
 VertexArrayColoredLines::VertexArrayColoredLines(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indices, float lineWidth)
-	: m_IndexCount(indices.size()), m_LineWidth(lineWidth), m_Model(glm::mat4(1.0))
+	: m_IndexCount((unsigned)indices.size()), m_LineWidth(lineWidth), m_Model(glm::mat4(1.0))
 {
 
 	std::vector<ColoredLineVertex> data;
