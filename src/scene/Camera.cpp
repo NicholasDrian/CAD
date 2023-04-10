@@ -52,7 +52,7 @@ void Camera::ZoomIn(int delta)
 	m_Position = m_FocalPoint - forward;
 }
 
-void Camera::PanUp(int delta)
+void Camera::PanUp(float delta)
 {
 	float dist = glm::distance(m_FocalPoint, m_Position);
 	glm::vec3 translation = m_SensitivityPan * delta * dist * m_Up;
@@ -60,11 +60,18 @@ void Camera::PanUp(int delta)
 	m_FocalPoint += translation;
 }
 
-void Camera::PanRight(int delta)
+void Camera::PanRight(float delta)
 {
 	glm::vec3 forward = m_FocalPoint - m_Position;
 	glm::vec3 right = glm::cross(m_Up, forward);
 	glm::vec3 translation = m_SensitivityPan * delta * right;
+	m_Position += translation;
+	m_FocalPoint += translation;
+}
+
+void Camera::MoveForward(float delta) {
+	glm::vec3 forward = m_FocalPoint - m_Position;
+	glm::vec3 translation = m_SensitivityPan * delta * forward;
 	m_Position += translation;
 	m_FocalPoint += translation;
 }

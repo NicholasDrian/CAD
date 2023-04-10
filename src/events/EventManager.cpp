@@ -5,6 +5,7 @@
 #include "../scene/Scene.h"
 #include "../gui/GUI.h"
 #include "../commands/CommandManager.h"
+
 #include <iostream>
 
 
@@ -32,6 +33,33 @@ void EventManager::Tick()
         }
         m_PreviousMouseX = mouseX;
         m_PreviousMouseY = mouseY;
+        
+        if (m_CameraMovementInput) {
+            float now = (float) glfwGetTime();
+            float delta = (now - m_LastMovementUpdateTime) * 200.0f;
+            m_LastMovementUpdateTime = now;
+            switch (m_CameraMovementInput)
+            {
+                case GLFW_KEY_W:
+                    Scene::GetCamera()->MoveForward(delta);
+                    break;
+                case GLFW_KEY_S:
+                    Scene::GetCamera()->MoveForward(-delta);
+                    break;
+                case GLFW_KEY_A:
+                    Scene::GetCamera()->PanRight(delta);
+                    break;
+                case GLFW_KEY_D:
+                    Scene::GetCamera()->PanRight(-delta);
+                    break;
+                case GLFW_KEY_E:
+                    Scene::GetCamera()->PanUp(delta);
+                    break;
+                case GLFW_KEY_Q:
+                    Scene::GetCamera()->PanUp(-delta);
+                    break;
+            }
+        }
     }
 }
 
@@ -83,7 +111,13 @@ void EventManager::KeyCallback(GLFWwindow* window, int key, int scancode, int ac
     if (io.WantCaptureKeyboard) return;
 
     if (m_MouseButtonDown && m_MouseButton == GLFW_MOUSE_BUTTON_RIGHT) {
-        // navigation key
+        if (action == GLFW_PRESS) {
+            m_CameraMovementInput = key;
+            m_LastMovementUpdateTime = (float)glfwGetTime();
+        }
+        else if (action == GLFW_RELEASE) {
+            m_CameraMovementInput = 0;
+        }
     }
 
     else if (action == GLFW_PRESS || action == GLFW_REPEAT)

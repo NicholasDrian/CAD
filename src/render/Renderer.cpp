@@ -32,7 +32,8 @@ void Renderer::Init()
 	SetClearColor({ 0.7, 0.7, 0.8 });
 
 	GLCall(glEnable(GL_DEPTH_TEST));
-
+	GLCall(glEnable(GL_POINT_SMOOTH));
+	GLCall(glPointSize(3.0));
 }
 
 void Renderer::SetClearColor(glm::vec3 color) {

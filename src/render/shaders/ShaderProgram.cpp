@@ -4,20 +4,25 @@
 #include <stdexcept>
 #include "../OpenGLUtils.h"
 
+const std::string SHADER_BASE_PATH("src/render/shaders/shaders/");
 
 ShaderProgram::ShaderProgram(ShaderProgramType type)
 {
-	const char* vertPath;
-	const char* fragPath;
+	std::string vertPath;
+	std::string fragPath;
 
 	switch (type) {
 	case ShaderProgramType::ColoredTriShader:
-		vertPath = "src/render/shaders/shaders/ColoredTri.vert";
-		fragPath = "src/render/shaders/shaders/ColoredTri.frag";
+		vertPath = SHADER_BASE_PATH + "ColoredTri.vert";
+		fragPath = SHADER_BASE_PATH + "ColoredTri.frag";
 		break;
 	case ShaderProgramType::ColoredLineShader:
-		vertPath = "src/render/shaders/shaders/ColoredLine.vert";
-		fragPath = "src/render/shaders/shaders/ColoredLine.frag";
+		vertPath = SHADER_BASE_PATH + "ColoredLine.vert";
+		fragPath = SHADER_BASE_PATH + "ColoredLine.frag";
+		break;
+	case ShaderProgramType::ColoredPointShader:
+		vertPath = SHADER_BASE_PATH + "ColoredPoint.vert";
+		fragPath = SHADER_BASE_PATH + "ColoredPoint.frag";
 		break;
 #ifdef CAD_DEBUG
 	default:
@@ -25,8 +30,8 @@ ShaderProgram::ShaderProgram(ShaderProgramType type)
 #endif
 	}
 
-	Shader vertShader(vertPath, ShaderStage::VertexShader);
-	Shader fragShader(fragPath, ShaderStage::FragmentShader);
+	Shader vertShader(vertPath.c_str(), ShaderStage::VertexShader);
+	Shader fragShader(fragPath.c_str(), ShaderStage::FragmentShader);
 
 	m_ID = GLResult(glCreateProgram());
 	GLCall(glAttachShader(m_ID, vertShader.GetID()));

@@ -14,8 +14,11 @@ public:
 	void TurnUp(int delta);
 	void TurnRight(int delta);
 	void ZoomIn(int delta);
-	void PanUp(int delta);
-	void PanRight(int delta);
+	inline void PanUp(int delta) { PanUp((float)delta); };
+	void PanUp(float delta);
+	inline void PanRight(int delta) { PanRight((float)delta); }
+	void PanRight(float delta);
+	void MoveForward(float delta);
 
 	void RepositionFocal(const glm::vec3& newFocal);
 

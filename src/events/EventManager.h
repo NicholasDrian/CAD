@@ -18,6 +18,8 @@ public:
 
 private:
 
+	inline static float m_LastMovementUpdateTime;
+	inline static int m_CameraMovementInput = 0;
 	inline static bool m_MouseDragged = false;
 	inline static bool m_MouseButtonDown = false;
 	inline static int m_ClickModifiers = 0, m_MouseButton = -1;

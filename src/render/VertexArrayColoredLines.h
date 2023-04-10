@@ -8,8 +8,6 @@
 #include <vector>
 
 struct ColoredLineVertex {
-	ColoredLineVertex() = default;
-	ColoredLineVertex(glm::vec3 Pos, glm::vec3 Col);
 	glm::vec3 pos, col;
 };
 
