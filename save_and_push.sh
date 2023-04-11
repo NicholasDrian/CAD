@@ -4,7 +4,7 @@ cd C:\Users\15303\Desktop\cs\CAD
 timestamp=$(date +%c)
 
 git add .
-git commit -m "Backup at: `%timestamp%`" 
+git commit -m "Automated Backup at: $timestamp" 
 git push
 
 echo PRESS ENTER TO CLOSE...
