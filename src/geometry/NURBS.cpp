@@ -4,8 +4,8 @@
 
 const unsigned SAMPLES_PER_EDGE = 20;
 
-NURBS::NURBS(std::vector<glm::vec3> points, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
-	: m_Points(points), m_Weights(weights), m_Degree(degree), m_Knots(knots), m_ID(id)
+NURBS::NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
+	: m_Points(points), m_Weights(weights), m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color)
 {
 	while (m_Degree > m_Points.size() - 1) m_Degree--;
 	if (m_Weights.size() == 0) m_Weights = std::vector(points.size(), 1.0f);
@@ -111,12 +111,10 @@ void NURBS::UpdateKnotVector()
 void NURBS::UpdateSamples()
 {
 	m_Samples.clear();
-	m_Colors.clear();
 	m_Indecies.clear();
 	int sampleCount = SAMPLES_PER_EDGE * ((int)m_Points.size() - 1);
 	for (int i = 0; i <= sampleCount; i++) {
 		m_Samples.push_back(Sample((float)i / sampleCount));
-		m_Colors.push_back({ 0.0f, 0.0f, 0.0f });
 		m_Indecies.push_back(i);
 		m_Indecies.push_back(i + 1);
 	}
@@ -126,5 +124,5 @@ void NURBS::UpdateSamples()
 
 void NURBS::UpdateVertexArray()
 {
-	m_VertexArray = std::make_unique<VertexArrayColoredLines>(m_Samples, m_Colors, m_ID, m_Indecies, 2.0f);
+	m_VertexArray = std::make_unique<VertexArrayBasicLines>(m_Samples, m_Color, m_ID, m_Indecies, 2.0f);
 }

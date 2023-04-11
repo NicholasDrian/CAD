@@ -45,7 +45,9 @@ void CurveCommand::ClickInput(int x, int y)
 			}
 			else
 			{
-				m_Curve = new NURBS({ intersection, intersection });
+				glm::vec3 color(0.0f, 0.0f, 0.0f);
+				std::vector<glm::vec3> points = { intersection, intersection };
+				m_Curve = new NURBS(points, color);
 				m_Curve->m_Selectable = false;
 				Scene::AddToScene(std::unique_ptr<NURBS>(m_Curve));
 			}

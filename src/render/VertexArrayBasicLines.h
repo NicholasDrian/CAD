@@ -8,16 +8,16 @@
 #include <vector>
 
 struct ColoredLineVertex {
-	glm::vec3 pos, col;
+	glm::vec3 pos;
 };
 
-class VertexArrayColoredLines : public VertexArray {
+class VertexArrayBasicLines : public VertexArray {
 
 public:
 
-	VertexArrayColoredLines(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indecies, float lineWidth);
+	VertexArrayBasicLines(const std::vector<glm::vec3>& positions, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indecies, float lineWidth);
 
-	~VertexArrayColoredLines();
+	~VertexArrayBasicLines();
 
 	virtual void Render(unsigned id, bool selectable, bool selected) const override;
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Line; }
@@ -31,5 +31,6 @@ private:
 	GLuint m_IndexBufferID;
 	unsigned m_IndexCount;
 	glm::mat4 m_Model;
+	glm::vec3 m_Color;
 
 };

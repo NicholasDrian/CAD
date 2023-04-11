@@ -12,17 +12,17 @@ ShaderProgram::ShaderProgram(ShaderProgramType type)
 	std::string fragPath;
 
 	switch (type) {
-	case ShaderProgramType::ColoredTriShader:
-		vertPath = SHADER_BASE_PATH + "ColoredTri.vert";
-		fragPath = SHADER_BASE_PATH + "ColoredTri.frag";
+	case ShaderProgramType::BasicTriShader:
+		vertPath = SHADER_BASE_PATH + "BasicTri.vert";
+		fragPath = SHADER_BASE_PATH + "BasicTri.frag";
 		break;
-	case ShaderProgramType::ColoredLineShader:
-		vertPath = SHADER_BASE_PATH + "ColoredLine.vert";
-		fragPath = SHADER_BASE_PATH + "ColoredLine.frag";
+	case ShaderProgramType::BasicLineShader:
+		vertPath = SHADER_BASE_PATH + "BasicLine.vert";
+		fragPath = SHADER_BASE_PATH + "BasicLine.frag";
 		break;
-	case ShaderProgramType::ColoredPointShader:
-		vertPath = SHADER_BASE_PATH + "ColoredPoint.vert";
-		fragPath = SHADER_BASE_PATH + "ColoredPoint.frag";
+	case ShaderProgramType::BasicPointShader:
+		vertPath = SHADER_BASE_PATH + "BasicPoint.vert";
+		fragPath = SHADER_BASE_PATH + "BasicPoint.frag";
 		break;
 #ifdef CAD_DEBUG
 	default:

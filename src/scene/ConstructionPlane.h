@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../render/VertexArrayColoredLines.h"
+#include "../render/VertexArrayBasicLines.h"
 #include "../geometry/Renderable.h"
 
 #include <vector>
@@ -18,7 +18,7 @@ public:
 
 private:
 
-	std::unique_ptr<VertexArrayColoredLines> m_MajorLinesVertexArray;
-	std::unique_ptr<VertexArrayColoredLines> m_MinorLinesVertexArray;
+	std::unique_ptr<VertexArrayBasicLines> m_MajorLinesVertexArray;
+	std::unique_ptr<VertexArrayBasicLines> m_MinorLinesVertexArray;
 
 };

@@ -20,13 +20,15 @@ void Scene::Init()
 	//test scene
 	std::vector positions { glm::vec3{ 0.0f, 0.0f, 5.0f }, glm::vec3{ 20.0f, 0.0f, 5.0f }, glm::vec3{ 0.0f, 20.0f, 5.0f } };
 	std::vector normals { glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 20.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 20.0f, 0.0f } };
-	std::vector colors { glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f } };
+	glm::vec3 color{ 1.0f, 0.0f, 0.3f };
 	std::vector indices{ 0U, 1U, 2U };
-	std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(positions, normals, colors, indices);
+	std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(positions, normals, color, indices);
 	AddToScene(std::move(mesh));
 
 	std::vector<glm::vec3> points = { { 10.0f, 0.0f, 0.0f }, { 10.0f, 10.0f, 0.0f }, { 0.0f, 20.0f, 0.0f }, {100.0, -20.0, 0.0}, {100.0, 100.0, 0.0} };
-	std::unique_ptr<NURBS> curve = std::make_unique<NURBS>(points);
+
+
+	std::unique_ptr<NURBS> curve = std::make_unique<NURBS>(points, color);
 	AddToScene(std::move(curve));
 
 

@@ -9,12 +9,12 @@
 
 
 //todo!
-class VertexArrayColoredPoints : public VertexArray {
+class VertexArrayBasicPoints : public VertexArray {
 
 public:
 
-	VertexArrayColoredPoints(std::vector<glm::vec3> points, std::vector<glm::vec3> colors);
-	~VertexArrayColoredPoints();
+	VertexArrayBasicPoints(std::vector<glm::vec3> points, std::vector<glm::vec3> colors);
+	~VertexArrayBasicPoints();
 
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Point; };
 	virtual unsigned GetIndexCount() const override;

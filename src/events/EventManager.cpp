@@ -8,8 +8,6 @@
 
 #include <iostream>
 
-
-
 void EventManager::Tick()
 {
     Window::PollEvents();
@@ -38,27 +36,13 @@ void EventManager::Tick()
             float now = (float) glfwGetTime();
             float delta = (now - m_LastMovementUpdateTime) * 200.0f;
             m_LastMovementUpdateTime = now;
-            switch (m_CameraMovementInput)
-            {
-                case GLFW_KEY_W:
-                    Scene::GetCamera()->MoveForward(delta);
-                    break;
-                case GLFW_KEY_S:
-                    Scene::GetCamera()->MoveForward(-delta);
-                    break;
-                case GLFW_KEY_A:
-                    Scene::GetCamera()->PanRight(delta);
-                    break;
-                case GLFW_KEY_D:
-                    Scene::GetCamera()->PanRight(-delta);
-                    break;
-                case GLFW_KEY_E:
-                    Scene::GetCamera()->PanUp(delta);
-                    break;
-                case GLFW_KEY_Q:
-                    Scene::GetCamera()->PanUp(-delta);
-                    break;
-            }
+            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_W)) Scene::GetCamera()->MoveForward(delta);
+            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_S)) Scene::GetCamera()->MoveForward(-delta);
+            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_A)) Scene::GetCamera()->PanRight(delta);
+            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_D)) Scene::GetCamera()->PanRight(-delta);
+            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_E)) Scene::GetCamera()->PanUp(delta);
+            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_Q)) Scene::GetCamera()->PanUp(-delta);
+                
         }
     }
 }
@@ -102,6 +86,7 @@ void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int
             }
         }
         m_MouseButtonDown = false;
+        m_CameraMovementInput = 0;
     }
 }
 
@@ -112,7 +97,7 @@ void EventManager::KeyCallback(GLFWwindow* window, int key, int scancode, int ac
 
     if (m_MouseButtonDown && m_MouseButton == GLFW_MOUSE_BUTTON_RIGHT) {
         if (action == GLFW_PRESS) {
-            m_CameraMovementInput = key;
+            m_CameraMovementInput |= MOVEMENT_BITS.at(key);
             m_LastMovementUpdateTime = (float)glfwGetTime();
         }
         else if (action == GLFW_RELEASE) {

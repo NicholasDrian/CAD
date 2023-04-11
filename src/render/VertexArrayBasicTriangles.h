@@ -8,19 +8,16 @@
 #include <vector>
 
 struct ColoredTriangleVertex {
-	ColoredTriangleVertex() = default;
-	ColoredTriangleVertex(glm::vec3 Pos, glm::vec3 Norm, glm::vec3 Col, uint32_t I);
-	glm::vec3 pos, norm, col;
-	uint32_t i;
+	glm::vec3 pos, norm;
 };
 
-class VertexArrayColoredTriangle : public VertexArray {
+class VertexArrayBasicTriangles : public VertexArray {
 
 public:
 
-	VertexArrayColoredTriangle(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, uint32_t id, const std::vector<unsigned>& indecies);
+	VertexArrayBasicTriangles(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indecies);
 
-	~VertexArrayColoredTriangle();
+	~VertexArrayBasicTriangles();
 
 	virtual void Render(unsigned id, bool selectable, bool selected) const override;
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Triangle; }
@@ -34,5 +31,6 @@ private:
 	GLuint m_IndexBufferID;
 	unsigned m_IndexCount;
 	glm::mat4 m_Model;
+	glm::vec3 m_Color;
 
 };

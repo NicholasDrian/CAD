@@ -14,7 +14,7 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 #ifdef CAD_DEBUG
 	if (majorCount & 1) throw std::runtime_error("majorCount must be even");
 #endif
-	std::vector<glm::vec3> majorLines, minorLines, majorColors, minorColors;
+	std::vector<glm::vec3> majorLines, minorLines;
 	std::vector<unsigned> majorIndices, minorIndices;
 	int majorIndex = 0, minorIndex = 0;
 	float half = (float)majorCount * minorCount * spacing / 2.0f;
@@ -25,29 +25,21 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 		{
 			majorLines.emplace_back(-half + i * spacing, -half, -epsilon);
 			majorLines.emplace_back(-half + i * spacing, 0, -epsilon);
-			majorColors.push_back(color);
-			majorColors.push_back(color);
 			majorIndices.push_back(majorIndex++);
 			majorIndices.push_back(majorIndex++);
 
 			majorLines.emplace_back(-half, -half + i * spacing, -epsilon);
 			majorLines.emplace_back(0, -half + i * spacing, -epsilon);
-			majorColors.push_back(color);
-			majorColors.push_back(color);
 			majorIndices.push_back(majorIndex++);
 			majorIndices.push_back(majorIndex++);
 
 			majorLines.emplace_back(-half + i * spacing, 0, -epsilon);
 			majorLines.emplace_back(-half + i * spacing, half, -epsilon);
-			majorColors.emplace_back(0.2, 1.0, 0.2);
-			majorColors.emplace_back(0.2, 1.0, 0.2);
 			majorIndices.push_back(majorIndex++);
 			majorIndices.push_back(majorIndex++);
 
 			majorLines.emplace_back(0, -half + i * spacing, -epsilon);
-			majorLines.emplace_back(half, -half + i * spacing, -epsilon);
-			majorColors.emplace_back(1.0, 0.2, 0.2);
-			majorColors.emplace_back(1.0, 0.2, 0.2);
+			majorLines.emplace_back(half, -half + i * spacing, -epsilon);\
 			majorIndices.push_back(majorIndex++);
 			majorIndices.push_back(majorIndex++);
 		}
@@ -55,15 +47,11 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 		{
 			majorLines.emplace_back(-half + i * spacing, -half, -epsilon);
 			majorLines.emplace_back(-half + i * spacing, half, -epsilon);
-			majorColors.push_back(color);
-			majorColors.push_back(color);
 			majorIndices.push_back(majorIndex++);
 			majorIndices.push_back(majorIndex++);
 
 			majorLines.emplace_back(-half, -half + i * spacing, -epsilon);
 			majorLines.emplace_back(half, -half + i * spacing, -epsilon);
-			majorColors.push_back(color);
-			majorColors.push_back(color);
 			majorIndices.push_back(majorIndex++);
 			majorIndices.push_back(majorIndex++);
 		}
@@ -71,22 +59,18 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 		{
 			minorLines.emplace_back(-half + i * spacing, -half, -epsilon);
 			minorLines.emplace_back(-half + i * spacing, half, -epsilon);
-			minorColors.push_back(color);
-			minorColors.push_back(color);
 			minorIndices.push_back(minorIndex++);
 			minorIndices.push_back(minorIndex++);
 
 			minorLines.emplace_back(-half, -half + i * spacing, -epsilon);
 			minorLines.emplace_back(half, -half + i * spacing, -epsilon);
-			minorColors.push_back(color);
-			minorColors.push_back(color);
 			minorIndices.push_back(minorIndex++);
 			minorIndices.push_back(minorIndex++);
 
 		}
 	}
-	m_MajorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(majorLines, majorColors, GetID(), majorIndices, MAJOR_WIDTH);
-	m_MinorLinesVertexArray = std::make_unique<VertexArrayColoredLines>(minorLines, minorColors, GetID(), minorIndices, MINOR_WIDTH);
+	m_MajorLinesVertexArray = std::make_unique<VertexArrayBasicLines>(majorLines, color, GetID(), majorIndices, MAJOR_WIDTH);
+	m_MinorLinesVertexArray = std::make_unique<VertexArrayBasicLines>(minorLines, color, GetID(), minorIndices, MINOR_WIDTH);
 
 }
 

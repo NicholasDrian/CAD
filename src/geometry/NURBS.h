@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "Renderable.h"
-#include "../render/VertexArrayColoredLines.h"
+#include "../render/VertexArrayBasicLines.h"
 #include "../scene/Scene.h"
 #include "glm/glm.hpp"
 
@@ -12,7 +12,7 @@ class NURBS : public Renderable {
 
 public:
 
-	NURBS(std::vector<glm::vec3> points, std::vector<float> weights = {}, unsigned degree = 2U, std::vector<float> knots = {}, unsigned id = Scene::GetNewID());
+	NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> weights = {}, unsigned degree = 2U, std::vector<float> knots = {}, unsigned id = Scene::GetNewID());
 
 	virtual void Render() const override;
 
@@ -38,7 +38,8 @@ private:
 	void UpdateSamples();
 	void UpdateVertexArray();
 
-	std::vector<glm::vec3> m_Points, m_Colors;
+	std::vector<glm::vec3> m_Points;
+	glm::vec3 m_Color;
 	std::vector<float> m_Weights, m_Knots;
 	std::vector<unsigned> m_Indecies;
 	unsigned m_Degree;
@@ -46,6 +47,6 @@ private:
 
 	std::vector<glm::vec3> m_Samples;
 
-	std::unique_ptr<VertexArrayColoredLines> m_VertexArray;
+	std::unique_ptr<VertexArrayBasicLines> m_VertexArray;
 
 };

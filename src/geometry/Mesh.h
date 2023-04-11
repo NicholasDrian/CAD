@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Renderable.h"
-#include "../render/VertexArrayColoredTriangle.h"
+#include "../render/VertexArrayBasicTriangles.h"
 #include "../scene/Scene.h"
 #include "glm/vec3.hpp"
 
@@ -11,7 +11,7 @@ class Mesh : public Renderable {
 
 public:
 
-	Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors, const std::vector<unsigned>& indecies, unsigned id = Scene::GetNewID(), bool selectable = true);
+	Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const glm::vec3& color, const std::vector<unsigned>& indecies, unsigned id = Scene::GetNewID(), bool selectable = true);
 
 	virtual void Render() const override;
 
@@ -21,10 +21,11 @@ private:
 
 	uint32_t m_ID;
 
-	std::vector<glm::vec3> m_Positions, m_Normals, m_Colors;
+	std::vector<glm::vec3> m_Positions, m_Normals;
+	glm::vec3 m_Color;
 
 	std::vector<unsigned> m_Indecies;
 
-	VertexArrayColoredTriangle m_VertexArray;
+	VertexArrayBasicTriangles m_VertexArray;
 
 };

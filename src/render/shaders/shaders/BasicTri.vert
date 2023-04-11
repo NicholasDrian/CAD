@@ -1,7 +1,7 @@
 #version 460
 
 layout (location = 0) in vec3 position;
-layout (location = 2) in vec3 color;
+//layout (location = 2) in vec3 color;
 
 out vec3 frag_color;
 out flat unsigned int frag_id;
@@ -15,6 +15,7 @@ layout (std140, binding = 0) uniform global
 layout (std140, binding = 1) uniform local
 {
 	mat4 model;
+	vec3 color;
 	unsigned int data;
 	// data[0] = selectable
 	// data[1] = selected
@@ -23,6 +24,7 @@ layout (std140, binding = 1) uniform local
 
 void main() 
 {
+	//gl_VertexID use to index into sub selection buffer.
 	gl_Position = view_proj * model * vec4(position, 1.0);
 	frag_color = color;
 	if (data & (1 << 1)) frag_color += vec3(0.3, 0.3, -0.3);

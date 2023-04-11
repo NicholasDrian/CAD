@@ -2,7 +2,7 @@
 
 #include "Renderable.h"
 #include "../scene/Scene.h"
-#include "../render/VertexArrayColoredLines.h"
+#include "../render/VertexArrayBasicLines.h"
 #include "glm/glm.hpp"
 
 #include <vector>
@@ -32,8 +32,9 @@ private:
 
 	unsigned m_ID;
 	std::vector<unsigned> m_Indecies;
-	std::vector<glm::vec3> m_Points, m_Colors;
-	std::unique_ptr<VertexArrayColoredLines> m_VertexArray;
+	std::vector<glm::vec3> m_Points;
+	glm::vec3 m_Color;
+	std::unique_ptr<VertexArrayBasicLines> m_VertexArray;
 	
 
 };

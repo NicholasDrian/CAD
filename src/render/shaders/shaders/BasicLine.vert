@@ -2,7 +2,7 @@
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
-layout (location = 2) in vec3 color;
+//layout (location = 2) in vec3 color;
 
 out vec3 frag_color;
 out flat unsigned int frag_id;
@@ -16,10 +16,11 @@ layout (std140, binding = 0) uniform global
 layout (std140, binding = 1) uniform local
 {
 	mat4 model;
+	vec3 color;
 	unsigned int data;
-	unsigned int id;
 	// data[0] = selectable
 	// data[1] = selected
+	unsigned int id;
 };
 
 void main() 

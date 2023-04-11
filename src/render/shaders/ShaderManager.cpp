@@ -10,12 +10,12 @@ void ShaderManager::Init()
 {
 	GLCall(glGenBuffers(1, &m_GlobalShaderUniforms));
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_GlobalShaderUniforms));
-	GLCall(glBufferData(GL_UNIFORM_BUFFER, sizeof(Scene::GetCamera()->GetViewProj()), NULL, GL_DYNAMIC_DRAW));
+	GLCall(glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), NULL, GL_DYNAMIC_DRAW));
 	GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_GlobalShaderUniforms));
 
 	GLCall(glGenBuffers(1, &m_LocalShaderUniforms));
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_LocalShaderUniforms));
-	GLCall(glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) + 4 + 4, NULL, GL_DYNAMIC_DRAW));
+	GLCall(glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) + sizeof(glm::vec3) + sizeof(uint32_t) + sizeof(uint32_t), NULL, GL_DYNAMIC_DRAW));
 	GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 1, m_LocalShaderUniforms));
 
 }
@@ -30,16 +30,18 @@ void ShaderManager::UpdateGlobalUniforms() {
 	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &Scene::GetCamera()->GetViewProj()[0][0]));
 }
 
-void ShaderManager::UpdateLocalUniforms(const glm::mat4& model, bool selectable, bool selected, unsigned id) {
+void ShaderManager::UpdateLocalUniforms(const glm::mat4& model, const glm::vec3& color, bool selectable, bool selected, uint32_t id) {
+	// TODO, MAKE THIS JUST ONE CALL TO SUB DATA!
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_LocalShaderUniforms));
-	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &model[0][0]));
 
-	int data = 0;
+
+	uint32_t data = 0;
 	if (selectable) data |= (1 << 0);
 	if (selected)	data |= (1 << 1);
-	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(int), &data));
-
-	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) + sizeof(int), sizeof(unsigned), &id));
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &model[0][0]));
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::vec3), &color[0]));
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) + sizeof(glm::vec3), sizeof(uint32_t), &data));
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) + sizeof(glm::vec3) + sizeof(uint32_t), sizeof(uint32_t), &id));
 }
 
 void ShaderManager::Bind(ShaderProgramType type) 
