@@ -10,5 +10,5 @@ Mesh::Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>
 }
 
 void Mesh::Render() const {
-	m_VertexArray->Render(m_ID, m_Selectable, m_Selected);
+	m_VertexArray->Render(m_ID, m_Selectable, true, m_Selected);
 }

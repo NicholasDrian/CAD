@@ -18,7 +18,7 @@ unsigned VertexArrayBasicPoints::GetIndexCount() const
 	return 0;
 }
 
-void VertexArrayBasicPoints::Render(unsigned id, bool selectable, bool selected) const
+void VertexArrayBasicPoints::Render(unsigned id, bool selectable, bool subSelectable, bool selected) const
 {
 
 }

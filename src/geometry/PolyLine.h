@@ -32,6 +32,7 @@ private:
 
 	unsigned m_ID;
 	std::vector<unsigned> m_Indecies;
+	std::vector<uint32_t> m_SubSelectionBuffer;
 	std::vector<glm::vec3> m_Points;
 	glm::vec3 m_Color;
 	std::unique_ptr<VertexArrayBasicLines> m_VertexArray;

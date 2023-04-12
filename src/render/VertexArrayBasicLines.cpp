@@ -5,9 +5,19 @@
 
 
 
-VertexArrayBasicLines::VertexArrayBasicLines(const std::vector<glm::vec3>& positions, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indices, float lineWidth)
+VertexArrayBasicLines::VertexArrayBasicLines(const std::vector<glm::vec3>& positions, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indices, float lineWidth, bool subSelectable, const std::vector<uint32_t>& segmentSelectionBuffer)
 	: m_IndexCount((unsigned)indices.size()), m_LineWidth(lineWidth), m_Model(glm::mat4(1.0)), m_Color(color)
 {
+	if (subSelectable) {
+		GLCall(glGenBuffers(1, &m_SegmentSelectionBufferID));
+		GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SegmentSelectionBufferID));
+		GLCall(glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(uint32_t) * segmentSelectionBuffer.size(), segmentSelectionBuffer.data(), GL_STATIC_DRAW));
+		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_SegmentSelectionBufferID));
+		GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
+	}
+	else {
+		m_SegmentSelectionBufferID = 0;
+	}
 
 	std::vector<ColoredLineVertex> data;
 	for (int i = 0; i < positions.size(); i++) {
@@ -39,9 +49,9 @@ VertexArrayBasicLines::~VertexArrayBasicLines()
 	GLCall(glDeleteVertexArrays(1, &m_RenderID));
 }
 
-void VertexArrayBasicLines::Render(unsigned id, bool selectable, bool selected) const {
+void VertexArrayBasicLines::Render(unsigned id, bool selectable, bool subSelectable, bool selected) const {
 	ShaderManager::Bind(ShaderProgramType::BasicLineShader);
-	ShaderManager::UpdateLocalUniforms(m_Model, m_Color, selectable, selected, id);
+	ShaderManager::UpdateLocalUniforms(m_Model, m_Color, selectable, subSelectable, selected, id);
 	GLCall(glBindVertexArray(m_RenderID));
 	GLCall(glLineWidth(m_LineWidth));
 	GLCall(glDrawElements(GL_LINES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));

@@ -26,6 +26,8 @@ public:
 	static void SetRenderMode(RenderMode mode);
 
 	static int ReadIDAtPixel(int x, int y);
+
+	[[deprecated]] // Inacurate for some reason, should use ray scene intersection instead
 	static float ReadDistanceAtPixel(int x, int y);
 
 	static void WindowResize(int width, int height);
@@ -36,10 +38,7 @@ private:
 	static void DestroyFrameBuffer();
 
 	inline static RenderMode m_RenderMode  = RenderMode::None;
-	inline static GLuint m_FrameBuffer = 0;
-	inline static GLuint m_ColorAttachment = 0;
-	inline static GLuint m_IDAttachment = 0;
-	inline static GLuint m_DepthAttachment = 0;
+	inline static GLuint m_FrameBuffer = 0, m_ColorAttachment = 0, m_IDAttachment = 0, m_DepthAttachment = 0, m_SubIDAttachment = 0;
 	inline static GLint m_Width = -1, m_Height = -1;
 
 };

@@ -19,7 +19,7 @@ public:
 
 	~VertexArrayBasicTriangles();
 
-	virtual void Render(unsigned id, bool selectable, bool selected) const override;
+	virtual void Render(unsigned id, bool selectable, bool subSelectable, bool selected) const override;
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Triangle; }
 	virtual unsigned GetIndexCount() const override { return m_IndexCount; };
 

@@ -16,7 +16,7 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> 
 	
 void NURBS::Render() const
 {
-	m_VertexArray->Render(m_ID, m_Selectable, m_Selected);
+	m_VertexArray->Render(m_ID, m_Selectable, false, m_Selected);
 }
 
 void NURBS::AddControlPoint(glm::vec3 point, bool incrementDegree)

@@ -75,6 +75,6 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 }
 
 void ConstructionPlane::Render() const {
-	m_MajorLinesVertexArray->Render(0, false, false);
-	m_MinorLinesVertexArray->Render(0, false, false);
+	m_MajorLinesVertexArray->Render(0, false, false, false);
+	m_MinorLinesVertexArray->Render(0, false, false, false);
 }

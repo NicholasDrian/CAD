@@ -14,6 +14,6 @@ public:
 
 	virtual PrimitiveType GetPrimitiveType() const = 0;
 	virtual unsigned GetIndexCount() const = 0;
-	virtual void Render(unsigned id, bool selectable, bool selected) const = 0;
+	virtual void Render(unsigned id, bool selectable, bool subSelectable, bool selected) const = 0;
 
 };

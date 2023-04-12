@@ -71,28 +71,21 @@ void Renderer::InitFrameBuffer()
 	GLCall(glGenFramebuffers(1, &m_FrameBuffer));
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 
-	GLCall(glGenTextures(1, &m_ColorAttachment));
-	GLCall(glBindTexture(GL_TEXTURE_2D, m_ColorAttachment));
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttachment, 0));
+	auto createBuffer = [&](GLuint& id, int internalFormat, int format, int type, int attachment) {
+		GLCall(glGenTextures(1, &id));
+		GLCall(glBindTexture(GL_TEXTURE_2D, id));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, format, type, NULL));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, id, 0));
+	};
 
-	GLCall(glGenTextures(1, &m_IDAttachment));
-	GLCall(glBindTexture(GL_TEXTURE_2D, m_IDAttachment));
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, m_Width, m_Height, 0, GL_RED_INTEGER, GL_INT, NULL));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_IDAttachment, 0));
+	createBuffer(m_ColorAttachment, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT0);
+	createBuffer(m_IDAttachment, GL_R32I, GL_RED_INTEGER, GL_INT, GL_COLOR_ATTACHMENT1);
+	createBuffer(m_SubIDAttachment, GL_R32I, GL_RED_INTEGER, GL_INT, GL_COLOR_ATTACHMENT2);
+	createBuffer(m_DepthAttachment, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
 
-	GLCall(glGenTextures(1, &m_DepthAttachment));
-	GLCall(glBindTexture(GL_TEXTURE_2D, m_DepthAttachment));
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, m_Width, m_Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachment, 0));
-
-	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	GLCall(glDrawBuffers(2, DrawBuffers));
 
 #ifdef CAD_DEBUG
@@ -116,18 +109,17 @@ void Renderer::Destroy() {
 
 void Renderer::DestroyFrameBuffer()
 {
-	if (m_ColorAttachment) {
-		GLCall(glDeleteTextures(1, &m_ColorAttachment));
-		m_ColorAttachment = 0;
-	}
-	if (m_IDAttachment) {
-		GLCall(glDeleteTextures(1, &m_IDAttachment));
-		m_IDAttachment = 0;
-	}
-	if (m_FrameBuffer) {
-		GLCall(glDeleteFramebuffers(1, &m_FrameBuffer));
-		m_FrameBuffer = 0;
-	}
+	const auto destroy = [](GLuint& id) {
+		if (id) {
+			GLCall(glDeleteTextures(1, &id));
+			id = 0;
+		}
+	};
+	destroy(m_ColorAttachment);
+	destroy(m_IDAttachment);
+	destroy(m_SubIDAttachment);
+	destroy(m_DepthAttachment);
+	destroy(m_FrameBuffer);
 }
 
 
@@ -139,9 +131,9 @@ int Renderer::ReadIDAtPixel(int x, int y) {
 	return val;
 }
 
+
 float Renderer::ReadDistanceAtPixel(int x, int y) {
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
-	//GLCall(glReadBuffer(GL_DEPTH_ATTACHMENT));
 	float depth;
 	GLCall(glReadPixels(x, m_Height - y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
 
