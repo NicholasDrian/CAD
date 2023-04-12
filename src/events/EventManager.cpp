@@ -96,12 +96,14 @@ void EventManager::KeyCallback(GLFWwindow* window, int key, int scancode, int ac
     if (io.WantCaptureKeyboard) return;
 
     if (m_MouseButtonDown && m_MouseButton == GLFW_MOUSE_BUTTON_RIGHT) {
-        if (action == GLFW_PRESS) {
-            m_CameraMovementInput |= MOVEMENT_BITS.at(key);
-            m_LastMovementUpdateTime = (float)glfwGetTime();
-        }
-        else if (action == GLFW_RELEASE) {
-            m_CameraMovementInput &= ~MOVEMENT_BITS.at(key);
+        if (MOVEMENT_BITS.contains(key)) {
+            if (action == GLFW_PRESS) {
+                m_CameraMovementInput |= MOVEMENT_BITS.at(key);
+                m_LastMovementUpdateTime = (float)glfwGetTime();
+            }
+            else if (action == GLFW_RELEASE) {
+                m_CameraMovementInput &= ~MOVEMENT_BITS.at(key);
+            }
         }
     }
 

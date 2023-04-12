@@ -5,10 +5,20 @@
 const unsigned SAMPLES_PER_EDGE = 20;
 
 NURBS::NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
-	: m_Points(points), m_Weights(weights), m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color)
+	: m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color)
 {
+	if (weights.size() == 0) 
+	{
+		for (const glm::vec3& point : points) m_Points.emplace_back(point.x, point.y, point.z, 1.0f);
+	}
+	else 
+	{
+		for (int i = 0; i < points.size(); i++) {
+			const glm::vec3& point = points[i];
+			m_Points.emplace_back(point.x * weights[i], point.y * weights[i], point.z * weights[i], weights[i]);
+		}
+	}
 	while (m_Degree > m_Points.size() - 1) m_Degree--;
-	if (m_Weights.size() == 0) m_Weights = std::vector(points.size(), 1.0f);
 	UpdateKnotVector();
 	UpdateSamples();
 	UpdateVertexArray();
@@ -19,9 +29,9 @@ void NURBS::Render() const
 	m_VertexArray->Render(m_ID, m_Selectable, false, m_Selected);
 }
 
-void NURBS::AddControlPoint(glm::vec3 point, bool incrementDegree)
+void NURBS::AddControlPoint(const glm::vec3& point, bool incrementDegree)
 {
-	m_Points.push_back(point);
+	m_Points.emplace_back(point.x, point.y, point.z, 1.0f);
 	m_Degree += incrementDegree;
 	UpdateKnotVector();
 	UpdateSamples();
@@ -37,9 +47,9 @@ void NURBS::ChangeDegree(unsigned degree)
 	UpdateVertexArray();
 }
 
-void NURBS::UpdateLastPoint(glm::vec3 point)
+void NURBS::UpdateLastPoint(const glm::vec3& point)
 {
-	m_Points.back() = point;
+	m_Points.back() = {point.x, point.y, point.z, 1.0f};
 	UpdateSamples(); // shouldnt need to update all samples
 	UpdateVertexArray();
 }
@@ -78,7 +88,6 @@ int NURBS::KnotSpan(float u) const
 	if (u == m_Knots[n + 1]) return n;
 	int low = m_Degree, high = n + 1;
 	int mid = (low + high) / 2;
-	// refactor this disgusting binary search
 	while (u < m_Knots[mid] || u >= m_Knots[mid + 1]) { 
 		if (u < m_Knots[mid]) high = mid;
 		else low = mid;
@@ -93,11 +102,11 @@ glm::vec3 NURBS::Sample(float t) const
 	float u = t * (m_Knots.back() - m_Knots[0]);
 	int knotSpan = KnotSpan(u);
 	std::vector<float> basisFuncs = BasisFuncs(u);
-	glm::vec3 res = { 0.0f, 0.0f, 0.0f };
+	glm::vec4 res = { 0.0f, 0.0f, 0.0f, 0.0f };
 	for (unsigned i = 0; i <= m_Degree; i++) {
 		res += basisFuncs[i] * m_Points[knotSpan - m_Degree + i];
 	}
-	return res;
+	return glm::vec3{ res.x, res.y, res.z } / res.w;
 }
 
 void NURBS::UpdateKnotVector()

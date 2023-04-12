@@ -59,33 +59,54 @@ void Scene::Destroy()
 // Shift to select multiple, Control to unselect indevidualy
 void Scene::HandleClick(int x, int y, int button, int mods) 
 {
-	int id = Renderer::ReadIDAtPixel(x, y);
-	if (mods != GLFW_MOD_SHIFT && mods != GLFW_MOD_CONTROL) {
-		for (unsigned oldSelection : m_Selected) {
-			m_Contents[oldSelection]->m_Selected = false;
-		}
-		m_Selected.clear();
-	}
+	uint64_t IDs = Renderer::ReadIDAtPixel(x, y);
+	if (uint32_t ID = IDs >> 32)
+	{
+		uint32_t subID = IDs & 0x00000000FFFFFFFFLLU;
+		bool shift = GLFW_MOD_SHIFT & mods;
+		bool control = GLFW_MOD_CONTROL & mods;
 
-	if (id != 0) {
-
-		if (mods == GLFW_MOD_CONTROL) 
+		if (control && shift)
 		{
-			if (m_Selected.contains(id)) {
-				m_Contents[id]->m_Selected = false;
-				m_Selected.erase(id);
+			m_SubSelected.insert(IDs);
+			m_Contents[ID]->AddSubSelection(subID);
+		}
+		else if (control)
+		{
+			if (m_Selected.contains(ID))
+			{
+				m_Selected.erase(ID);
+				m_Contents[ID]->m_Selected = false;
+			}
+			if (m_SubSelected.contains(IDs))
+			{
+				m_SubSelected.erase(IDs);
+				m_Contents[ID]->RemoveSubSelection(subID);
 			}
 		}
-		else 
+		else if (shift)
 		{
-			m_Selected.insert(id);
-			m_Contents[id]->m_Selected = true;
+			m_Selected.insert(ID);
+			m_Contents[ID]->m_Selected = true;
 		}
+		else
+		{
+			for (uint32_t selection : m_Selected) m_Contents[selection]->m_Selected = false;
+			for (uint64_t subSelection : m_SubSelected) m_Contents[subSelection >> 32]->ClearSubSelection();
+			m_Selected.insert(ID);
+			m_Contents[ID]->m_Selected = true;
+		}
+	}
+	else
+	{
+		for (uint32_t selection : m_Selected) m_Contents[selection]->m_Selected = false;
+		for (uint64_t subSelection : m_SubSelected) m_Contents[subSelection >> 32]->ClearSubSelection();
 	}
 }
 
 void Scene::DeleteSelection() 
 {
+	// fix!
 	for (int i : m_Selected) 
 	{
 		m_Contents.erase(i);
@@ -95,19 +116,22 @@ void Scene::DeleteSelection()
 
 void Scene::Delete(unsigned id)
 {
+	// fix!
 	m_Contents.erase(id);
 }
 
 bool Scene::IntersectScene(int x, int y, glm::vec3& outPoint)
 {
-	int id = Renderer::ReadIDAtPixel(x, y);
+	uint64_t IDs = Renderer::ReadIDAtPixel(x, y);
+	uint32_t ID = IDs >> 32;
 	Ray ray = m_Camera->GetRayAtPixel(x, y);
 
-	if (id == 0) {
+	if (ID == 0) {
 		ray.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, outPoint);
 		return ray.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, outPoint);
 	}
 	else {
+		//fix!
 		outPoint = ray.At(Renderer::ReadDistanceAtPixel(x, y));
 		return true;
 	}

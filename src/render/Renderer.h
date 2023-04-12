@@ -25,7 +25,7 @@ public:
 	static void FinishRender();
 	static void SetRenderMode(RenderMode mode);
 
-	static int ReadIDAtPixel(int x, int y);
+	static uint64_t ReadIDAtPixel(int x, int y);
 
 	[[deprecated]] // Inacurate for some reason, should use ray scene intersection instead
 	static float ReadDistanceAtPixel(int x, int y);

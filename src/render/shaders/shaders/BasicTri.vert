@@ -38,7 +38,7 @@ void main()
 		selected = bool(data & SELECTED_BIT); // If item is selected, selected = true
 
 		if (!selected && bool(data & SUB_SELECTABLE_BIT)) { // If item is not slected but a subsection might be selected
-			unsigned int segmentNum = gl_VertexID / 2;
+			unsigned int segmentNum = gl_VertexID / 3;
 			frag_sub_id = segmentNum;
 			unsigned int segmentIndex = segmentNum / 32;
 			unsigned int segmentBit = 1 << (segmentNum % 32);

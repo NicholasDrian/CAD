@@ -47,4 +47,24 @@ void PolyLine::UpdateVertexArray()
 	// optimize with subdata or some jawn
 }
 
+void PolyLine::AddSubSelection(uint32_t subID)
+{
+	int index = subID / 32;
+	int shift = subID % 32;
+	m_SubSelectionBuffer[index] |= 1 << shift;
+	m_VertexArray->UpdateSegmentSelectionBuffer(index, m_SubSelectionBuffer[index]);
+}
+void PolyLine::RemoveSubSelection(uint32_t subID)
+{
+	int index = subID / 32;
+	int shift = subID % 32;
+	m_SubSelectionBuffer[index] &= ~(1 << shift);
+	m_VertexArray->UpdateSegmentSelectionBuffer(index, m_SubSelectionBuffer[index]);
+}
+void PolyLine::ClearSubSelection()
+{
+	for (uint32_t& i : m_SubSelectionBuffer) i = 0;
+	m_VertexArray->UpdateSegmentSelectionBuffer(m_SubSelectionBuffer);
+}
+
 

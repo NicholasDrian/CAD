@@ -15,6 +15,10 @@ public:
 
 	virtual void Render() const override;
 
+	virtual void AddSubSelection(uint32_t subID) override;
+	virtual void RemoveSubSelection(uint32_t subID) override;
+	virtual void ClearSubSelection() override;
+
 	inline virtual unsigned GetID() const override { return m_ID; };
 
 private:

@@ -16,6 +16,10 @@ public:
 
 	virtual void Render() const override;
 
+	virtual void AddSubSelection(uint32_t subID) override;
+	virtual void RemoveSubSelection(uint32_t subID) override;
+	virtual void ClearSubSelection() override;
+
 	void AddPoint(const glm::vec3& point);
 	void RemoveLast();
 

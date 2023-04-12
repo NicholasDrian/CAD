@@ -56,3 +56,14 @@ void VertexArrayBasicLines::Render(unsigned id, bool selectable, bool subSelecta
 	GLCall(glLineWidth(m_LineWidth));
 	GLCall(glDrawElements(GL_LINES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
 }
+
+void VertexArrayBasicLines::UpdateSegmentSelectionBuffer(unsigned index, uint32_t val) 
+{
+	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SegmentSelectionBufferID));
+	GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(uint32_t) * index, sizeof(uint32_t), &val));
+}
+void VertexArrayBasicLines::UpdateSegmentSelectionBuffer(std::vector<uint32_t> data)
+{
+	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SegmentSelectionBufferID));
+	GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(uint32_t) * data.size(), data.data()));
+}

@@ -1,10 +1,12 @@
 #!/bin/bash
 
-cd C:\Users\15303\Desktop\cs\CAD
+cd C:/Users/15303/Desktop/cs/CAD
 timestamp=$(date +%c)
 
+read -p "Enter commit message:" message
+
 git add .
-git commit -m "Automated Backup at: $timestamp" 
+git commit -m "$message" 
 git push
 
 git status

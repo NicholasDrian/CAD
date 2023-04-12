@@ -44,8 +44,8 @@ void Renderer::BeginRender() {
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-	int val = 0;
-	GLCall(glClearBufferiv(GL_COLOR, 1, &val));
+	GLuint val[] = { 0, 0 };
+	GLCall(glClearBufferuiv(GL_COLOR, 1, val));
 
 	ShaderManager::UpdateGlobalUniforms();
 }
@@ -81,8 +81,9 @@ void Renderer::InitFrameBuffer()
 	};
 
 	createBuffer(m_ColorAttachment, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT0);
-	createBuffer(m_IDAttachment, GL_R32I, GL_RED_INTEGER, GL_INT, GL_COLOR_ATTACHMENT1);
-	createBuffer(m_SubIDAttachment, GL_R32I, GL_RED_INTEGER, GL_INT, GL_COLOR_ATTACHMENT2);
+	createBuffer(m_IDAttachment, GL_RG32I, GL_RG_INTEGER, GL_INT, GL_COLOR_ATTACHMENT1);
+	//createBuffer(m_IDAttachment, GL_R32I, GL_RED_INTEGER, GL_INT, GL_COLOR_ATTACHMENT1);
+	//createBuffer(m_SubIDAttachment, GL_R32I, GL_RED_INTEGER, GL_INT, GL_COLOR_ATTACHMENT2);
 	createBuffer(m_DepthAttachment, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
 
 	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
@@ -123,11 +124,11 @@ void Renderer::DestroyFrameBuffer()
 }
 
 
-int Renderer::ReadIDAtPixel(int x, int y) {
+uint64_t Renderer::ReadIDAtPixel(int x, int y) {
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 	GLCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
-	int val;
-	GLCall(glReadPixels(x, m_Height - y, 1, 1, GL_RED_INTEGER, GL_INT, &val));
+	uint64_t val;
+	GLCall(glReadPixels(x, m_Height - y, 1, 1, GL_RG_INTEGER, GL_INT, &val));
 	return val;
 }
 

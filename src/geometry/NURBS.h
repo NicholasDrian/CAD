@@ -19,13 +19,13 @@ public:
 	inline virtual unsigned GetID() const override { return m_ID; }
 	inline size_t GetNumControlPoints() const { return m_Points.size(); };
 	inline unsigned GetDegree() const { return m_Degree; }
-	inline const std::vector<glm::vec3>& GetControlPoints() const { return m_Points; }
-	inline std::vector<glm::vec3>& GetControlPoints() { return m_Points; }
+	inline const std::vector<glm::vec4>& GetControlPoints() const { return m_Points; }
+	inline std::vector<glm::vec4>& GetControlPoints() { return m_Points; }
 
-	void AddControlPoint(glm::vec3 point, bool incrementDegree = false);
+	void AddControlPoint(const glm::vec3& point, bool incrementDegree = false);
 	void ChangeDegree(unsigned degree);
 
-	void UpdateLastPoint(glm::vec3 point);
+	void UpdateLastPoint(const glm::vec3& point);
 	void RemoveLastPoint();
 
 private:
@@ -38,9 +38,9 @@ private:
 	void UpdateSamples();
 	void UpdateVertexArray();
 
-	std::vector<glm::vec3> m_Points;
+	std::vector<glm::vec4> m_Points;
 	glm::vec3 m_Color;
-	std::vector<float> m_Weights, m_Knots;
+	std::vector<float> m_Knots;
 	std::vector<unsigned> m_Indecies;
 	unsigned m_Degree;
 	unsigned m_ID;

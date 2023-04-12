@@ -23,6 +23,9 @@ public:
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Line; }
 	virtual unsigned GetIndexCount() const override { return m_IndexCount; };
 
+	void UpdateSegmentSelectionBuffer(unsigned index, uint32_t val);
+	void UpdateSegmentSelectionBuffer(std::vector<uint32_t> data);
+
 private:
 
 	GLuint m_RenderID, m_VertexBufferID, m_IndexBufferID, m_SegmentSelectionBufferID;

@@ -9,6 +9,23 @@ Mesh::Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>
 	m_VertexArray = std::make_unique<VertexArrayBasicTriangles>(m_Positions, m_Normals, m_SelectedTriangles, m_Color, m_ID, m_Indices);
 }
 
+void Mesh::AddSubSelection(uint32_t subID)
+{
+	int index = subID / 32;
+	int shift = subID % 32;
+	m_SelectedTriangles[index] |= 1 << shift;
+}
+void Mesh::RemoveSubSelection(uint32_t subID)
+{
+	int index = subID / 32;
+	int shift = subID % 32;
+	m_SelectedTriangles[index] &= ~(1 << shift);
+}
+void Mesh::ClearSubSelection()
+{
+	for (uint32_t& i : m_SelectedTriangles) i = 0;
+}
+
 void Mesh::Render() const {
 	m_VertexArray->Render(m_ID, m_Selectable, true, m_Selected);
 }

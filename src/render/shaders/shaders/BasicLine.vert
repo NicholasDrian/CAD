@@ -39,11 +39,11 @@ void main()
 		selected = bool(data & SELECTED_BIT); // If item is selected, selected = true
 
 		if (!selected && bool(data & SUB_SELECTABLE_BIT)) { // If item is not slected but a subsection might be selected
-			unsigned int triangleNum = gl_VertexID / 2;
-			frag_sub_id = triangleNum;
-			unsigned int triangleIndex = triangleNum / 32;
-			unsigned int triangleBit = 1 << (triangleNum % 32);
-			selected = bool(selection_buffer[triangleIndex] & triangleBit);
+			unsigned int segmentNum = gl_VertexID / 2;
+			frag_sub_id = segmentNum;
+			unsigned int segmentIndex = segmentNum / 32;
+			unsigned int segmentBit = 1 << (segmentNum % 32);
+			selected = bool(selection_buffer[segmentIndex] & segmentBit);
 		}
 	}
 
