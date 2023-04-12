@@ -6,9 +6,16 @@
 #include<iostream>
 
 
-VertexArrayBasicTriangles::VertexArrayBasicTriangles(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indices)
+VertexArrayBasicTriangles::VertexArrayBasicTriangles(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<uint32_t>& triangleSelectionBuffer, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indices)
 	: m_IndexCount((unsigned)indices.size()), m_Model(glm::mat4(1.0)), m_Color(color)
 {
+	//why doesnt this work!!!!
+	GLCall(glGenBuffers(1, &m_TriangleSelectionBufferID));
+	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_TriangleSelectionBufferID));
+	GLCall(glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(uint32_t) * triangleSelectionBuffer.size(), triangleSelectionBuffer.data(), GL_STATIC_DRAW));
+	GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_TriangleSelectionBufferID));
+	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
+
 
 	std::vector<ColoredTriangleVertex> data;
 	for (int i = 0; i < positions.size(); i++) {

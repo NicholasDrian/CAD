@@ -17,7 +17,6 @@ void ShaderManager::Init()
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_LocalShaderUniforms));
 	GLCall(glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) + sizeof(glm::vec3) + sizeof(uint32_t) + sizeof(uint32_t), NULL, GL_DYNAMIC_DRAW));
 	GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 1, m_LocalShaderUniforms));
-
 }
 
 void ShaderManager::Destroy() {

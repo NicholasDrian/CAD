@@ -101,7 +101,7 @@ void EventManager::KeyCallback(GLFWwindow* window, int key, int scancode, int ac
             m_LastMovementUpdateTime = (float)glfwGetTime();
         }
         else if (action == GLFW_RELEASE) {
-            m_CameraMovementInput = 0;
+            m_CameraMovementInput &= ~MOVEMENT_BITS.at(key);
         }
     }
 

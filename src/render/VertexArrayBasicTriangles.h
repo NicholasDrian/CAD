@@ -15,7 +15,7 @@ class VertexArrayBasicTriangles : public VertexArray {
 
 public:
 
-	VertexArrayBasicTriangles(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indecies);
+	VertexArrayBasicTriangles(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<uint32_t>& triangleSelectionBuffer, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indecies);
 
 	~VertexArrayBasicTriangles();
 
@@ -25,10 +25,7 @@ public:
 
 private:
 
-	
-	GLuint m_RenderID;
-	GLuint m_VertexBufferID;
-	GLuint m_IndexBufferID;
+	GLuint m_RenderID, m_VertexBufferID, m_IndexBufferID, m_TriangleSelectionBufferID;
 	unsigned m_IndexCount;
 	glm::mat4 m_Model;
 	glm::vec3 m_Color;

@@ -22,12 +22,23 @@ layout (std140, binding = 1) uniform local
 	unsigned int id;
 };
 
+layout (std140, binding = 3) readonly buffer triangleSelection
+{
+	unsigned int selection_buffer[];
+};
+
 void main() 
 {
-	//gl_VertexID use to index into sub selection buffer.
 	gl_Position = view_proj * model * vec4(position, 1.0);
+
+	unsigned int triangleNum = gl_VertexID / 3;
+	unsigned int triangleIndex = triangleNum / 32;
+	unsigned int triangleBit = 1 << (triangleNum % 32);
+	bool selected = bool(data & (1 << 1)) || bool(selection_buffer[triangleIndex] & triangleBit);
+
 	frag_color = color;
-	if (data & (1 << 1)) frag_color += vec3(0.3, 0.3, -0.3);
+	if (selected) frag_color += vec3(0.3, 0.3, -0.3);
+
 	frag_id = id;
 	frag_data = data;
 
