@@ -7,5 +7,7 @@ git add .
 git commit -m "Automated Backup at: $timestamp" 
 git push
 
+git status
+
 echo PRESS ENTER TO CLOSE...
 read
