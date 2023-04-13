@@ -14,7 +14,7 @@
 void Application::Run()
 {
 	Init();
-	double targetFrameRate = 30, frame_start = glfwGetTime();
+	double targetFrameRate = 30.0, frame_start = glfwGetTime();
 	while (!Window::ShouldClose()) 
 	{
 		while (glfwGetTime() < frame_start + 1 / targetFrameRate);

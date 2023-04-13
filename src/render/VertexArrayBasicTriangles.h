@@ -23,6 +23,9 @@ public:
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Triangle; }
 	virtual unsigned GetIndexCount() const override { return m_IndexCount; };
 
+	void UpdateSegmentSelectionBuffer(unsigned index, uint32_t val);
+	void UpdateSegmentSelectionBuffer(std::vector<uint32_t> data, bool updateSize = false);
+
 private:
 
 	GLuint m_RenderID, m_VertexBufferID, m_IndexBufferID, m_TriangleSelectionBufferID;

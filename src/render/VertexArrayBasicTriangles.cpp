@@ -46,6 +46,7 @@ VertexArrayBasicTriangles::~VertexArrayBasicTriangles()
 {
 	GLCall(glDeleteBuffers(1, &m_IndexBufferID));
 	GLCall(glDeleteBuffers(1, &m_VertexBufferID));
+	GLCall(glDeleteBuffers(1, &m_TriangleSelectionBufferID));
 	GLCall(glDeleteVertexArrays(1, &m_RenderID));
 
 }
@@ -54,5 +55,18 @@ void VertexArrayBasicTriangles::Render(unsigned id, bool selectable, bool subSel
 	ShaderManager::Bind(ShaderProgramType::BasicTriShader);
 	ShaderManager::UpdateLocalUniforms(m_Model, m_Color, selectable, subSelectable, selected, id);
 	GLCall(glBindVertexArray(m_RenderID));
+	if (subSelectable) GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_TriangleSelectionBufferID));
 	GLCall(glDrawElements(GL_TRIANGLES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
+}
+
+void VertexArrayBasicTriangles::UpdateSegmentSelectionBuffer(unsigned index, uint32_t val)
+{
+	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_TriangleSelectionBufferID));
+	GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(uint32_t) * index, sizeof(uint32_t), &val));
+}
+void VertexArrayBasicTriangles::UpdateSegmentSelectionBuffer(std::vector<uint32_t> data, bool updateSize)
+{
+	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_TriangleSelectionBufferID));
+	if (updateSize) GLCall(glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(uint32_t) * data.size(), data.data(), GL_STATIC_DRAW));
+	else			GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(uint32_t) * data.size(), data.data()));
 }

@@ -20,7 +20,7 @@ void PolyLine::Render() const
 void PolyLine::AddPoint(const glm::vec3& point)
 {
 	m_Points.push_back(point);
-	if (m_Points.size() % 32 == 1) m_SubSelectionBuffer.push_back(0U);
+	if ((m_Points.size() - 1) % 32 == 1) m_SubSelectionBuffer.push_back(0U);
 	m_Indecies.push_back((unsigned)m_Points.size() - 2U);
 	m_Indecies.push_back((unsigned)m_Points.size() - 1U);
 	UpdateVertexArray();
@@ -35,7 +35,7 @@ void PolyLine::RemoveLast()
 {
 	if (m_Points.size() == 0) return;
 	m_Points.pop_back();
-	if (m_Points.size() % 32 == 0) m_SubSelectionBuffer.pop_back();
+	if ((m_Points.size() - 1) % 32 == 0) m_SubSelectionBuffer.pop_back();
 	m_Indecies.pop_back();
 	m_Indecies.pop_back();
 	UpdateVertexArray();

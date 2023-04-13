@@ -24,7 +24,7 @@ public:
 	virtual unsigned GetIndexCount() const override { return m_IndexCount; };
 
 	void UpdateSegmentSelectionBuffer(unsigned index, uint32_t val);
-	void UpdateSegmentSelectionBuffer(std::vector<uint32_t> data);
+	void UpdateSegmentSelectionBuffer(std::vector<uint32_t> data, bool updateSize = false);
 
 private:
 

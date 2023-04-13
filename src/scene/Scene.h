@@ -34,14 +34,14 @@ public:
 
 	inline static Camera* GetCamera() { return m_Camera.get(); }
 
-	inline static void ClearSelection() { m_Selected.clear(); }
+	static void ClearSelection();
 
 private:
 
 	inline static const float m_MaxExtend = 10000.0f;
 
 	inline static std::unordered_set<uint32_t> m_Selected;
-	inline static std::unordered_set<uint64_t> m_SubSelected;
+	inline static std::unordered_set<uint32_t> m_SubSelected;
 
 	inline static std::unique_ptr<Camera> m_Camera;
 	inline static std::unordered_map<unsigned, std::unique_ptr<Renderable>> m_Contents;

@@ -18,10 +18,10 @@ void Scene::Init()
 {
 
 	//test scene
-	std::vector positions { glm::vec3{ 0.0f, 0.0f, 5.0f }, glm::vec3{ 20.0f, 0.0f, 5.0f }, glm::vec3{ 0.0f, 20.0f, 5.0f } };
-	std::vector normals { glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 20.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 20.0f, 0.0f } };
+	std::vector positions{ glm::vec3{ 0.0f, 0.0f, 5.0f }, glm::vec3{ 20.0f, 0.0f, 5.0f }, glm::vec3{20,20,5}, glm::vec3{ 0.0f, 20.0f, 5.0f } };
+	std::vector normals { glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f } };
 	glm::vec3 color{ 1.0f, 0.0f, 0.3f };
-	std::vector indices{ 0U, 1U, 2U };
+	std::vector indices{ 0U, 1U, 2U, 2U, 3U, 0U };
 	std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(positions, normals, color, indices);
 	AddToScene(std::move(mesh));
 
@@ -55,68 +55,73 @@ void Scene::Destroy()
 	m_Camera.reset();
 }
 
+void Scene::ClearSelection()
+{
+	for (uint32_t s : m_Selected) m_Contents[s]->m_Selected = false;
+	for (uint32_t s : m_SubSelected) m_Contents[s]->ClearSubSelection();
+	m_Selected.clear();
+	m_SubSelected.clear();
+}
 
-// Shift to select multiple, Control to unselect indevidualy
 void Scene::HandleClick(int x, int y, int button, int mods) 
 {
 	uint64_t IDs = Renderer::ReadIDAtPixel(x, y);
+	bool shift = GLFW_MOD_SHIFT & mods;
+	bool control = GLFW_MOD_CONTROL & mods;
 	if (uint32_t ID = IDs >> 32)
 	{
 		uint32_t subID = IDs & 0x00000000FFFFFFFFLLU;
-		bool shift = GLFW_MOD_SHIFT & mods;
-		bool control = GLFW_MOD_CONTROL & mods;
 
 		if (control && shift)
 		{
-			m_SubSelected.insert(IDs);
-			m_Contents[ID]->AddSubSelection(subID);
+			if (!m_Selected.contains(ID)) {
+				m_SubSelected.insert(ID);
+				m_Contents[ID]->AddSubSelection(subID);
+			}
 		}
 		else if (control)
 		{
-			if (m_Selected.contains(ID))
-			{
-				m_Selected.erase(ID);
-				m_Contents[ID]->m_Selected = false;
-			}
-			if (m_SubSelected.contains(IDs))
-			{
-				m_SubSelected.erase(IDs);
-				m_Contents[ID]->RemoveSubSelection(subID);
-			}
+			m_Selected.erase(ID);
+			m_SubSelected.erase(ID);
+			m_Contents[ID]->m_Selected = false;
+			m_Contents[ID]->RemoveSubSelection(subID);
 		}
 		else if (shift)
 		{
 			m_Selected.insert(ID);
+			m_SubSelected.erase(ID);
+			m_Contents[ID]->ClearSubSelection();
 			m_Contents[ID]->m_Selected = true;
 		}
 		else
 		{
-			for (uint32_t selection : m_Selected) m_Contents[selection]->m_Selected = false;
-			for (uint64_t subSelection : m_SubSelected) m_Contents[subSelection >> 32]->ClearSubSelection();
+			ClearSelection();
 			m_Selected.insert(ID);
 			m_Contents[ID]->m_Selected = true;
 		}
 	}
 	else
 	{
-		for (uint32_t selection : m_Selected) m_Contents[selection]->m_Selected = false;
-		for (uint64_t subSelection : m_SubSelected) m_Contents[subSelection >> 32]->ClearSubSelection();
+		if (!shift && !control) {
+			ClearSelection();
+		}
 	}
 }
 
+// Invariant: never both selected and sub selected!
 void Scene::DeleteSelection() 
 {
-	// fix!
-	for (int i : m_Selected) 
-	{
-		m_Contents.erase(i);
-	}
+	for (int i : m_Selected) m_Contents.erase(i);
 	m_Selected.clear();
+
+	// Todo: handle deletion of sub selection!
+
 }
 
 void Scene::Delete(unsigned id)
 {
-	// fix!
+	m_Selected.erase(id);
+	m_SubSelected.erase(id);
 	m_Contents.erase(id);
 }
 

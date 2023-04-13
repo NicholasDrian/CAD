@@ -46,6 +46,7 @@ VertexArrayBasicLines::~VertexArrayBasicLines()
 {
 	GLCall(glDeleteBuffers(1, &m_IndexBufferID));
 	GLCall(glDeleteBuffers(1, &m_VertexBufferID));
+	GLCall(glDeleteBuffers(1, &m_SegmentSelectionBufferID));
 	GLCall(glDeleteVertexArrays(1, &m_RenderID));
 }
 
@@ -53,6 +54,7 @@ void VertexArrayBasicLines::Render(unsigned id, bool selectable, bool subSelecta
 	ShaderManager::Bind(ShaderProgramType::BasicLineShader);
 	ShaderManager::UpdateLocalUniforms(m_Model, m_Color, selectable, subSelectable, selected, id);
 	GLCall(glBindVertexArray(m_RenderID));
+	if (subSelectable) GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_SegmentSelectionBufferID));
 	GLCall(glLineWidth(m_LineWidth));
 	GLCall(glDrawElements(GL_LINES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
 }
@@ -62,8 +64,9 @@ void VertexArrayBasicLines::UpdateSegmentSelectionBuffer(unsigned index, uint32_
 	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SegmentSelectionBufferID));
 	GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(uint32_t) * index, sizeof(uint32_t), &val));
 }
-void VertexArrayBasicLines::UpdateSegmentSelectionBuffer(std::vector<uint32_t> data)
+void VertexArrayBasicLines::UpdateSegmentSelectionBuffer(std::vector<uint32_t> data, bool updateSize)
 {
 	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SegmentSelectionBufferID));
-	GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(uint32_t) * data.size(), data.data()));
+	if (updateSize) GLCall(glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(uint32_t) * data.size(), data.data(), GL_STATIC_DRAW));
+	else			GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(uint32_t) * data.size(), data.data()));
 }

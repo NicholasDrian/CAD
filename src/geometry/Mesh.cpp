@@ -14,16 +14,19 @@ void Mesh::AddSubSelection(uint32_t subID)
 	int index = subID / 32;
 	int shift = subID % 32;
 	m_SelectedTriangles[index] |= 1 << shift;
+	m_VertexArray->UpdateSegmentSelectionBuffer(index, m_SelectedTriangles[index]);
 }
 void Mesh::RemoveSubSelection(uint32_t subID)
 {
 	int index = subID / 32;
 	int shift = subID % 32;
 	m_SelectedTriangles[index] &= ~(1 << shift);
+	m_VertexArray->UpdateSegmentSelectionBuffer(index, m_SelectedTriangles[index]);
 }
 void Mesh::ClearSubSelection()
 {
 	for (uint32_t& i : m_SelectedTriangles) i = 0;
+	m_VertexArray->UpdateSegmentSelectionBuffer(m_SelectedTriangles);
 }
 
 void Mesh::Render() const {
