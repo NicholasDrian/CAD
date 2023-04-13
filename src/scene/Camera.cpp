@@ -20,6 +20,12 @@ Camera::Camera(glm::vec3 position, glm::vec3 focalPoint, float fovy)
 glm::mat4 Camera::GetViewProj() const {
 	return glm::perspective(m_Fovy, Window::GetAspect(), m_NearPlane, m_FarPlane) * glm::lookAt(m_Position, m_FocalPoint, m_Up);
 }
+glm::mat4 Camera::GetView() const {
+	return glm::lookAt(m_Position, m_FocalPoint, m_Up);
+}
+glm::mat4 Camera::GetProj() const {
+	return glm::perspective(m_Fovy, Window::GetAspect(), m_NearPlane, m_FarPlane);
+}
 
 void Camera::TurnUp(int delta)
 {

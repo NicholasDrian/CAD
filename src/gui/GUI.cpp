@@ -10,6 +10,9 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_internal.h>
 
+#include "ImGuizmo/ImGuizmo.h"
+#include "AffineTransformWidget.h"
+
 #include <GLFW/glfw3.h>
 
 #include <string>
@@ -41,9 +44,10 @@ void GUI::BeginRender() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    ImGuizmo::BeginFrame();
+    ImGuizmo::Enable(true);
 
     ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
- 
 }
 
 bool HY_ImGui_BeginMainStatusBar()
@@ -105,6 +109,9 @@ void HY_ImGui_EndMainStatusBar()
 void GUI::Render() {
 
     BeginRender();
+
+    // draw scene gui
+    AffineTransformWidget::test();
 
 
     static bool m_ShowDisplayOptions = false;

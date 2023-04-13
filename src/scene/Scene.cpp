@@ -8,6 +8,7 @@
 #include "../geometry/Mesh.h"
 #include "../geometry/NURBS.h"
 #include "../render/Renderer.h"
+
 #include "glm/gtc/constants.hpp"
 #include "glm/glm.hpp"
 #include "GLFW/glfw3.h"

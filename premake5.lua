@@ -17,14 +17,16 @@ project "CAD"
 		"src/**.frag",
 		"dependencies/imgui/*.cpp",
 		"dependencies/glm/**.hpp",
-		"dependencies/glm/**.inl"
+		"dependencies/glm/**.inl",
+		"dependencies/ImGuizmo/**.cpp"
 	}
 
 	includedirs {
 		"dependencies/glfw/include",
 		"dependencies/glew/include",
 		"dependencies/imgui",
-		"dependencies/glm"
+		"dependencies/glm",
+		"dependencies/ImGuizmo"
 	}
 
 	links {

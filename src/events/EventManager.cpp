@@ -55,9 +55,9 @@ void EventManager::WindowResizeCallback(GLFWwindow* window, int width, int heigh
 void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int mods)
 {
 
-    // ignore mouse event if handled by gui...
+    // ignore new clicks if handled by imgui...
     ImGuiIO& io = GUI::GetIO();
-    if (io.WantCaptureMouse) return;
+    if (io.WantCaptureMouse && action == GLFW_PRESS) return;
 
     if (action == GLFW_PRESS && !m_MouseButtonDown) 
     {
