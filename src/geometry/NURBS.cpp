@@ -29,6 +29,20 @@ void NURBS::Render() const
 	m_VertexArray->Render(m_ID, m_Selectable, false, m_Selected);
 }
 
+AxisAlignedBoundingBox NURBS::GetBoundingBox() const
+{
+	std::vector<glm::vec3> points(m_Points.size());
+	for (const glm::vec4& point : m_Points) points.emplace_back(point.x, point.y, point.z);
+	return AxisAlignedBoundingBox(points);
+}
+
+
+AxisAlignedBoundingBox NURBS::GetSubSelectionBoundingBox() const
+{
+	//todo
+	return AxisAlignedBoundingBox();
+}
+
 void NURBS::AddControlPoint(const glm::vec3& point, bool incrementDegree)
 {
 	m_Points.emplace_back(point.x, point.y, point.z, 1.0f);

@@ -4,6 +4,7 @@
 
 #include "../commands/CommandManager.h"
 #include "../Window.h"
+#include "../scene/Scene.h"
 #include "Style.h"
 
 #include <imgui_impl_glfw.h>
@@ -110,8 +111,7 @@ void GUI::Render() {
 
     BeginRender();
 
-    // draw scene gui
-    AffineTransformWidget::test();
+    Scene::DrawGUI();
 
 
     static bool m_ShowDisplayOptions = false;
@@ -120,7 +120,6 @@ void GUI::Render() {
 
     if (ImGui::BeginMainMenuBar())
     {
-        //ImGui::Text(CommandManager::GetInput().c_str());
 
         if (ImGui::BeginMenu("Menu"))
         {

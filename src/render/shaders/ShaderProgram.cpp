@@ -44,7 +44,7 @@ ShaderProgram::ShaderProgram(ShaderProgramType type)
 	if (linked != GL_TRUE) PrintProgramInfoLog(m_ID);
 #endif
 
-	m_ViewProjLocation = GLResult(glGetUniformLocation(m_ID, "view_proj"));
+	//m_ViewProjLocation = GLResult(glGetUniformLocation(m_ID, "view_proj"));
 }
 
 void ShaderProgram::Destroy()
@@ -73,5 +73,5 @@ void ShaderProgram::Init(const char* vertPath, const char* fragPath)
 	if (linked != GL_TRUE) PrintProgramInfoLog(m_ID);
 #endif
 
-	m_ViewProjLocation = GLResult(glGetUniformLocation(m_ID, "view_proj"));
+	//m_ViewProjLocation = GLResult(glGetUniformLocation(m_ID, "view_proj"));
 }

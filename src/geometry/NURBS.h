@@ -16,6 +16,10 @@ public:
 
 	virtual void Render() const override;
 
+	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
+	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+
+
 	inline virtual unsigned GetID() const override { return m_ID; }
 	inline size_t GetNumControlPoints() const { return m_Points.size(); };
 	inline unsigned GetDegree() const { return m_Degree; }

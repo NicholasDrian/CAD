@@ -20,6 +20,8 @@ public:
 	static void SwapBuffers();
 
 	static std::pair<unsigned, unsigned> GetSize();
+	static std::pair<unsigned, unsigned> GetPos();
+
 	static float GetAspect();
 
 	static inline GLFWwindow* GetGLFWWindow() { return m_Window; }

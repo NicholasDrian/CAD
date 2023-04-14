@@ -17,6 +17,10 @@ public:
 
 	virtual void Render() const override;
 
+	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
+	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+
+
 	virtual void AddSubSelection(uint32_t subID) override;
 	virtual void RemoveSubSelection(uint32_t subID) override;
 	virtual void ClearSubSelection() override;
@@ -38,7 +42,9 @@ private:
 	unsigned m_ID;
 	std::vector<unsigned> m_Indecies;
 
-	std::vector<uint32_t> m_SubSelectionBuffer;
+	std::vector<uint32_t> m_SegmentSelectionBuffer;
+	std::unordered_map<int, int> m_VertexSelectionCounter;
+	std::vector<uint32_t> m_VertexSelectionBuffer;
 
 	std::vector<glm::vec3> m_Points;
 	glm::vec3 m_Color;

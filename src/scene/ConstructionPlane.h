@@ -16,6 +16,9 @@ public:
 
 	inline virtual unsigned GetID() const override { return 0U; }
 
+	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
+	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+
 private:
 
 	std::unique_ptr<VertexArrayBasicLines> m_MajorLinesVertexArray;

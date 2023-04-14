@@ -44,6 +44,19 @@ void Scene::Render() {
 	}
 }
 
+void Scene::DrawGUI()
+{
+	if (m_TransformWidget) m_TransformWidget->Draw();
+	ShaderManager::UpdateGlobalUniforms();
+}
+
+
+const glm::mat4& Scene::GetSelectionTransform()
+{
+	if (m_TransformWidget) return m_TransformWidget->GetDelta();
+	return glm::mat4(1.0);
+}
+
 void Scene::AddToScene(std::unique_ptr<Renderable> obj)
 {
 	m_Contents[obj->GetID()] = std::move(obj);
@@ -64,11 +77,22 @@ void Scene::ClearSelection()
 	m_SubSelected.clear();
 }
 
+
+AxisAlignedBoundingBox Scene::GetSelectedBoundingBox()
+{
+	AxisAlignedBoundingBox bb;
+	for (uint32_t i : m_Selected) bb += m_Contents[i]->GetBoundingBox();
+	for (uint32_t i : m_SubSelected) bb += m_Contents[i]->GetSubSelectionBoundingBox();
+	return bb;
+}
+
 void Scene::HandleClick(int x, int y, int button, int mods) 
 {
 	uint64_t IDs = Renderer::ReadIDAtPixel(x, y);
 	bool shift = GLFW_MOD_SHIFT & mods;
 	bool control = GLFW_MOD_CONTROL & mods;
+
+
 	if (uint32_t ID = IDs >> 32)
 	{
 		uint32_t subID = IDs & 0x00000000FFFFFFFFLLU;
@@ -107,6 +131,11 @@ void Scene::HandleClick(int x, int y, int button, int mods)
 			ClearSelection();
 		}
 	}
+
+	int numSelected = m_Selected.size() + m_SubSelected.size();
+	if (numSelected == 0) m_TransformWidget.reset();
+	else m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
+	
 }
 
 // Invariant: never both selected and sub selected!

@@ -21,7 +21,6 @@ public:
 
 	static void Tick();
 
-	static void WindowResizeCallback(GLFWwindow* window, int width, int height);
 	static void MouseCallback(GLFWwindow* window, int button, int action, int mods);
 	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 

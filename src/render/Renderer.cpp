@@ -34,6 +34,22 @@ void Renderer::Init()
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glEnable(GL_POINT_SMOOTH));
 	GLCall(glPointSize(3.0));
+
+	const GLubyte* renderer = glGetString(GL_RENDERER);
+	const GLubyte* vendor = glGetString(GL_VENDOR);
+	const GLubyte* version = glGetString(GL_VERSION);
+	const GLubyte* glslVersion =
+		glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+	GLint major, minor;
+	glGetIntegerv(GL_MAJOR_VERSION, &major);
+	glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+	printf("GL Vendor            : %s\n", vendor);
+	printf("GL Renderer          : %s\n", renderer);
+	printf("GL Version (string)  : %s\n", version);
+	printf("GL Version (integer) : %d.%d\n", major, minor);
+	printf("GLSL Version         : %s\n", glslVersion);
 }
 
 void Renderer::SetClearColor(glm::vec3 color) {
@@ -41,6 +57,12 @@ void Renderer::SetClearColor(glm::vec3 color) {
 }
 
 void Renderer::BeginRender() {
+
+	auto [x,y] = Window::GetSize();
+	if (x != m_Width || y != m_Height) {
+		WindowResize(x, y);
+	}
+
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -48,6 +70,8 @@ void Renderer::BeginRender() {
 	GLCall(glClearBufferuiv(GL_COLOR, 1, val));
 
 	ShaderManager::UpdateGlobalUniforms();
+
+
 }
 
 void Renderer::FinishRender() {
@@ -82,11 +106,9 @@ void Renderer::InitFrameBuffer()
 
 	createBuffer(m_ColorAttachment, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT0);
 	createBuffer(m_IDAttachment, GL_RG32I, GL_RG_INTEGER, GL_INT, GL_COLOR_ATTACHMENT1);
-	//createBuffer(m_IDAttachment, GL_R32I, GL_RED_INTEGER, GL_INT, GL_COLOR_ATTACHMENT1);
-	//createBuffer(m_SubIDAttachment, GL_R32I, GL_RED_INTEGER, GL_INT, GL_COLOR_ATTACHMENT2);
 	createBuffer(m_DepthAttachment, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
 
-	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	GLCall(glDrawBuffers(2, DrawBuffers));
 
 #ifdef CAD_DEBUG

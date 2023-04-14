@@ -47,11 +47,6 @@ void EventManager::Tick()
     }
 }
 
-void EventManager::WindowResizeCallback(GLFWwindow* window, int width, int height)
-{
-	Renderer::WindowResize(width, height);
-}
-
 void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int mods)
 {
 

@@ -78,3 +78,13 @@ void ConstructionPlane::Render() const {
 	m_MajorLinesVertexArray->Render(0, false, false, false);
 	m_MinorLinesVertexArray->Render(0, false, false, false);
 }
+
+AxisAlignedBoundingBox ConstructionPlane::GetBoundingBox() const
+{
+	return AxisAlignedBoundingBox();
+}
+
+AxisAlignedBoundingBox ConstructionPlane::GetSubSelectionBoundingBox() const
+{
+	return AxisAlignedBoundingBox();
+}

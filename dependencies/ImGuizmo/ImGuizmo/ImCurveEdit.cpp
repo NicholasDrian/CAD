@@ -201,7 +201,7 @@ namespace ImCurveEdit
       auto pointToRange = [&](ImVec2 pt) { return (pt - min) / range; };
       auto rangeToPoint = [&](ImVec2 pt) { return (pt * range) + min; };
 
-      draw_list->AddLine(ImVec2(-1.f, -min.y / range.y) * viewSize + offset, ImVec2(1.f, -min.y / range.y) * viewSize + offset, 0xFF000000, 1.5f);
+      draw_list->AddLine(ImVec2(-1.f, -min.y / range.y) * viewSize + offset, ImVec2(1.f, -min.y / range.y) * viewSize + offset, 0xFF000000, 1.0f);
       bool overCurveOrPoint = false;
 
       int localOverCurve = -1;
@@ -261,7 +261,7 @@ namespace ImCurveEdit
                      overCurveOrPoint = true;
                   }
 
-                  draw_list->AddLine(pos1, pos2, curveColor, 1.3f);
+                  draw_list->AddLine(pos1, pos2, curveColor, 1.0f);
                } // substep
             }
             else if (curveType == CurveDiscrete)
@@ -269,8 +269,8 @@ namespace ImCurveEdit
                ImVec2 dp1 = p1 * viewSize + offset;
                ImVec2 dp2 = ImVec2(p2.x, p1.y) * viewSize + offset;
                ImVec2 dp3 = p2 * viewSize + offset;
-               draw_list->AddLine(dp1, dp2, curveColor, 1.3f);
-               draw_list->AddLine(dp2, dp3, curveColor, 1.3f);
+               draw_list->AddLine(dp1, dp2, curveColor, 1.0f);
+               draw_list->AddLine(dp2, dp3, curveColor, 1.0f);
 
                if ((distance(io.MousePos.x, io.MousePos.y, dp1.x, dp1.y, dp3.x, dp1.y) < 8.f ||
                   distance(io.MousePos.x, io.MousePos.y, dp3.x, dp1.y, dp3.x, dp3.y) < 8.f)

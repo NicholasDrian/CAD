@@ -6,6 +6,7 @@
 
 #include "Camera.h"
 #include "../geometry/Renderable.h"
+#include "../gui/AffineTransformWidget.h"
 #include "ConstructionPlane.h"
 
 #include "glm/glm.hpp"
@@ -20,6 +21,7 @@ public:
 	static void Destroy();
 
 	static void Render();
+	static void DrawGUI();
 
 	static void AddToScene(std::unique_ptr<Renderable> obj);
 
@@ -27,6 +29,8 @@ public:
 
 	static void DeleteSelection();
 	static void Delete(unsigned id);
+	static const glm::mat4& GetSelectionTransform();
+	static AxisAlignedBoundingBox GetSelectedBoundingBox();
 
 	static bool IntersectScene(int x, int y, glm::vec3& outPoint);
 
@@ -39,6 +43,8 @@ public:
 private:
 
 	inline static const float m_MaxExtend = 10000.0f;
+
+	inline static std::unique_ptr<AffineTransformWidget> m_TransformWidget;
 
 	inline static std::unordered_set<uint32_t> m_Selected;
 	inline static std::unordered_set<uint32_t> m_SubSelected;

@@ -11,9 +11,9 @@ const unsigned int SELECTABLE_BIT =		1 << 0;
 const unsigned int SUB_SELECTABLE_BIT = 1 << 1;
 const unsigned int SELECTED_BIT =		1 << 2;
 
-layout (std140, binding = 3) readonly buffer SubSelection
+layout (std140, binding = 3) readonly buffer PrimitiveSubSelection
 {
-	unsigned int selection_buffer[];
+	unsigned int primitive_selection_buffer[];
 };
 
 vec3 ShiftColor(vec3 color)
@@ -28,7 +28,7 @@ void main()
 	{
 		uint index = gl_PrimitiveID / 32;
 		uint bit = 1 << (gl_PrimitiveID % 32);
-		selected = bool(selection_buffer[index] & bit);
+		selected = bool(primitive_selection_buffer[index] & bit);
 	}
 	if (selected) out_color = vec4(ShiftColor(frag_color), 1.0);
 	else out_color = vec4(frag_color, 1.0);

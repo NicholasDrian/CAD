@@ -24,7 +24,6 @@ void Window::Init(unsigned width, unsigned height)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
-    glfwSetWindowSizeCallback(m_Window, EventManager::WindowResizeCallback);
     glfwSetMouseButtonCallback(m_Window, EventManager::MouseCallback);
     glfwSetKeyCallback(m_Window, EventManager::KeyCallback);
 }
@@ -57,6 +56,13 @@ std::pair<unsigned, unsigned> Window::GetSize() {
     int width, height;
     glfwGetWindowSize(m_Window, &width, &height);
     return { width, height };
+}
+
+
+std::pair<unsigned, unsigned> Window::GetPos() {
+    int x, y;
+    glfwGetWindowPos(m_Window, &x, &y);
+    return {x, y};
 }
 
 float Window::GetAspect() {
