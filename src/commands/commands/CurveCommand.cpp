@@ -3,7 +3,6 @@
 #include "CurveCommand.h"
 #include "../TextParser.h"
 #include "../../Window.h"
-#include "../../render/Renderer.h"
 
 #include "imgui.h"
 
@@ -107,7 +106,5 @@ std::string CurveCommand::GetInstructions() const
 
 void CurveCommand::Render() const
 {
-	Renderer::UnbindIDBuffer();
 	if (m_Curve) m_Curve->Render();
-	Renderer::BindIDBuffer();
 }

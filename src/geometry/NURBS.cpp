@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NURBS.h"
+#include "../render/Renderer.h"
 
 const unsigned SAMPLES_PER_EDGE = 20;
 
@@ -26,7 +27,9 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> 
 	
 void NURBS::Render() const
 {
+	if (!m_Selectable) Renderer::UnbindIDBuffer();
 	m_VertexArray->Render(m_Model, m_ID, m_Selectable, false, m_Selected);
+	Renderer::BindIDBuffer();
 }
 
 void NURBS::BakeSelectionTransform(const glm::mat4& t)
@@ -160,6 +163,5 @@ void NURBS::UpdateVertexArray()
 
 glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const
 {
-	//FIX
-	return { 0.0,0.0,0.0 };
+	return r.ClosestPointOnLine(m_Samples[subID], m_Samples[subID + 1]);
 }

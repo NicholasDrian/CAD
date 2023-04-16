@@ -86,7 +86,9 @@ void Mesh::ClearSubSelection()
 }
 
 void Mesh::Render() const {
+	if (!m_Selectable) Renderer::UnbindIDBuffer();
 	m_VertexArray->Render(m_Model, m_ID, m_Selectable, true, m_Selected);
+	Renderer::BindIDBuffer();
 }
 
 glm::vec3 Mesh::Intersect(Ray r, uint32_t subID) const

@@ -2,7 +2,6 @@
 
 #include "PolyLineCommand.h"
 #include "../../Window.h"
-#include "../../render/Renderer.h"
 
 #include "glm/glm.hpp"
 
@@ -62,7 +61,5 @@ void PolyLineCommand::Escape()
 
 void PolyLineCommand::Render() const
 {
-	Renderer::UnbindIDBuffer();
 	if (m_PolyLine) m_PolyLine->Render();
-	Renderer::BindIDBuffer();
 }

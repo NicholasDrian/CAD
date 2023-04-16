@@ -2,6 +2,8 @@
 
 #include "PolyLine.h"
 
+#include "../render/Renderer.h"
+
 PolyLine::PolyLine(const std::vector<glm::vec3>& points, unsigned id)
 	: m_Points(points), m_ID(id), m_Color({0.0f, 0.0f, 0.0f}), m_Model(1.0),
 	m_SegmentSelectionBuffer(std::vector<uint32_t>(((points.size() - 1) + 31) / 32, 0U)),
@@ -16,7 +18,9 @@ PolyLine::PolyLine(const std::vector<glm::vec3>& points, unsigned id)
 
 void PolyLine::Render() const
 {
+	if (!m_Selectable) Renderer::UnbindIDBuffer();
 	m_VertexArray->Render(m_Model, m_ID, m_Selectable, true, m_Selected);
+	Renderer::BindIDBuffer();
 }
 
 void PolyLine::BakeSelectionTransform(const glm::mat4& t)
@@ -97,7 +101,6 @@ void PolyLine::AddSubSelection(uint32_t subID)
 			shift = (subID + i) % 32;
 			m_VertexSelectionBuffer[index] |= 1 << shift;
 		}
-		//m_VertexArray->UpdateSegmentSelectionBuffer(index, m_SegmentSelectionBuffer[index]);
 		m_VertexArray->UpdateSegmentSelectionBuffer(m_SegmentSelectionBuffer, m_VertexSelectionBuffer);
 	}
 }
@@ -116,7 +119,6 @@ void PolyLine::RemoveSubSelection(uint32_t subID)
 				m_VertexSelectionCounter.erase(subID + i);
 			}
 		}
-		//m_VertexArray->UpdateSegmentSelectionBuffer(index, m_SegmentSelectionBuffer[index]);
 		m_VertexArray->UpdateSegmentSelectionBuffer(m_SegmentSelectionBuffer, m_VertexSelectionBuffer);
 	}
 }
@@ -130,8 +132,7 @@ void PolyLine::ClearSubSelection()
 
 glm::vec3 PolyLine::Intersect(Ray r, uint32_t subID) const
 {
-	//FIX TODO
-	return { 0.0,0.0,0.0 };
+	return r.ClosestPointOnLine(m_Points[m_Indecies[subID * 2]], m_Points[m_Indecies[subID * 2 + 1]]);
 }
 
 
