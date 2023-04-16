@@ -2,6 +2,7 @@
 
 #include "PolyLineCommand.h"
 #include "../../Window.h"
+#include "../../render/Renderer.h"
 
 #include "glm/glm.hpp"
 
@@ -10,12 +11,10 @@ void PolyLineCommand::TextInput(const std::string& input)
 {
 	if (input == "") {
 		if (m_PolyLine) {
-			if (m_PolyLine->GetNumControlPoints() < 3) {
-				Scene::Delete(m_PolyLine->GetID());
-			}
-			else {
+			if (m_PolyLine->GetNumControlPoints() > 2) {
 				m_PolyLine->m_Selectable = true;
 				m_PolyLine->RemoveLast();
+				Scene::AddToScene(std::move(m_PolyLine));
 			}
 		}
 		m_Finished = true;
@@ -34,9 +33,8 @@ void PolyLineCommand::ClickInput(int x, int y)
 			m_PolyLine->AddPoint(intersection);
 		}
 		else {
-			m_PolyLine = new PolyLine({ intersection, intersection });
+			m_PolyLine = std::make_unique<PolyLine>(std::vector{ intersection, intersection });
 			m_PolyLine->m_Selectable = false;
-			Scene::AddToScene(std::unique_ptr<PolyLine>(m_PolyLine));
 		}
 	}
 }
@@ -44,11 +42,12 @@ void PolyLineCommand::ClickInput(int x, int y)
 void PolyLineCommand::Tick()
 {
 	if (m_PolyLine) {
-		double x, y;
-		Window::GetCursorPosition(x, y);
-		glm::vec3 intersection;
-		if (Scene::IntersectScene((int)x, (int)y, intersection)) {
-			m_PolyLine->UpdateLast(intersection);
+		auto [x, y] = Window::GetCursorPosition();
+		if (Window::IsWithinLocal(x, y)) {
+			glm::vec3 intersection;
+			if (Scene::IntersectScene((int)x, (int)y, intersection)) {
+				m_PolyLine->UpdateLast(intersection);
+			}
 		}
 	}
 }
@@ -59,4 +58,11 @@ void PolyLineCommand::Escape()
 		Scene::Delete(m_PolyLine->GetID());
 	}
 	m_Finished = true;
+}
+
+void PolyLineCommand::Render() const
+{
+	Renderer::UnbindIDBuffer();
+	if (m_PolyLine) m_PolyLine->Render();
+	Renderer::BindIDBuffer();
 }

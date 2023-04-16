@@ -18,7 +18,9 @@ public:
 
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
+	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
 
 	inline virtual unsigned GetID() const override { return m_ID; }
 	inline size_t GetNumControlPoints() const { return m_Points.size(); };
@@ -42,6 +44,7 @@ private:
 	void UpdateSamples();
 	void UpdateVertexArray();
 
+	glm::mat4 m_Model;
 	std::vector<glm::vec4> m_Points;
 	glm::vec3 m_Color;
 	std::vector<float> m_Knots;

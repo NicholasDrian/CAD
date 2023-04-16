@@ -18,7 +18,7 @@ public:
 
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Point; };
 	virtual unsigned GetIndexCount() const override;
-	virtual void Render(unsigned id, bool selectable, bool subSelectable, bool selected) const override;
+	virtual void Render(const glm::mat4& t, unsigned id, bool selectable, bool subSelectable, bool selected) const override;
 
 private:
 

@@ -43,9 +43,11 @@ void Window::PollEvents()
     glfwPollEvents();
 }
 
-void Window::GetCursorPosition(double& x, double& y)
+std::pair<unsigned, unsigned> Window::GetCursorPosition()
 {
-    return glfwGetCursorPos(m_Window, &x, &y);
+    double x, y;
+    glfwGetCursorPos(m_Window, &x, &y);
+    return { (int)x, (int)y };
 }
 
 void Window::SwapBuffers() {
@@ -68,4 +70,10 @@ std::pair<unsigned, unsigned> Window::GetPos() {
 float Window::GetAspect() {
     auto [width, height] = GetSize();
     return float(width) / float(height);
+}
+
+bool Window::IsWithinLocal(unsigned x, unsigned y)
+{
+    auto [sizex, sizey] = GetSize();
+    return x > 0 && y > 0 && x < sizex && y < sizey;
 }

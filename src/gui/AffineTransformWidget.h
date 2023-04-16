@@ -13,7 +13,7 @@ public:
 
 	void Draw();
 
-	inline glm::mat4 GetDelta();
+	glm::mat4 GetDelta() const;
 
 private:
 

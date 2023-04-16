@@ -74,9 +74,26 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 
 }
 
+glm::vec3 ConstructionPlane::Intersect(Ray r, uint32_t subID) const
+{
+	glm::vec3 p;
+#ifdef CAD_DEBUG
+	if (!r.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, p))
+		throw std::runtime_error("intersection failed");
+	return p;
+#else
+	return r.IntersectPlaneUnsafe({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+#endif
+}
+
+void ConstructionPlane::BakeSelectionTransform(const glm::mat4& t)
+{
+	// noop
+}
+
 void ConstructionPlane::Render() const {
-	m_MajorLinesVertexArray->Render(0, false, false, false);
-	m_MinorLinesVertexArray->Render(0, false, false, false);
+	m_MajorLinesVertexArray->Render(glm::mat4(1.0), 0, false, false, false);
+	m_MinorLinesVertexArray->Render(glm::mat4(1.0), 0, false, false, false);
 }
 
 AxisAlignedBoundingBox ConstructionPlane::GetBoundingBox() const

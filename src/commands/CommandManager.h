@@ -13,6 +13,8 @@ public:
 	static void AddInput(int c);
 	static void HandleClick(int x, int y);
 
+	static void Render();
+
 	static void Tick();
 
 	static std::string GetInstructions();

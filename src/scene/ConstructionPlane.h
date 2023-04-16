@@ -16,8 +16,13 @@ public:
 
 	inline virtual unsigned GetID() const override { return 0U; }
 
+	// [WARNING] fails if there is no intersection!!!!
+	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
+
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+
+	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
 private:
 

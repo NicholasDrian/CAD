@@ -36,6 +36,5 @@ void main()
 	// why is this vector backwards!!!
 	if (frag_data & SELECTABLE_BIT) out_id = uvec2(gl_PrimitiveID, frag_id);
 
-	//TODO
-	//gl_FragDepth = gl_FragCoord.z + 0.00001;
+	gl_FragDepth = gl_FragCoord.z - 0.00001;
 }

@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "glm/glm.hpp"
+
 enum class PrimitiveType {
 	None = 0,
 	Triangle,
@@ -14,6 +16,6 @@ public:
 
 	virtual PrimitiveType GetPrimitiveType() const = 0;
 	virtual unsigned GetIndexCount() const = 0;
-	virtual void Render(unsigned id, bool selectable, bool subSelectable, bool selected) const = 0;
+	virtual void Render(const glm::mat4& t, unsigned id, bool selectable, bool subSelectable, bool selected) const = 0;
 
 };

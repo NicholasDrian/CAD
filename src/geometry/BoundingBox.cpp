@@ -19,6 +19,13 @@ AxisAlignedBoundingBox::AxisAlignedBoundingBox(float minx, float maxx, float min
 
 }
 
+
+AxisAlignedBoundingBox::AxisAlignedBoundingBox(const std::vector<glm::vec3>& points, const glm::mat4& t)
+	: AxisAlignedBoundingBox()
+{
+	AddPoints(points, t);
+}
+
 AxisAlignedBoundingBox::AxisAlignedBoundingBox(const std::vector<glm::vec3>& points)
 	: AxisAlignedBoundingBox()
 {
@@ -47,4 +54,10 @@ void AxisAlignedBoundingBox::AddPoint(const glm::vec3& p)
 void AxisAlignedBoundingBox::AddPoints(const std::vector<glm::vec3>& points)
 {
 	for (const glm::vec3& point : points) AddPoint(point);
+}
+
+
+void  AxisAlignedBoundingBox::AddPoints(const std::vector<glm::vec3>& points, const glm::mat4& t)
+{
+	for (const glm::vec3& point : points) AddPoint(t * glm::vec4(point, 1.0));
 }

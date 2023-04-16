@@ -14,5 +14,5 @@ public:
 
 	virtual void Tick() {}
 	virtual void DrawButtons() {}
-
+	virtual void Render() const {}
 };

@@ -29,7 +29,7 @@ public:
 
 	static void DeleteSelection();
 	static void Delete(unsigned id);
-	static const glm::mat4& GetSelectionTransform();
+	static glm::mat4 GetSelectionTransform();
 	static AxisAlignedBoundingBox GetSelectedBoundingBox();
 
 	static bool IntersectScene(int x, int y, glm::vec3& outPoint);

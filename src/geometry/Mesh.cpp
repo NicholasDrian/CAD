@@ -4,7 +4,7 @@
 #include "../render/Renderer.h"
 
 Mesh::Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const glm::vec3& color, const std::vector<unsigned>& indices, unsigned id)
-	: m_Positions(positions), m_Normals(normals), m_Color(color), m_ID(id), m_Indices(indices),
+	: m_Positions(positions), m_Normals(normals), m_Color(color), m_ID(id), m_Indices(indices), m_Model(1.0),
 	m_SelectedTriangles(std::vector<uint32_t>(((indices.size() / 3) + 31) / 32, 0U)),
 	m_SelectedVertices(std::vector<uint32_t>(((m_Positions.size()) + 31) / 32, 0U))
 {
@@ -13,14 +13,26 @@ Mesh::Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>
 
 AxisAlignedBoundingBox Mesh::GetBoundingBox() const
 {
-	return AxisAlignedBoundingBox(m_Positions);
+	return AxisAlignedBoundingBox(m_Positions, m_Model);
 }
 
 AxisAlignedBoundingBox Mesh::GetSubSelectionBoundingBox() const
 {
 	std::vector<glm::vec3> selectedVerts;
 	for (const auto& e : m_SelectedVertexCounter) selectedVerts.push_back(m_Positions[e.first]);
-	return AxisAlignedBoundingBox(selectedVerts);
+	return AxisAlignedBoundingBox(selectedVerts, m_Model);
+}
+
+void Mesh::BakeSelectionTransform(const glm::mat4& t)
+{
+	if (m_Selected) m_Model = t * m_Model;
+	else {
+		for (auto e : m_SelectedVertexCounter) {
+			m_Positions[e.first] = t * glm::vec4(m_Positions[e.first], 1.0);
+			m_Normals[e.first] = t * glm::vec4(m_Normals[e.first], 0.0);
+		}
+		m_VertexArray->UpdateVertexOrientation(m_Positions, m_Normals);
+	}
 }
 
 void Mesh::AddSubSelection(uint32_t subID)
@@ -39,7 +51,6 @@ void Mesh::AddSubSelection(uint32_t subID)
 			shift = vertIdx % 32;
 			m_SelectedVertices[index] |= 1 << shift;
 		}
-		//m_VertexArray->UpdateSegmentSelectionBuffer(index, m_SelectedTriangles[index]);
 		m_VertexArray->UpdateSelectionBuffers(m_SelectedTriangles, m_SelectedVertices);
 	}
 }
@@ -63,7 +74,6 @@ void Mesh::RemoveSubSelection(uint32_t subID)
 				m_SelectedVertexCounter.erase(index);
 			}
 		}
-		//m_VertexArray->UpdateSegmentSelectionBuffer(index, m_SelectedTriangles[index]);
 		m_VertexArray->UpdateSelectionBuffers(m_SelectedTriangles, m_SelectedVertices);
 	}
 }
@@ -76,5 +86,13 @@ void Mesh::ClearSubSelection()
 }
 
 void Mesh::Render() const {
-	m_VertexArray->Render(m_ID, m_Selectable, true, m_Selected);
+	m_VertexArray->Render(m_Model, m_ID, m_Selectable, true, m_Selected);
+}
+
+glm::vec3 Mesh::Intersect(Ray r, uint32_t subID) const
+{
+	return r.IntersectTriangleUnsafe(
+		m_Positions[m_Indices[subID * 3]],
+		m_Positions[m_Indices[subID * 3 + 1]],
+		m_Positions[m_Indices[subID * 3 + 2]]);
 }

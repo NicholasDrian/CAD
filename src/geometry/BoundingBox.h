@@ -12,10 +12,12 @@ public:
 	AxisAlignedBoundingBox();
 	AxisAlignedBoundingBox(float minx, float maxx, float miny, float maxy, float minz, float maxz);
 	AxisAlignedBoundingBox(const std::vector<glm::vec3>& points);
+	AxisAlignedBoundingBox(const std::vector<glm::vec3>& points, const glm::mat4& t);
 
 
 	void AddPoint(const glm::vec3& p);
 	void AddPoints(const std::vector<glm::vec3>& points);
+	void AddPoints(const std::vector<glm::vec3>& points, const glm::mat4& t);
 	glm::vec3 GetCenter() const;
 
 	friend AxisAlignedBoundingBox operator+(const AxisAlignedBoundingBox& b1, const AxisAlignedBoundingBox& b2)

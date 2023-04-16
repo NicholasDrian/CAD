@@ -32,6 +32,11 @@ public:
 
 	static void WindowResize(int width, int height);
 
+
+	// test
+	static void UnbindIDBuffer();
+	static void BindIDBuffer();
+
 private:
 
 	static void InitFrameBuffer();

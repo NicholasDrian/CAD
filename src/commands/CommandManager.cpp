@@ -87,3 +87,8 @@ void CommandManager::DrawButtons()
 {
 	if (m_CurrentCommand) m_CurrentCommand->DrawButtons();
 }
+
+void CommandManager::Render()
+{
+	if (m_CurrentCommand) m_CurrentCommand->Render();
+}

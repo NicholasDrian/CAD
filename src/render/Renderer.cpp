@@ -90,6 +90,19 @@ void Renderer::SetRenderMode(RenderMode mode)
 	}
 }
 
+void Renderer::UnbindIDBuffer()
+{
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
+	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0 };
+	GLCall(glDrawBuffers(1, DrawBuffers));
+}
+void Renderer::BindIDBuffer()
+{
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
+	GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	GLCall(glDrawBuffers(2, DrawBuffers));
+}
+
 void Renderer::InitFrameBuffer()
 {
 	GLCall(glGenFramebuffers(1, &m_FrameBuffer));

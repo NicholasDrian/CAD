@@ -12,6 +12,11 @@ public :
 	glm::vec3 At(float t) const;
 
 	bool IntersectPlane(glm::vec3 origin, glm::vec3 normal, glm::vec3& outPoint) const;
+	glm::vec3 IntersectPlaneUnsafe(glm::vec3 origin, glm::vec3 normal) const;
+
+
+	bool IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint);
+	glm::vec3 IntersectTriangleUnsafe(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3);
 
 	void Print() const;
 

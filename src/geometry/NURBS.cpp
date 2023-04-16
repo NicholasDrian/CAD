@@ -5,7 +5,7 @@
 const unsigned SAMPLES_PER_EDGE = 20;
 
 NURBS::NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
-	: m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color)
+	: m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color), m_Model(1.0f)
 {
 	if (weights.size() == 0) 
 	{
@@ -26,14 +26,22 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> 
 	
 void NURBS::Render() const
 {
-	m_VertexArray->Render(m_ID, m_Selectable, false, m_Selected);
+	m_VertexArray->Render(m_Model, m_ID, m_Selectable, false, m_Selected);
+}
+
+void NURBS::BakeSelectionTransform(const glm::mat4& t)
+{
+	if (m_Selected) m_Model = t * m_Model;
+	else {	
+		// TODO: CHECK - i think its fine to transform homogenious points
+	}
 }
 
 AxisAlignedBoundingBox NURBS::GetBoundingBox() const
 {
 	std::vector<glm::vec3> points(m_Points.size());
 	for (const glm::vec4& point : m_Points) points.emplace_back(point.x, point.y, point.z);
-	return AxisAlignedBoundingBox(points);
+	return AxisAlignedBoundingBox(points, m_Model);
 }
 
 
@@ -65,7 +73,7 @@ void NURBS::UpdateLastPoint(const glm::vec3& point)
 {
 	m_Points.back() = {point.x, point.y, point.z, 1.0f};
 	UpdateSamples(); // shouldnt need to update all samples
-	UpdateVertexArray();
+	m_VertexArray->UpdateVertexPositions(m_Samples);
 }
 
 void NURBS::RemoveLastPoint()
@@ -148,4 +156,10 @@ void NURBS::UpdateSamples()
 void NURBS::UpdateVertexArray()
 {
 	m_VertexArray = std::make_unique<VertexArrayBasicLines>(m_Samples, m_Color, m_ID, m_Indecies, 2.0f);
+}
+
+glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const
+{
+	//FIX
+	return { 0.0,0.0,0.0 };
 }

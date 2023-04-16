@@ -21,6 +21,7 @@ void Application::Run()
 		frame_start = glfwGetTime();
 		Renderer::BeginRender();
 		Scene::Render();
+		CommandManager::Render();
 		GUI::Render();
 		Renderer::FinishRender();
 		EventManager::Tick();

@@ -19,11 +19,13 @@ public:
 
 	~VertexArrayBasicLines();
 
-	virtual void Render(unsigned id, bool selectable, bool subSelectable, bool selected) const override;
+	virtual void Render(const glm::mat4& t, unsigned id, bool selectable, bool subSelectable, bool selected) const override;
 	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Line; }
 	virtual unsigned GetIndexCount() const override { return m_IndexCount; };
 
-	//void UpdateSegmentSelectionBuffer(unsigned index, uint32_t val);
+	void UpdateVertexPositions(const std::vector<glm::vec3>& positions);
+
+	//todo parital update
 	void UpdateSegmentSelectionBuffer(const std::vector<uint32_t>& segmentSelection, const std::vector<uint32_t>& vertexSelection, bool updateSize = false);
 
 private:
@@ -31,7 +33,6 @@ private:
 	GLuint m_RenderID, m_VertexBufferID, m_IndexBufferID, 
 		m_SegmentSelectionBufferID, m_VertexSelectionBufferID;
 	unsigned m_IndexCount;
-	glm::mat4 m_Model;
 	glm::vec3 m_Color;
 	GLfloat m_LineWidth;
 

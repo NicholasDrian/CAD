@@ -51,7 +51,7 @@ void Scene::DrawGUI()
 }
 
 
-const glm::mat4& Scene::GetSelectionTransform()
+glm::mat4 Scene::GetSelectionTransform()
 {
 	if (m_TransformWidget) return m_TransformWidget->GetDelta();
 	return glm::mat4(1.0);
@@ -92,6 +92,12 @@ void Scene::HandleClick(int x, int y, int button, int mods)
 	bool shift = GLFW_MOD_SHIFT & mods;
 	bool control = GLFW_MOD_CONTROL & mods;
 
+	if (m_TransformWidget) {
+		glm::mat4 t = GetSelectionTransform();
+		for (uint32_t selected : m_Selected) m_Contents[selected]->BakeSelectionTransform(t);
+		for (uint32_t subSelected : m_SubSelected) m_Contents[subSelected]->BakeSelectionTransform(t);
+		m_TransformWidget.reset();
+	}
 
 	if (uint32_t ID = IDs >> 32)
 	{
@@ -132,15 +138,15 @@ void Scene::HandleClick(int x, int y, int button, int mods)
 		}
 	}
 
-	int numSelected = m_Selected.size() + m_SubSelected.size();
-	if (numSelected == 0) m_TransformWidget.reset();
-	else m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
-	
+	size_t numSelected = m_Selected.size() + m_SubSelected.size();
+	if (numSelected > 0) m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
 }
 
 // Invariant: never both selected and sub selected!
 void Scene::DeleteSelection() 
 {
+	m_TransformWidget.reset();
+
 	for (int i : m_Selected) m_Contents.erase(i);
 	m_Selected.clear();
 
@@ -157,17 +163,21 @@ void Scene::Delete(unsigned id)
 
 bool Scene::IntersectScene(int x, int y, glm::vec3& outPoint)
 {
+
 	uint64_t IDs = Renderer::ReadIDAtPixel(x, y);
 	uint32_t ID = IDs >> 32;
 	Ray ray = m_Camera->GetRayAtPixel(x, y);
 
 	if (ID == 0) {
-		ray.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, outPoint);
 		return ray.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, outPoint);
 	}
 	else {
-		//fix!
-		outPoint = ray.At(Renderer::ReadDistanceAtPixel(x, y));
+		Renderable* item = m_Contents[ID].get();
+		uint32_t subID = IDs & 0x00000000FFFFFFFFLLU;
+		outPoint = item->Intersect(ray, subID);
 		return true;
 	}
+
 }
+
+// todo fix - curve writes to id buffer even when drawn last???????? 
