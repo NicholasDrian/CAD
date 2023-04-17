@@ -8,7 +8,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>
 	m_SelectedTriangles(std::vector<uint32_t>(((indices.size() / 3) + 31) / 32, 0U)),
 	m_SelectedVertices(std::vector<uint32_t>(((m_Positions.size()) + 31) / 32, 0U))
 {
-	m_VertexArray = std::make_unique<VertexArrayBasicTriangles>(m_Positions, m_Normals, m_SelectedTriangles, m_SelectedVertices, m_Color, m_ID, m_Indices);
+	m_VertexArray = std::make_unique<VertexArrayBasicTriangles>(m_Positions, m_Normals, m_SelectedTriangles, m_SelectedVertices, m_Color, m_ID, 0, m_Indices);
 }
 
 AxisAlignedBoundingBox Mesh::GetBoundingBox() const

@@ -158,7 +158,7 @@ void NURBS::UpdateSamples()
 
 void NURBS::UpdateVertexArray()
 {
-	m_VertexArray = std::make_unique<VertexArrayBasicLines>(m_Samples, m_Color, m_ID, m_Indecies, 2.0f);
+	m_VertexArray = std::make_unique<VertexArrayBasicLines>(m_Samples, m_Color, m_ID, m_Indecies, 2.0f, 0U);
 }
 
 glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const

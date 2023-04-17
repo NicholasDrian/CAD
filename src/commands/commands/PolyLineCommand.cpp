@@ -25,15 +25,17 @@ void PolyLineCommand::TextInput(const std::string& input)
 
 void PolyLineCommand::ClickInput(int x, int y)
 {
-	glm::vec3 intersection;
-	if (Scene::IntersectScene(x, y, intersection)) {
-		if (m_PolyLine) {
-			m_PolyLine->UpdateLast(intersection);
-			m_PolyLine->AddPoint(intersection);
-		}
-		else {
-			m_PolyLine = std::make_unique<PolyLine>(std::vector{ intersection, intersection });
-			m_PolyLine->m_Selectable = false;
+	if (Window::IsWithinLocal(x, y)) {
+		glm::vec3 intersection;
+		if (Scene::IntersectScene(x, y, intersection)) {
+			if (m_PolyLine) {
+				m_PolyLine->UpdateLast(intersection);
+				m_PolyLine->AddPoint(intersection);
+			}
+			else {
+				m_PolyLine = std::make_unique<PolyLine>(std::vector{ intersection, intersection });
+				m_PolyLine->m_Selectable = false;
+			}
 		}
 	}
 }

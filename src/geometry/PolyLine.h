@@ -3,6 +3,7 @@
 #include "Renderable.h"
 #include "../scene/Scene.h"
 #include "../render/VertexArrayBasicLines.h"
+#include "../render/VertexArrayBasicPoints.h"
 #include "glm/glm.hpp"
 
 #include <vector>
@@ -33,25 +34,31 @@ public:
 	void UpdateLast(const glm::vec3& point);
 
 	inline size_t GetNumControlPoints() const { return m_Points.size(); }
+	inline size_t GetNumSegments() const { return m_Indecies.size() / 2; }
 
 	inline virtual unsigned GetID() const override { return m_ID; };
 
-
 private:
 
-	void UpdateVertexArray();
+	void AddSubSelectionLine(uint32_t subID);
+	void AddSubSelectionPoint(uint32_t subID);
+	void RemoveSubSelectionLine(uint32_t subID);
+	void RemoveSubSelectionPoint(uint32_t subID);
+
+	void UpdateVertexArrays();
+	void UpdatePositions();
+	void UpdateSubSelections();
 
 	unsigned m_ID;
 	std::vector<unsigned> m_Indecies;
 
-	std::vector<uint32_t> m_SegmentSelectionBuffer;
+	std::vector<uint32_t> m_SegmentSelectionBuffer, m_VertexSelectionBuffer;
 	std::unordered_map<int, int> m_VertexSelectionCounter;
-	std::vector<uint32_t> m_VertexSelectionBuffer;
 
 	std::vector<glm::vec3> m_Points;
 	glm::vec3 m_Color;
 	glm::mat4 m_Model;
-	std::unique_ptr<VertexArrayBasicLines> m_VertexArray;
-	
+	std::unique_ptr<VertexArrayBasicLines> m_VertexArrayLines;
+	std::unique_ptr<VertexArrayBasicPoints>	m_VertexArrayPoints;
 
 };

@@ -33,20 +33,22 @@ void CurveCommand::TextInput(const std::string& input)
 
 void CurveCommand::ClickInput(int x, int y)
 {
-	if (m_Mode == CurveCommandMode::AddPoint) {
-		glm::vec3 intersection;
-		if (Scene::IntersectScene(x, y, intersection)) {
-			if (m_Curve)
-			{
-				if (m_NeedsExtraPoint) m_Curve->AddControlPoint(intersection, m_Curve->GetDegree() != m_Degree);
-				m_NeedsExtraPoint = true;
-			}
-			else
-			{
-				glm::vec3 color(0.0f, 0.0f, 0.0f);
-				std::vector<glm::vec3> points = { intersection, intersection };
-				m_Curve = std::make_unique<NURBS>(points, color);
-				m_Curve->m_Selectable = false;
+	if (Window::IsWithinLocal(x, y)) {
+		if (m_Mode == CurveCommandMode::AddPoint) {
+			glm::vec3 intersection;
+			if (Scene::IntersectScene(x, y, intersection)) {
+				if (m_Curve)
+				{
+					if (m_NeedsExtraPoint) m_Curve->AddControlPoint(intersection, m_Curve->GetDegree() != m_Degree);
+					m_NeedsExtraPoint = true;
+				}
+				else
+				{
+					glm::vec3 color(0.0f, 0.0f, 0.0f);
+					std::vector<glm::vec3> points = { intersection, intersection };
+					m_Curve = std::make_unique<NURBS>(points, color);
+					m_Curve->m_Selectable = false;
+				}
 			}
 		}
 	}

@@ -61,3 +61,4 @@ void  AxisAlignedBoundingBox::AddPoints(const std::vector<glm::vec3>& points, co
 {
 	for (const glm::vec3& point : points) AddPoint(t * glm::vec4(point, 1.0));
 }
+

@@ -4,8 +4,9 @@ layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 tangent;
 
 out vec3 frag_color;
-out flat unsigned int frag_id;
-out flat unsigned int frag_data;
+out flat uint frag_id;
+out flat uint frag_data;
+out flat uint frag_sub_id_offset;
 
 layout (std140, binding = 0) uniform global
 {
@@ -15,18 +16,19 @@ layout (std140, binding = 0) uniform global
 
 layout (std140, binding = 0) readonly buffer VertSubSelection
 {
-	unsigned int[] vert_selection_buffer;
+	uint[] vert_selection_buffer;
 };
 
-const unsigned int SELECTABLE_BIT =		1 << 0;
-const unsigned int SUB_SELECTABLE_BIT = 1 << 1;
-const unsigned int SELECTED_BIT =		1 << 2;
+const uint SELECTABLE_BIT =		1 << 0;
+const uint SUB_SELECTABLE_BIT = 1 << 1;
+const uint SELECTED_BIT =		1 << 2;
 layout (std140, binding = 2) uniform local
 {
 	mat4 model;
 	vec3 color;
-	unsigned int data;
-	unsigned int id;
+	uint data;
+	uint id;
+	uint subIDOffset;
 };
 
 
@@ -45,4 +47,6 @@ void main()
 	frag_color = color;
 	frag_id = id;
 	frag_data = data;
+	frag_sub_id_offset = subIDOffset;
+
 }

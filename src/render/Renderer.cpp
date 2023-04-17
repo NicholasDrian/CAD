@@ -11,8 +11,7 @@
 
 #include <stdexcept>
 #include <utility>
-
-#include "iostream"
+#include <iostream>
 
 void Renderer::Init()
 {
@@ -25,7 +24,6 @@ void Renderer::Init()
 		throw std::runtime_error("Failed to initialize glew!");
 	}
 
-
 	ShaderManager::Init();
 	SetRenderMode(RenderMode::Default);
 	InitFrameBuffer();
@@ -33,7 +31,9 @@ void Renderer::Init()
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glEnable(GL_POINT_SMOOTH));
-	GLCall(glPointSize(3.0));
+	GLCall(glPointSize(5.0));
+
+	glEnable(GL_MULTISAMPLE);
 
 	const GLubyte* renderer = glGetString(GL_RENDERER);
 	const GLubyte* vendor = glGetString(GL_VENDOR);
@@ -165,18 +165,4 @@ uint64_t Renderer::ReadIDAtPixel(int x, int y) {
 	uint64_t val;
 	GLCall(glReadPixels(x, m_Height - y, 1, 1, GL_RG_INTEGER, GL_INT, &val));
 	return val;
-}
-
-
-float Renderer::ReadDistanceAtPixel(int x, int y) {
-	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
-	float depth;
-	GLCall(glReadPixels(x, m_Height - y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
-
-	const float zNorm = 2.0f * depth - 1.0f;
-	const float near = Camera::GetNearPlane();
-	const float far = Camera::GetFarPlane();
-	const float distance = 2.0f * near * far / (far + near - zNorm * (far - near));
-
-	return distance;
 }

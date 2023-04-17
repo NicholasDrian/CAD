@@ -16,18 +16,16 @@ class VertexArrayBasicTriangles : public VertexArray {
 public:
 
 	VertexArrayBasicTriangles(
-		const std::vector<glm::vec3>& positions, 
-		const std::vector<glm::vec3>& normals, 
-		const std::vector<uint32_t>& triangleSelectionBuffer, 
-		const std::vector<uint32_t>& vertexSelectionBuffer, 
-		const glm::vec3& color, uint32_t id, 
+		const std::vector<glm::vec3>& positions,
+		const std::vector<glm::vec3>& normals,
+		const std::vector<uint32_t>& triangleSelectionBuffer,
+		const std::vector<uint32_t>& vertexSelectionBuffer,
+		const glm::vec3& color, uint32_t id, unsigned subIDOffset,
 		const std::vector<unsigned>& indecies);
 
 	~VertexArrayBasicTriangles();
 
 	virtual void Render(const glm::mat4& t, unsigned id, bool selectable, bool subSelectable, bool selected) const override;
-	virtual PrimitiveType GetPrimitiveType() const override { return PrimitiveType::Triangle; }
-	virtual unsigned GetIndexCount() const override { return m_IndexCount; };
 
 
 	// todo: implement partial update
@@ -38,7 +36,7 @@ public:
 private:
 
 	GLuint m_RenderID, m_VertexBufferID, m_IndexBufferID, m_TriangleSelectionBufferID, m_VertexSelectionBufferID;
-	unsigned m_IndexCount;
+	unsigned m_IndexCount, m_SubIDOffset;
 	glm::vec3 m_Color;
 
 };

@@ -5,6 +5,8 @@
 #include "../../scene/Scene.h"
 #include "../../render/Renderer.h"
 #include "../TextParser.h"
+#include "../../Window.h"
+
 #include "glm/gtx/intersect.hpp"
 
 #include <iostream>
@@ -20,9 +22,11 @@ void FocusCommand::TextInput(const std::string& input) {
 
 void FocusCommand::ClickInput(int x, int y) 
 {
-	glm::vec3 intersection;
-	if (Scene::IntersectScene(x, y, intersection)) {
-		Scene::GetCamera()->RepositionFocal(intersection);
+	if (Window::IsWithinLocal(x, y)) {
+		glm::vec3 intersection;
+		if (Scene::IntersectScene(x, y, intersection)) {
+			Scene::GetCamera()->RepositionFocal(intersection);
+		}
+		m_Finished = true;
 	}
-	m_Finished = true;
 }

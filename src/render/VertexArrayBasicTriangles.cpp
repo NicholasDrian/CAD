@@ -6,8 +6,8 @@
 #include<iostream>
 
 
-VertexArrayBasicTriangles::VertexArrayBasicTriangles(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<uint32_t>& triangleSelectionBuffer, const std::vector<uint32_t>& vertexSelectionBuffer, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indices)
-	: m_IndexCount((unsigned)indices.size()), m_Color(color)
+VertexArrayBasicTriangles::VertexArrayBasicTriangles(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<uint32_t>& triangleSelectionBuffer, const std::vector<uint32_t>& vertexSelectionBuffer, const glm::vec3& color, uint32_t id, unsigned subIDOffset, const std::vector<unsigned>& indices)
+	: m_IndexCount((unsigned)indices.size()), m_Color(color), m_SubIDOffset(subIDOffset)
 {
 	GLCall(glGenBuffers(1, &m_TriangleSelectionBufferID));
 	GLCall(glGenBuffers(1, &m_VertexSelectionBufferID));
@@ -54,13 +54,13 @@ VertexArrayBasicTriangles::~VertexArrayBasicTriangles()
 
 void VertexArrayBasicTriangles::Render(const glm::mat4& model, unsigned id, bool selectable, bool subSelectable, bool selected) const {
 	ShaderManager::Bind(ShaderProgramType::BasicTriShader);
-	ShaderManager::UpdateLocalUniforms(model, m_Color, selectable, subSelectable, selected, id);
+	ShaderManager::UpdateLocalUniforms(model, m_Color, selectable, subSelectable, selected, id, m_SubIDOffset);
 	GLCall(glBindVertexArray(m_RenderID));
 	if (subSelectable) {
 		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_TriangleSelectionBufferID));
 		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_VertexSelectionBufferID));
 	}
-	GLCall(glDrawElements(GL_TRIANGLES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
+	GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, (GLvoid*)0));
 }
 
 

@@ -27,9 +27,6 @@ public:
 
 	static uint64_t ReadIDAtPixel(int x, int y);
 
-	[[deprecated]] // Inacurate for some reason, should use ray scene intersection instead
-	static float ReadDistanceAtPixel(int x, int y);
-
 	static void WindowResize(int width, int height);
 
 

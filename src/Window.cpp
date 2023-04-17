@@ -26,6 +26,7 @@ void Window::Init(unsigned width, unsigned height)
 
     glfwSetMouseButtonCallback(m_Window, EventManager::MouseCallback);
     glfwSetKeyCallback(m_Window, EventManager::KeyCallback);
+
 }
 
 void Window::Destroy()

@@ -5,8 +5,8 @@
 
 
 
-VertexArrayBasicLines::VertexArrayBasicLines(const std::vector<glm::vec3>& positions, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indices, float lineWidth, bool subSelectable, const std::vector<uint32_t>& segmentSelectionBuffer, const std::vector<uint32_t>& vertexSelectionBuffer)
-	: m_IndexCount((unsigned)indices.size()), m_LineWidth(lineWidth), m_Color(color)
+VertexArrayBasicLines::VertexArrayBasicLines(const std::vector<glm::vec3>& positions, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indices, float lineWidth, unsigned subIDOffset, bool subSelectable, const std::vector<uint32_t>& segmentSelectionBuffer, const std::vector<uint32_t>& vertexSelectionBuffer)
+	: m_IndexCount((unsigned)indices.size()), m_LineWidth(lineWidth), m_Color(color), m_SubIDOffset(subIDOffset)
 {
 	if (subSelectable) {
 		GLCall(glGenBuffers(1, &m_SegmentSelectionBufferID));
@@ -35,8 +35,6 @@ VertexArrayBasicLines::VertexArrayBasicLines(const std::vector<glm::vec3>& posit
 		(void*)offsetof(ColoredLineVertex, pos)));
 
 	GLCall(glBindVertexArray(0));
-
-
 }
 
 void VertexArrayBasicLines::UpdateVertexPositions(const std::vector<glm::vec3>& positions)
@@ -58,14 +56,14 @@ VertexArrayBasicLines::~VertexArrayBasicLines()
 
 void VertexArrayBasicLines::Render(const glm::mat4& model, unsigned id, bool selectable, bool subSelectable, bool selected) const {
 	ShaderManager::Bind(ShaderProgramType::BasicLineShader);
-	ShaderManager::UpdateLocalUniforms(model, m_Color, selectable, subSelectable, selected, id);
+	ShaderManager::UpdateLocalUniforms(model, m_Color, selectable, subSelectable, selected, id, m_SubIDOffset);
 	GLCall(glBindVertexArray(m_RenderID));
 	if (subSelectable) {
 		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_SegmentSelectionBufferID));
 		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_VertexSelectionBufferID));
 	}
 	GLCall(glLineWidth(m_LineWidth));
-	GLCall(glDrawElements(GL_LINES, GetIndexCount(), GL_UNSIGNED_INT, (GLvoid*)0));
+	GLCall(glDrawElements(GL_LINES, m_IndexCount, GL_UNSIGNED_INT, (GLvoid*)0));
 }
 
 
