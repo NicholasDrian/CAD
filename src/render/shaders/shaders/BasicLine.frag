@@ -12,7 +12,7 @@ const uint SELECTABLE_BIT =		1 << 0;
 const uint SUB_SELECTABLE_BIT = 1 << 1;
 const uint SELECTED_BIT =		1 << 2;
 
-layout (std140, binding = 3) readonly buffer PrimitiveSubSelection
+layout (std140, binding = 1) readonly buffer PrimitiveSubSelection
 {
 	uint primitive_selection_buffer[];
 };
@@ -36,7 +36,7 @@ void main()
 	else out_color = vec4(frag_color, 1.0);
 	
 	// why is this vector backwards!!!
-	if (frag_data & SELECTABLE_BIT) out_id = uvec2(gl_PrimitiveID, frag_id);
+	if (frag_data & SELECTABLE_BIT) out_id = uvec2(gl_PrimitiveID + frag_sub_id_offset, frag_id);
 
 	gl_FragDepth = gl_FragCoord.z - 0.00001;
 }

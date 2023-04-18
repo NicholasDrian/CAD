@@ -2,7 +2,10 @@
 
 #include "Renderable.h"
 #include "../render/VertexArrayBasicLines.h"
+#include "../render/VertexArrayBasicPoints.h"
+#include "PolyLine.h"
 #include "../scene/Scene.h"
+
 #include "glm/glm.hpp"
 
 #include <vector>
@@ -20,6 +23,16 @@ public:
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
+	virtual void AddSubSelection(uint32_t subID) override;
+	virtual void RemoveSubSelection(uint32_t subID) override;
+	virtual void ClearSubSelection() override;
+
+	virtual bool IsSelected() const override { return m_Selected; }
+	virtual void Select() override;
+	virtual void UnSelect() override;
+
+	virtual void SelectionTransformUpdated() override;
+
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
 
 	inline virtual unsigned GetID() const override { return m_ID; }
@@ -35,6 +48,8 @@ public:
 	void RemoveLastPoint();
 
 private:
+
+	bool m_Selected;
 
 	std::vector<float> BasisFuncs(float u) const;
 	int KnotSpan(float u) const;
@@ -54,6 +69,7 @@ private:
 
 	std::vector<glm::vec3> m_Samples;
 
-	std::unique_ptr<VertexArrayBasicLines> m_VertexArray;
+	std::unique_ptr<VertexArrayBasicLines> m_VertexArrayLines;
+	std::unique_ptr<PolyLine> m_ControlPolyLine;
 
 };

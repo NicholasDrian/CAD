@@ -4,10 +4,10 @@
 
 #include "../render/Renderer.h"
 
-PolyLine::PolyLine(const std::vector<glm::vec3>& points, unsigned id)
+PolyLine::PolyLine(const std::vector<glm::vec3>& points, bool dashed, unsigned id)
 	: m_Points(points), m_ID(id), m_Color({0.0f, 0.0f, 0.0f}), m_Model(1.0),
 	m_SegmentSelectionBuffer(std::vector<uint32_t>(((points.size() - 1) + 31) / 32, 0U)),
-	m_VertexSelectionBuffer(std::vector<uint32_t>((points.size() + 31) / 32, 0U))
+	m_VertexSelectionBuffer(std::vector<uint32_t>((points.size() + 31) / 32, 0U)), m_Dashed(dashed), m_Selected(false)
 {
 	for (unsigned i = 0U; i < points.size() - 1; i++) {
 		m_Indecies.push_back(i);
@@ -34,6 +34,37 @@ void PolyLine::BakeSelectionTransform(const glm::mat4& t)
 			m_Points[e.first] = { vert.x, vert.y, vert.z };
 		}
 		UpdatePositions();
+	}
+}
+
+std::vector<glm::vec3> PolyLine::GetControlPoints(bool withSelectionTransform)
+{
+	if (!withSelectionTransform || (!m_Selected && m_VertexSelectionCounter.empty()))
+	{
+		return m_Points;
+	}
+	else
+	{
+		glm::mat4 t = Scene::GetSelectionTransform();
+		/*std::cout << " here" << std::endl;
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				std::cout << t[i][j] << ' ';
+			} std::cout << '\n';
+		}*/
+		if (m_Selected) {
+			std::vector<glm::vec3> points(m_Points.size());
+			for (int i = 0; i < points.size(); i++) {
+				points[i] = t * glm::vec4(m_Points[i], 1.0);
+			}
+			return points;
+		} else {
+			std::vector<glm::vec3> points = m_Points;
+			for (auto e : m_VertexSelectionCounter) {
+				points[e.first] = t * glm::vec4(m_Points[e.first], 1.0);
+			}
+			return points;
+		}
 	}
 }
 
@@ -83,7 +114,7 @@ void PolyLine::RemoveLast()
 
 void PolyLine::UpdateVertexArrays()
 {
-	m_VertexArrayLines = std::make_unique<VertexArrayBasicLines>(m_Points, m_Color, m_ID, m_Indecies, 2.0f, 0U, true, m_SegmentSelectionBuffer, m_VertexSelectionBuffer);
+	m_VertexArrayLines = std::make_unique<VertexArrayBasicLines>(m_Points, m_Color, m_ID, m_Indecies, 2.0f, 0U, true, m_Dashed, m_SegmentSelectionBuffer, m_VertexSelectionBuffer);
 
 	m_VertexArrayPoints = std::make_unique<VertexArrayBasicPoints>(m_Points, m_VertexSelectionBuffer, m_Color, GetNumSegments());
 }
@@ -104,7 +135,7 @@ void PolyLine::AddSubSelection(uint32_t subID)
 {
 	std::cout << subID << std::endl;
 	if (subID < GetNumSegments()) AddSubSelectionLine(subID);
-	else AddSubSelectionPoint(subID - GetNumSegments());
+	else AddSubSelectionPoint(subID - (uint32_t)GetNumSegments());
 }
 
 
@@ -139,7 +170,7 @@ void PolyLine::AddSubSelectionPoint(uint32_t subID)
 void PolyLine::RemoveSubSelection(uint32_t subID)
 {
 	if (subID < GetNumSegments()) RemoveSubSelectionLine(subID);
-	else RemoveSubSelectionPoint(subID - GetNumSegments());
+	else RemoveSubSelectionPoint(subID - (uint32_t)GetNumSegments());
 }
 
 

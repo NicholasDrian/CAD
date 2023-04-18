@@ -3,7 +3,10 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 tangent;
 
+// access uniform in frag???
+
 out vec3 frag_color;
+out flat vec3 frag_tangent;
 out flat uint frag_id;
 out flat uint frag_data;
 out flat uint frag_sub_id_offset;
@@ -38,9 +41,12 @@ void main()
 	uint bit = 1 << (gl_VertexID % 32);
 	if (bool(data & SELECTED_BIT) || (bool(data & SUB_SELECTABLE_BIT) && bool(vert_selection_buffer[idx] & bit))) {
 		gl_Position = view_proj * selected_transform * model * vec4(position, 1.0);
+		frag_tangent = (view_proj * selected_transform * model * vec4(tangent, 0.0)).xyz;
 	} else {
 		gl_Position = view_proj * model * vec4(position, 1.0);
+		frag_tangent = (view_proj * model * vec4(tangent, 0.0)).xyz;
 	}
+
 
 	frag_color = color;
 	frag_id = id;

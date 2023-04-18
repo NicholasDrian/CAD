@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include "../OpenGLUtils.h"
 
+#include <iostream>
+
 const std::string SHADER_BASE_PATH("src/render/shaders/shaders/");
 
 ShaderProgram::ShaderProgram(ShaderProgramType type)
@@ -24,12 +26,15 @@ ShaderProgram::ShaderProgram(ShaderProgramType type)
 		vertPath = SHADER_BASE_PATH + "BasicPoint.vert";
 		fragPath = SHADER_BASE_PATH + "BasicPoint.frag";
 		break;
+	case ShaderProgramType::DashedLineShader:
+		vertPath = SHADER_BASE_PATH + "DashedLine.vert";
+		fragPath = SHADER_BASE_PATH + "DashedLine.frag";
+		break;
 #ifdef CAD_DEBUG
 	default:
 		throw std::runtime_error("Your fired!");
 #endif
 	}
-
 	Shader vertShader(vertPath.c_str(), ShaderStage::VertexShader);
 	Shader fragShader(fragPath.c_str(), ShaderStage::FragmentShader);
 
@@ -44,7 +49,6 @@ ShaderProgram::ShaderProgram(ShaderProgramType type)
 	if (linked != GL_TRUE) PrintProgramInfoLog(m_ID);
 #endif
 
-	//m_ViewProjLocation = GLResult(glGetUniformLocation(m_ID, "view_proj"));
 }
 
 void ShaderProgram::Destroy()
@@ -73,5 +77,4 @@ void ShaderProgram::Init(const char* vertPath, const char* fragPath)
 	if (linked != GL_TRUE) PrintProgramInfoLog(m_ID);
 #endif
 
-	//m_ViewProjLocation = GLResult(glGetUniformLocation(m_ID, "view_proj"));
 }

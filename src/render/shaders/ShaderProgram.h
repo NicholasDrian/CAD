@@ -10,6 +10,7 @@ enum class ShaderProgramType {
 	None,
 	BasicTriShader,
 	BasicLineShader,
+	DashedLineShader,
 	BasicPointShader,
 	TexturedShader
 };
@@ -24,13 +25,11 @@ public:
 	void Bind();
 
 	inline GLuint GetID() const { return m_ID; }
-	//inline GLuint GetViewProjLocation() const { return m_ViewProjLocation; }
 
 protected:
 
 	void Init(const char* vertPath, const char* fragPath);
 
 	GLuint m_ID;
-	//GLuint m_ViewProjLocation;
 
 };

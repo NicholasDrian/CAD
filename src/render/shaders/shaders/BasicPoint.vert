@@ -40,7 +40,7 @@ void main()
 	uint idx = gl_VertexID / 32;
 	uint bit = 1 << (gl_VertexID % 32);
 	if (bool(data & SELECTED_BIT) || (bool(data & SUB_SELECTABLE_BIT) && bool(vert_selection_buffer[idx] & bit))) {
-		gl_Position = view_proj * model * selected_transform * vec4(position, 1.0);
+		gl_Position = view_proj * selected_transform * model * vec4(position, 1.0);
 		frag_color = ShiftColor(color);
 	} else {
 		gl_Position = view_proj * model * vec4(position, 1.0);

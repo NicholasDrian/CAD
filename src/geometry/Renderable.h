@@ -20,11 +20,16 @@ public:
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const = 0;
 
-	virtual void AddSubSelection(uint32_t subID) {};
-	virtual void RemoveSubSelection(uint32_t subID) {};
-	virtual void ClearSubSelection() {};
+	virtual bool IsSelected() const = 0;
+	virtual void Select() = 0;
+	virtual void UnSelect() = 0;
+
+	virtual void AddSubSelection(uint32_t subID) {}
+	virtual void RemoveSubSelection(uint32_t subID) {}
+	virtual void ClearSubSelection() {}
+
+	virtual void SelectionTransformUpdated() {}
 
 	bool m_Selectable = true;
-	bool m_Selected = false;
 
 };

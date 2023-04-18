@@ -6,7 +6,8 @@
 const unsigned SAMPLES_PER_EDGE = 20;
 
 NURBS::NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
-	: m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color), m_Model(1.0f)
+	: m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color), m_Model(1.0f), m_Selected(false),
+	m_ControlPolyLine(std::make_unique<PolyLine>(points, true, m_ID))
 {
 	if (weights.size() == 0) 
 	{
@@ -28,16 +29,48 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> 
 void NURBS::Render() const
 {
 	if (!m_Selectable) Renderer::UnbindIDBuffer();
-	m_VertexArray->Render(m_Model, m_ID, m_Selectable, false, m_Selected);
+	m_VertexArrayLines->Render(m_Model, m_ID, m_Selectable, false, m_Selected);
+	m_ControlPolyLine->Render();
 	Renderer::BindIDBuffer();
 }
 
 void NURBS::BakeSelectionTransform(const glm::mat4& t)
 {
-	if (m_Selected) m_Model = t * m_Model;
+	if (m_Selected) {
+		m_Model = t * m_Model;
+		m_ControlPolyLine->BakeSelectionTransform(t);
+	}
 	else {	
 		// TODO: CHECK - i think its fine to transform homogenious points
+		m_ControlPolyLine->BakeSelectionTransform(t);
 	}
+}
+
+void NURBS::SelectionTransformUpdated()
+{
+	if (!m_Selected && m_ControlPolyLine->IsSubSelected()) {
+		std::vector<glm::vec3> newPositions = m_ControlPolyLine->GetControlPoints(true);
+		std::vector<glm::vec4> newControlPoints(m_Points.size());
+		for (int i = 0; i < m_Points.size(); i++) {
+			newControlPoints[i] = glm::vec4(newPositions[i] * m_Points[i].w, m_Points[i].w);
+		}
+		m_Points = newControlPoints;
+		UpdateSamples();
+		m_VertexArrayLines->UpdateVertexPositions(m_Samples);
+	}
+}
+
+
+void NURBS::Select()
+{
+	m_Selected = true;
+	m_ControlPolyLine->Select();
+}
+
+void NURBS::UnSelect()
+{
+	m_Selected = false;
+	m_ControlPolyLine->UnSelect();
 }
 
 AxisAlignedBoundingBox NURBS::GetBoundingBox() const
@@ -51,7 +84,20 @@ AxisAlignedBoundingBox NURBS::GetBoundingBox() const
 AxisAlignedBoundingBox NURBS::GetSubSelectionBoundingBox() const
 {
 	//todo
-	return AxisAlignedBoundingBox();
+	return m_ControlPolyLine->GetSubSelectionBoundingBox();
+}
+
+void NURBS::AddSubSelection(uint32_t subID)
+{
+	m_ControlPolyLine->AddSubSelection(subID);
+}
+void NURBS::RemoveSubSelection(uint32_t subID)
+{
+	m_ControlPolyLine->RemoveSubSelection(subID);
+}
+void NURBS::ClearSubSelection()
+{
+	m_ControlPolyLine->ClearSubSelection();
 }
 
 void NURBS::AddControlPoint(const glm::vec3& point, bool incrementDegree)
@@ -61,6 +107,7 @@ void NURBS::AddControlPoint(const glm::vec3& point, bool incrementDegree)
 	UpdateKnotVector();
 	UpdateSamples();
 	UpdateVertexArray();
+	m_ControlPolyLine->AddPoint(point);
 }
 
 void NURBS::ChangeDegree(unsigned degree)
@@ -76,7 +123,8 @@ void NURBS::UpdateLastPoint(const glm::vec3& point)
 {
 	m_Points.back() = {point.x, point.y, point.z, 1.0f};
 	UpdateSamples(); // shouldnt need to update all samples
-	m_VertexArray->UpdateVertexPositions(m_Samples);
+	m_VertexArrayLines->UpdateVertexPositions(m_Samples);
+	m_ControlPolyLine->UpdateLast(point);
 }
 
 void NURBS::RemoveLastPoint()
@@ -86,6 +134,7 @@ void NURBS::RemoveLastPoint()
 	UpdateKnotVector();
 	UpdateSamples();
 	UpdateVertexArray();
+	m_ControlPolyLine->RemoveLast();
 }
 
 std::vector<float> NURBS::BasisFuncs(float u) const
@@ -158,7 +207,7 @@ void NURBS::UpdateSamples()
 
 void NURBS::UpdateVertexArray()
 {
-	m_VertexArray = std::make_unique<VertexArrayBasicLines>(m_Samples, m_Color, m_ID, m_Indecies, 2.0f, 0U);
+	m_VertexArrayLines = std::make_unique<VertexArrayBasicLines>(m_Samples, m_Color, m_ID, m_Indecies, 2.0f, 0U);
 }
 
 glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const

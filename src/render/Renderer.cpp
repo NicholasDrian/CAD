@@ -33,7 +33,12 @@ void Renderer::Init()
 	GLCall(glEnable(GL_POINT_SMOOTH));
 	GLCall(glPointSize(5.0));
 
-	glEnable(GL_MULTISAMPLE);
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+	GLCall(glProvokingVertex(GL_FIRST_VERTEX_CONVENTION));
+
+	// todo: glEnable(GL_MULTISAMPLE);
 
 	const GLubyte* renderer = glGetString(GL_RENDERER);
 	const GLubyte* vendor = glGetString(GL_VENDOR);

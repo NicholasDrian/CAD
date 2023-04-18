@@ -17,6 +17,7 @@ public:
 
 private:
 
-	glm::mat4 m_Transform, m_InitialTransform;
+	glm::mat4 m_Transform, m_InitialTransform, m_Delta;
+	const glm::mat4 m_Identity;
 
 };

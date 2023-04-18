@@ -57,6 +57,12 @@ glm::mat4 Scene::GetSelectionTransform()
 	return glm::mat4(1.0);
 }
 
+void Scene::SelectionTransformUpdated()
+{
+	for (uint32_t id : m_Selected) m_Contents[id]->SelectionTransformUpdated();
+	for (uint32_t id : m_SubSelected) m_Contents[id]->SelectionTransformUpdated();
+}
+
 void Scene::AddToScene(std::unique_ptr<Renderable> obj)
 {
 	m_Contents[obj->GetID()] = std::move(obj);
@@ -71,7 +77,7 @@ void Scene::Destroy()
 
 void Scene::ClearSelection()
 {
-	for (uint32_t s : m_Selected) m_Contents[s]->m_Selected = false;
+	for (uint32_t s : m_Selected) m_Contents[s]->UnSelect();
 	for (uint32_t s : m_SubSelected) m_Contents[s]->ClearSubSelection();
 	m_Selected.clear();
 	m_SubSelected.clear();
@@ -114,7 +120,7 @@ void Scene::HandleClick(int x, int y, int button, int mods)
 		{
 			m_Selected.erase(ID);
 			m_SubSelected.erase(ID);
-			m_Contents[ID]->m_Selected = false;
+			m_Contents[ID]->UnSelect();
 			m_Contents[ID]->RemoveSubSelection(subID);
 		}
 		else if (shift)
@@ -122,13 +128,13 @@ void Scene::HandleClick(int x, int y, int button, int mods)
 			m_Selected.insert(ID);
 			m_SubSelected.erase(ID);
 			m_Contents[ID]->ClearSubSelection();
-			m_Contents[ID]->m_Selected = true;
+			m_Contents[ID]->Select();
 		}
 		else
 		{
 			ClearSelection();
 			m_Selected.insert(ID);
-			m_Contents[ID]->m_Selected = true;
+			m_Contents[ID]->Select();
 		}
 	}
 	else

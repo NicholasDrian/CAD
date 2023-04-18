@@ -7,15 +7,16 @@
 #include "glm/matrix.hpp"
 #include <vector>
 
-struct ColoredLineVertex {
+struct BasicLineVertex {
 	glm::vec3 pos;
+	glm::vec3 tan;
 };
 
 class VertexArrayBasicLines : public VertexArray {
 
 public:
 
-	VertexArrayBasicLines(const std::vector<glm::vec3>& positions, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indecies, float lineWidth, unsigned subIDOffset, bool subSelectable = false, const std::vector<uint32_t>& subSelectionBuffer = {}, const std::vector<uint32_t>& segmentSelectionBuffer = {});
+	VertexArrayBasicLines(const std::vector<glm::vec3>& positions, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indecies, float lineWidth, unsigned subIDOffset, bool subSelectable = false, bool dashed = false, const std::vector<uint32_t>& subSelectionBuffer = {}, const std::vector<uint32_t>& segmentSelectionBuffer = {});
 
 	~VertexArrayBasicLines();
 
@@ -33,5 +34,6 @@ private:
 	unsigned m_IndexCount, m_SubIDOffset;
 	glm::vec3 m_Color;
 	GLfloat m_LineWidth;
+	bool m_Dashed;
 
 };

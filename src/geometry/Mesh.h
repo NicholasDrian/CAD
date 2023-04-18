@@ -25,11 +25,16 @@ public:
 	virtual void RemoveSubSelection(uint32_t subID) override;
 	virtual void ClearSubSelection() override;
 
+	virtual bool IsSelected() const override { return m_Selected; }
+	virtual void Select() override { m_Selected = true; }
+	virtual void UnSelect() override { m_Selected = false; }
+
 	inline virtual unsigned GetID() const override { return m_ID; };
 
 private:
 
 	uint32_t m_ID;
+	bool m_Selected;
 
 	std::vector<glm::vec3> m_Positions, m_Normals;
 	glm::vec3 m_Color;

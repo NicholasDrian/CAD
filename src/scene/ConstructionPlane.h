@@ -22,9 +22,14 @@ public:
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
 
+	inline virtual bool IsSelected() const override { return false; }
+	inline virtual void Select() override {}
+	inline virtual void UnSelect() override {}
+
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
 private:
+
 
 	std::unique_ptr<VertexArrayBasicLines> m_MajorLinesVertexArray;
 	std::unique_ptr<VertexArrayBasicLines> m_MinorLinesVertexArray;

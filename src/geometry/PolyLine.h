@@ -14,7 +14,7 @@ class PolyLine : public Renderable {
 
 public:
 
-	PolyLine(const std::vector<glm::vec3>& points, unsigned id = Scene::GetNewID());
+	PolyLine(const std::vector<glm::vec3>& points, bool dahsed = false, unsigned id = Scene::GetNewID());
 
 	virtual void Render() const override;
 
@@ -28,6 +28,12 @@ public:
 	virtual void RemoveSubSelection(uint32_t subID) override;
 	virtual void ClearSubSelection() override;
 
+	inline bool IsSubSelected() const { return m_VertexSelectionCounter.size(); }
+
+	inline virtual bool IsSelected() const override { return m_Selected; }
+	inline virtual void Select() override { m_Selected = true; }
+	inline virtual void UnSelect() override { m_Selected = false; }
+
 	void AddPoint(const glm::vec3& point);
 	void RemoveLast();
 
@@ -35,10 +41,13 @@ public:
 
 	inline size_t GetNumControlPoints() const { return m_Points.size(); }
 	inline size_t GetNumSegments() const { return m_Indecies.size() / 2; }
+	std::vector<glm::vec3> GetControlPoints(bool withSelectionTransform = true);
 
 	inline virtual unsigned GetID() const override { return m_ID; };
 
 private:
+
+	bool m_Selected;
 
 	void AddSubSelectionLine(uint32_t subID);
 	void AddSubSelectionPoint(uint32_t subID);
@@ -50,6 +59,7 @@ private:
 	void UpdateSubSelections();
 
 	unsigned m_ID;
+	bool m_Dashed;
 	std::vector<unsigned> m_Indecies;
 
 	std::vector<uint32_t> m_SegmentSelectionBuffer, m_VertexSelectionBuffer;

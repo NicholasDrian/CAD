@@ -57,7 +57,7 @@ void VertexArrayBasicTriangles::Render(const glm::mat4& model, unsigned id, bool
 	ShaderManager::UpdateLocalUniforms(model, m_Color, selectable, subSelectable, selected, id, m_SubIDOffset);
 	GLCall(glBindVertexArray(m_RenderID));
 	if (subSelectable) {
-		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_TriangleSelectionBufferID));
+		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_TriangleSelectionBufferID));
 		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_VertexSelectionBufferID));
 	}
 	GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, (GLvoid*)0));
