@@ -11,7 +11,7 @@ class Mesh : public Renderable {
 
 public:
 
-	Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const glm::vec3& color, const std::vector<unsigned>& indecies, unsigned id = Scene::GetNewID());
+	Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const glm::vec4& color, const std::vector<unsigned>& indecies, unsigned id = Scene::GetNewID());
 
 	virtual void Render() const override;
 
@@ -37,7 +37,7 @@ private:
 	bool m_Selected;
 
 	std::vector<glm::vec3> m_Positions, m_Normals;
-	glm::vec3 m_Color;
+	glm::vec4 m_Color;
 	glm::mat4 m_Model;
 
 	std::vector<uint32_t> m_SelectedTriangles;

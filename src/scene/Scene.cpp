@@ -21,7 +21,7 @@ void Scene::Init()
 	//test scene
 	std::vector positions{ glm::vec3{ 0.0f, 0.0f, 5.0f }, glm::vec3{ 20.0f, 0.0f, 5.0f }, glm::vec3{20,20,5}, glm::vec3{ 0.0f, 20.0f, 5.0f } };
 	std::vector normals { glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f } };
-	glm::vec3 color{ 1.0f, 0.0f, 0.3f };
+	glm::vec4 color{ 1.0f, 0.0f, 0.3f , 1.0f};
 	std::vector indices{ 0U, 1U, 2U, 2U, 3U, 0U };
 	std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(positions, normals, color, indices);
 	AddToScene(std::move(mesh));
@@ -42,6 +42,7 @@ void Scene::Render() {
 	for (const auto& entry : m_Contents) {
 		entry.second->Render();
 	}
+	if (m_SelectionRectangle) m_SelectionRectangle->Render();
 }
 
 void Scene::DrawGUI()
@@ -68,11 +69,26 @@ void Scene::AddToScene(std::unique_ptr<Renderable> obj)
 	m_Contents[obj->GetID()] = std::move(obj);
 }
 
+void Scene::UpdateSelectionRectangle(int left, int top, int right, int bottom)
+{
+	if (left != right && top != bottom) {
+		if (!m_SelectionRectangle) m_SelectionRectangle = std::make_unique<SelectionRectangle>(left, top, right, bottom);
+		else m_SelectionRectangle->Update(left, top, right, bottom);
+	}
+}
+
+void Scene::ApplySelectionRectangle()
+{
+	std::cout << "applying selection rectangle!" << std::endl;
+	m_SelectionRectangle.reset();
+}
+
 void Scene::Destroy()
 {
 	m_Contents.clear();
 	m_ConstructionPlane.reset();
 	m_Camera.reset();
+	m_SelectionRectangle.reset();
 }
 
 void Scene::ClearSelection()

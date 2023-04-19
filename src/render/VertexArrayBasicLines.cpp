@@ -7,7 +7,7 @@
 
 
 
-VertexArrayBasicLines::VertexArrayBasicLines(const std::vector<glm::vec3>& positions, const glm::vec3& color, uint32_t id, const std::vector<unsigned>& indices, float lineWidth, unsigned subIDOffset, bool subSelectable, bool dashed, const std::vector<uint32_t>& segmentSelectionBuffer, const std::vector<uint32_t>& vertexSelectionBuffer)
+VertexArrayBasicLines::VertexArrayBasicLines(const std::vector<glm::vec3>& positions, const glm::vec4& color, uint32_t id, const std::vector<unsigned>& indices, float lineWidth, unsigned subIDOffset, bool subSelectable, bool dashed, const std::vector<uint32_t>& segmentSelectionBuffer, const std::vector<uint32_t>& vertexSelectionBuffer)
 	: m_IndexCount((unsigned)indices.size()), m_LineWidth(lineWidth), m_Color(color), m_SubIDOffset(subIDOffset), m_Dashed(dashed)
 {
 	if (subSelectable) {
@@ -47,7 +47,7 @@ void VertexArrayBasicLines::UpdateVertexPositions(const std::vector<glm::vec3>& 
 {
 	std::vector<BasicLineVertex> data(positions.size());
 	for (int i = 0; i < positions.size() - 1; i++) {
-		data[i] = {positions[i], positions[i] - positions[i + 1]};
+		data[i] = {positions[i], glm::normalize(positions[i] - positions[i + 1])};
 	}
 	data.back() = {positions.back(), {1.0,0.0,0.0}};
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID));

@@ -5,7 +5,7 @@ layout (location = 1) in vec3 tangent;
 
 // access uniform in frag???
 
-out vec3 frag_color;
+out vec4 frag_color;
 out flat vec3 frag_tangent;
 out flat uint frag_id;
 out flat uint frag_data;
@@ -15,6 +15,7 @@ layout (std140, binding = 0) uniform global
 {
     mat4 view_proj;
 	mat4 selected_transform;
+	//uvec2 screen_size; // for correct tangent space jawn...
 };
 
 layout (std140, binding = 0) readonly buffer VertSubSelection
@@ -28,7 +29,7 @@ const uint SELECTED_BIT =		1 << 2;
 layout (std140, binding = 2) uniform local
 {
 	mat4 model;
-	vec3 color;
+	vec4 color;
 	uint data;
 	uint id;
 	uint subIDOffset;

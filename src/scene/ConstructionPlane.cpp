@@ -19,7 +19,7 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 	int majorIndex = 0, minorIndex = 0;
 	float half = (float)majorCount * minorCount * spacing / 2.0f;
 	float epsilon = 0.1f;
-	glm::vec3 color(0.4, 0.4, 0.4);
+	glm::vec4 color(0.4, 0.4, 0.4, 1.0);
 	for (int i = 0; i <= minorCount * majorCount; i++) {
 		if (i == majorCount * minorCount / 2.0) 
 		{

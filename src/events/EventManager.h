@@ -31,6 +31,6 @@ private:
 	inline static bool m_MouseDragged = false;
 	inline static bool m_MouseButtonDown = false;
 	inline static int m_ClickModifiers = 0, m_MouseButton = -1;
-	inline static double m_PreviousMouseX = -1, m_PreviousMouseY = -1;
+	inline static double m_PreviousMouseX = -1, m_PreviousMouseY = -1, m_InitialMouseX = -1, m_InitialMouseY = -1;
 
 };

@@ -44,9 +44,8 @@ void CurveCommand::ClickInput(int x, int y)
 				}
 				else
 				{
-					glm::vec3 color(0.0f, 0.0f, 0.0f);
 					std::vector<glm::vec3> points = { intersection, intersection };
-					m_Curve = std::make_unique<NURBS>(points, color);
+					m_Curve = std::make_unique<NURBS>(points, glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f });
 					m_Curve->m_Selectable = false;
 				}
 			}

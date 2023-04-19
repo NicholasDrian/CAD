@@ -13,8 +13,8 @@ class VertexArrayBasicPoints : public VertexArray {
 
 public:
 
-	VertexArrayBasicPoints(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec3& color, unsigned subIDOffset);
-	VertexArrayBasicPoints(const std::vector<glm::vec4>& points, const std::vector<uint32_t>& subSelection, const glm::vec3& color, unsigned subIDOffset);
+	VertexArrayBasicPoints(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset);
+	VertexArrayBasicPoints(const std::vector<glm::vec4>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset);
 
 	~VertexArrayBasicPoints();
 
@@ -25,10 +25,10 @@ public:
 
 private:
 
-	void Init(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec3& color, unsigned subIDOffset);
+	void Init(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset);
 
 	GLuint m_ID, m_PointBuffer, m_SubSelectionBuffer;
-	glm::vec3 m_Color;
+	glm::vec4 m_Color;
 	unsigned m_PointCount, m_SubIDOffset;
 
 };

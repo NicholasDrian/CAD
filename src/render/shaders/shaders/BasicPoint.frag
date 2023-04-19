@@ -1,6 +1,6 @@
 #version 460
 
-in vec3 frag_color;
+in vec4 frag_color;
 in flat uint frag_id;
 in flat uint frag_data;
 in flat uint frag_sub_id;
@@ -15,7 +15,7 @@ const uint SELECTED_BIT =		1 << 2;
 void main() 
 {
 
-	out_color = vec4(frag_color, 1.0);
+	out_color = frag_color;
 
 	// why is this vector backwards!!!
 	if (frag_data & SELECTABLE_BIT) out_id = uvec2(frag_sub_id, frag_id);

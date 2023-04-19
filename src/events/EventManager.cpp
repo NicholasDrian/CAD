@@ -11,38 +11,52 @@
 void EventManager::Tick()
 {
     Window::PollEvents();
-    if (m_MouseButtonDown && m_MouseButton == GLFW_MOUSE_BUTTON_RIGHT) {
-        double mouseX, mouseY;
-        glfwGetCursorPos(Window::GetGLFWWindow(), &mouseX, &mouseY);
-        int dx = int(mouseX - m_PreviousMouseX);
-        int dy = int(mouseY - m_PreviousMouseY);
-        m_MouseDragged = m_MouseDragged || dx || dy;
-        switch (m_ClickModifiers) {
-        case GLFW_MOD_SHIFT:
-            if (dx) Scene::GetCamera()->PanRight(dx);
-            if (dy) Scene::GetCamera()->PanUp(dy);
-            break;
-        case GLFW_MOD_CONTROL:
-            if (dy) Scene::GetCamera()->ZoomIn(dy);
-            break;
-        default:
-            if (dx) Scene::GetCamera()->TurnRight(dx);
-            if (dy) Scene::GetCamera()->TurnUp(dy);
-        }
-        m_PreviousMouseX = mouseX;
-        m_PreviousMouseY = mouseY;
-        
-        if (m_CameraMovementInput) {
-            float now = (float) glfwGetTime();
-            float delta = (now - m_LastMovementUpdateTime) * 200.0f;
-            m_LastMovementUpdateTime = now;
-            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_W)) Scene::GetCamera()->MoveForward(delta);
-            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_S)) Scene::GetCamera()->MoveForward(-delta);
-            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_A)) Scene::GetCamera()->PanRight(delta);
-            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_D)) Scene::GetCamera()->PanRight(-delta);
-            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_E)) Scene::GetCamera()->PanUp(delta);
-            if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_Q)) Scene::GetCamera()->PanUp(-delta);
-                
+    if (m_MouseButtonDown) {
+        if (m_MouseButton == GLFW_MOUSE_BUTTON_RIGHT) {
+            double mouseX, mouseY;
+            glfwGetCursorPos(Window::GetGLFWWindow(), &mouseX, &mouseY);
+            int dx = int(mouseX - m_PreviousMouseX);
+            int dy = int(mouseY - m_PreviousMouseY);
+            m_MouseDragged = m_MouseDragged || dx || dy;
+            switch (m_ClickModifiers) {
+            case GLFW_MOD_SHIFT:
+                if (dx) Scene::GetCamera()->PanRight(dx);
+                if (dy) Scene::GetCamera()->PanUp(dy);
+                break;
+            case GLFW_MOD_CONTROL:
+                if (dy) Scene::GetCamera()->ZoomIn(dy);
+                break;
+            default:
+                if (dx) Scene::GetCamera()->TurnRight(dx);
+                if (dy) Scene::GetCamera()->TurnUp(dy);
+            }
+            m_PreviousMouseX = mouseX;
+            m_PreviousMouseY = mouseY;
+
+            if (m_CameraMovementInput) {
+                float now = (float)glfwGetTime();
+                float delta = (now - m_LastMovementUpdateTime) * 200.0f;
+                m_LastMovementUpdateTime = now;
+                if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_W)) Scene::GetCamera()->MoveForward(delta);
+                if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_S)) Scene::GetCamera()->MoveForward(-delta);
+                if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_A)) Scene::GetCamera()->PanRight(delta);
+                if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_D)) Scene::GetCamera()->PanRight(-delta);
+                if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_E)) Scene::GetCamera()->PanUp(delta);
+                if (m_CameraMovementInput & MOVEMENT_BITS.at(GLFW_KEY_Q)) Scene::GetCamera()->PanUp(-delta);
+
+            }
+        } 
+        else if (m_MouseButton == GLFW_MOUSE_BUTTON_LEFT)
+        {
+            double left, top;
+            glfwGetCursorPos(Window::GetGLFWWindow(), &left, &top);
+            int l = left;
+            int t = top;
+            int r = m_InitialMouseX;
+            int b = m_InitialMouseY;
+            if (l > r) std::swap(l, r);
+            if (t > b) std::swap(t, b);
+            Scene::UpdateSelectionRectangle(l, t, r, b);
         }
     }
 }
@@ -60,8 +74,9 @@ void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int
         glfwGetCursorPos(Window::GetGLFWWindow(), &mouseX, &mouseY);
         m_MouseDragged = false;
         m_MouseButtonDown = true;
-        m_PreviousMouseX = mouseX;
-        m_PreviousMouseY = mouseY;
+        m_InitialMouseX = m_PreviousMouseX = mouseX;
+        m_InitialMouseY = m_PreviousMouseY = mouseY;
+
         m_MouseButton = button;
         m_ClickModifiers = mods;
     }

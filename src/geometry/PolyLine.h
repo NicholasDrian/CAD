@@ -20,6 +20,7 @@ public:
 
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
@@ -28,15 +29,13 @@ public:
 	virtual void RemoveSubSelection(uint32_t subID) override;
 	virtual void ClearSubSelection() override;
 
-	inline bool IsSubSelected() const { return m_VertexSelectionCounter.size(); }
-
 	inline virtual bool IsSelected() const override { return m_Selected; }
 	inline virtual void Select() override { m_Selected = true; }
 	inline virtual void UnSelect() override { m_Selected = false; }
+	inline bool IsSubSelected() const { return m_VertexSelectionCounter.size(); }
 
 	void AddPoint(const glm::vec3& point);
 	void RemoveLast();
-
 	void UpdateLast(const glm::vec3& point);
 
 	inline size_t GetNumControlPoints() const { return m_Points.size(); }
@@ -66,7 +65,7 @@ private:
 	std::unordered_map<int, int> m_VertexSelectionCounter;
 
 	std::vector<glm::vec3> m_Points;
-	glm::vec3 m_Color;
+	glm::vec4 m_Color;
 	glm::mat4 m_Model;
 	std::unique_ptr<VertexArrayBasicLines> m_VertexArrayLines;
 	std::unique_ptr<VertexArrayBasicPoints>	m_VertexArrayPoints;

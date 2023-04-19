@@ -1,7 +1,7 @@
 #version 460
 
 
-in vec3 frag_color;
+in vec4 frag_color;
 in flat vec3 frag_tangent;
 in flat uint frag_id;
 in flat uint frag_data;
@@ -21,9 +21,9 @@ layout (std140, binding = 1) readonly buffer PrimitiveSubSelection
 	uint primitive_selection_buffer[];
 };
 
-vec3 ShiftColor(vec3 color)
+vec4 ShiftColor(vec4 color)
 {
-	return color + vec3(0.5f, 0.5f, -0.5f);
+	return color + vec4(0.5f, 0.5f, -0.5f, 0.0f);
 }
 
 void main() 
@@ -43,8 +43,8 @@ void main()
 			uint bit = 1 << (subID % 32);
 			selected = bool(primitive_selection_buffer[index] & bit);
 		}
-		if (selected) out_color = vec4(ShiftColor(frag_color), 1.0);
-		else out_color = vec4(frag_color, 1.0);
+		if (selected) out_color = ShiftColor(frag_color);
+		else out_color = frag_color;
 	} else {
 		out_color = vec4(0.0, 0.0, 0.0, 0.0);
 	}

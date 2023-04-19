@@ -5,7 +5,7 @@
 #include "../render/Renderer.h"
 
 PolyLine::PolyLine(const std::vector<glm::vec3>& points, bool dashed, unsigned id)
-	: m_Points(points), m_ID(id), m_Color({0.0f, 0.0f, 0.0f}), m_Model(1.0),
+	: m_Points(points), m_ID(id), m_Color({0.0f, 0.0f, 0.0f, 1.0f}), m_Model(1.0),
 	m_SegmentSelectionBuffer(std::vector<uint32_t>(((points.size() - 1) + 31) / 32, 0U)),
 	m_VertexSelectionBuffer(std::vector<uint32_t>((points.size() + 31) / 32, 0U)), m_Dashed(dashed), m_Selected(false)
 {
@@ -46,12 +46,6 @@ std::vector<glm::vec3> PolyLine::GetControlPoints(bool withSelectionTransform)
 	else
 	{
 		glm::mat4 t = Scene::GetSelectionTransform();
-		/*std::cout << " here" << std::endl;
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				std::cout << t[i][j] << ' ';
-			} std::cout << '\n';
-		}*/
 		if (m_Selected) {
 			std::vector<glm::vec3> points(m_Points.size());
 			for (int i = 0; i < points.size(); i++) {

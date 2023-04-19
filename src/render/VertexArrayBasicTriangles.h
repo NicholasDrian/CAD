@@ -20,7 +20,7 @@ public:
 		const std::vector<glm::vec3>& normals,
 		const std::vector<uint32_t>& triangleSelectionBuffer,
 		const std::vector<uint32_t>& vertexSelectionBuffer,
-		const glm::vec3& color, uint32_t id, unsigned subIDOffset,
+		const glm::vec4& color, uint32_t id, unsigned subIDOffset,
 		const std::vector<unsigned>& indecies);
 
 	~VertexArrayBasicTriangles();
@@ -37,6 +37,6 @@ private:
 
 	GLuint m_RenderID, m_VertexBufferID, m_IndexBufferID, m_TriangleSelectionBufferID, m_VertexSelectionBufferID;
 	unsigned m_IndexCount, m_SubIDOffset;
-	glm::vec3 m_Color;
+	glm::vec4 m_Color;
 
 };

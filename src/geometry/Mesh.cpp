@@ -3,7 +3,7 @@
 #include "Mesh.h"
 #include "../render/Renderer.h"
 
-Mesh::Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const glm::vec3& color, const std::vector<unsigned>& indices, unsigned id)
+Mesh::Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const glm::vec4& color, const std::vector<unsigned>& indices, unsigned id)
 	: m_Positions(positions), m_Normals(normals), m_Color(color), m_ID(id), m_Indices(indices), m_Model(1.0),
 	m_SelectedTriangles(std::vector<uint32_t>(((indices.size() / 3) + 31) / 32, 0U)),
 	m_SelectedVertices(std::vector<uint32_t>(((m_Positions.size()) + 31) / 32, 0U)), m_Selected(false)

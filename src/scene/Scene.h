@@ -8,6 +8,7 @@
 #include "../geometry/Renderable.h"
 #include "../gui/AffineTransformWidget.h"
 #include "ConstructionPlane.h"
+#include "SelectionRectangle.h"
 
 #include "glm/glm.hpp"
 
@@ -24,6 +25,9 @@ public:
 	static void DrawGUI();
 
 	static void AddToScene(std::unique_ptr<Renderable> obj);
+
+	static void UpdateSelectionRectangle(int left, int top, int right, int bottom);
+	static void ApplySelectionRectangle();
 
 	static void HandleClick(int x, int y, int button, int mods);
 
@@ -48,6 +52,7 @@ private:
 	inline static const float m_MaxExtend = 10000.0f;
 
 	inline static std::unique_ptr<AffineTransformWidget> m_TransformWidget;
+	inline static std::unique_ptr<SelectionRectangle> m_SelectionRectangle;
 
 	inline static std::unordered_set<uint32_t> m_Selected;
 	inline static std::unordered_set<uint32_t> m_SubSelected;

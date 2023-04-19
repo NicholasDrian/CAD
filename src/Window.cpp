@@ -10,8 +10,14 @@
 
 GLFWwindow* Window::m_Window = nullptr;
 
+static void glfw_error_callback(int error, const char* description)
+{
+    fprintf(stderr, "GLFW Error %d: %s\n", error, description);
+}
+
 void Window::Init(unsigned width, unsigned height)
 {
+    glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
         throw std::runtime_error("Failed to initialize glfw!");
     }
@@ -20,6 +26,7 @@ void Window::Init(unsigned width, unsigned height)
         throw std::runtime_error("Failed to create window!");
     }
     glfwMakeContextCurrent(m_Window);
+    glfwSwapInterval(1); // Enable vsync
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);

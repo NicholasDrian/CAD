@@ -5,7 +5,7 @@
 
 const unsigned SAMPLES_PER_EDGE = 20;
 
-NURBS::NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
+NURBS::NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
 	: m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color), m_Model(1.0f), m_Selected(false),
 	m_ControlPolyLine(std::make_unique<PolyLine>(points, true, m_ID))
 {
@@ -83,7 +83,6 @@ AxisAlignedBoundingBox NURBS::GetBoundingBox() const
 
 AxisAlignedBoundingBox NURBS::GetSubSelectionBoundingBox() const
 {
-	//todo
 	return m_ControlPolyLine->GetSubSelectionBoundingBox();
 }
 
@@ -116,7 +115,7 @@ void NURBS::ChangeDegree(unsigned degree)
 	m_Degree = degree;
 	UpdateKnotVector();
 	UpdateSamples();
-	UpdateVertexArray();
+	m_VertexArrayLines->UpdateVertexPositions(m_Samples);
 }
 
 void NURBS::UpdateLastPoint(const glm::vec3& point)

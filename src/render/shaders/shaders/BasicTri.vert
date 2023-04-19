@@ -2,7 +2,7 @@
 
 layout (location = 0) in vec3 position;
 
-out vec3 frag_color;
+out vec4 frag_color;
 out flat uint frag_id;
 out flat uint frag_data;
 out flat uint frag_sub_id_offset;
@@ -24,7 +24,7 @@ const uint SELECTED_BIT =		1 << 2;
 layout (std140, binding = 2) uniform local
 {
 	mat4 model;
-	vec3 color;
+	vec4 color;
 	uint data;
 	uint id;
 	uint subIDOffset;

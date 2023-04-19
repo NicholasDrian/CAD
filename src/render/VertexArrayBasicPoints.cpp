@@ -6,19 +6,19 @@
 
 #include <iostream>
 
-VertexArrayBasicPoints::VertexArrayBasicPoints(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec3& color, unsigned subIDOffset)
+VertexArrayBasicPoints::VertexArrayBasicPoints(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset)
 {
 	Init(points, subSelection, color, subIDOffset);
 }
 
-VertexArrayBasicPoints::VertexArrayBasicPoints(const std::vector<glm::vec4>& points, const std::vector<uint32_t>& subSelection, const glm::vec3& color, unsigned subIDOffset)
+VertexArrayBasicPoints::VertexArrayBasicPoints(const std::vector<glm::vec4>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset)
 {
 	std::vector<glm::vec3> point3s(points.size());
 	for (int i = 0; i < points.size(); i++) point3s[i] = points[i];
 	Init(point3s, subSelection, color, subIDOffset);
 }
 
-void VertexArrayBasicPoints::Init(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec3& color, unsigned subIDOffset) 
+void VertexArrayBasicPoints::Init(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset) 
 {
 	m_SubIDOffset = subIDOffset;
 	m_Color = color;

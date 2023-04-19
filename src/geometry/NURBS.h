@@ -15,7 +15,7 @@ class NURBS : public Renderable {
 
 public:
 
-	NURBS(std::vector<glm::vec3> points, glm::vec3 color, std::vector<float> weights = {}, unsigned degree = 2U, std::vector<float> knots = {}, unsigned id = Scene::GetNewID());
+	NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> weights = {}, unsigned degree = 2U, std::vector<float> knots = {}, unsigned id = Scene::GetNewID());
 
 	virtual void Render() const override;
 
@@ -61,7 +61,7 @@ private:
 
 	glm::mat4 m_Model;
 	std::vector<glm::vec4> m_Points;
-	glm::vec3 m_Color;
+	glm::vec4 m_Color;
 	std::vector<float> m_Knots;
 	std::vector<unsigned> m_Indecies;
 	unsigned m_Degree;

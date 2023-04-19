@@ -26,9 +26,12 @@ public:
 	static void SetRenderMode(RenderMode mode);
 
 	static uint64_t ReadIDAtPixel(int x, int y);
+	static std::vector<uint64_t> ReadIDsInRectangle(int left, int top, int right, int bottom);
 
 	static void WindowResize(int width, int height);
 
+	static void EnableDepthTesting();
+	static void DisableDepthTesting();
 
 	// test
 	static void UnbindIDBuffer();

@@ -6,7 +6,7 @@
 #include<iostream>
 
 
-VertexArrayBasicTriangles::VertexArrayBasicTriangles(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<uint32_t>& triangleSelectionBuffer, const std::vector<uint32_t>& vertexSelectionBuffer, const glm::vec3& color, uint32_t id, unsigned subIDOffset, const std::vector<unsigned>& indices)
+VertexArrayBasicTriangles::VertexArrayBasicTriangles(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals, const std::vector<uint32_t>& triangleSelectionBuffer, const std::vector<uint32_t>& vertexSelectionBuffer, const glm::vec4& color, uint32_t id, unsigned subIDOffset, const std::vector<unsigned>& indices)
 	: m_IndexCount((unsigned)indices.size()), m_Color(color), m_SubIDOffset(subIDOffset)
 {
 	GLCall(glGenBuffers(1, &m_TriangleSelectionBufferID));
@@ -60,6 +60,7 @@ void VertexArrayBasicTriangles::Render(const glm::mat4& model, unsigned id, bool
 		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_TriangleSelectionBufferID));
 		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_VertexSelectionBufferID));
 	}
+	
 	GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, (GLvoid*)0));
 }
 
