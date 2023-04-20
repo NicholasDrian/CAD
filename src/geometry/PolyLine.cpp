@@ -74,7 +74,7 @@ void PolyLine::AddPoint(const glm::vec3& point)
 
 AxisAlignedBoundingBox PolyLine::GetBoundingBox() const
 {
-	return AxisAlignedBoundingBox(m_Points);
+	return AxisAlignedBoundingBox(m_Points, m_Model);
 }
 
 
@@ -89,6 +89,36 @@ AxisAlignedBoundingBox PolyLine::GetSubSelectionBoundingBox() const
 		}
 	}
 	return AxisAlignedBoundingBox(selected, m_Model);
+}
+
+void PolyLine::SelectWithinFrustum(const Frustum& frustum, bool inclusive)
+{
+	AxisAlignedBoundingBox bb = GetBoundingBox();
+	
+	if (bb.FullyWithin(frustum)) {
+		m_Selected = true;
+		return;
+	}
+	if (inclusive) 
+	{
+		for (int i = 0; i < m_Points.size() - 1; i++) {
+			if (frustum.PartiallyContainsLine(m_Points[i], m_Points[i + 1])) {
+				m_Selected = true;
+				return;
+			}
+		}
+	} 
+	else 
+	{
+		for (const auto& p : m_Points) {
+			if (!frustum.Contains(p)) return;
+		}
+		m_Selected = true;
+	}
+}
+
+void PolyLine::SubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
+{
 }
 
 void PolyLine::UpdateLast(const glm::vec3& point) { 

@@ -21,6 +21,9 @@ public:
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
 
+	virtual void SelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
+	virtual void SubSelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
+
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;

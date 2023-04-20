@@ -17,6 +17,8 @@ Frustum SelectionRectangle::GetFrustum() const
 {
 	return Frustum(
 		Scene::GetCamera()->GetRayAtPixel(m_Left, m_Top), 
+		Scene::GetCamera()->GetRayAtPixel(m_Right, m_Top), 
+		Scene::GetCamera()->GetRayAtPixel(m_Left, m_Bottom),
 		Scene::GetCamera()->GetRayAtPixel(m_Right, m_Bottom));
 }
 
