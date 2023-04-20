@@ -26,6 +26,14 @@ AxisAlignedBoundingBox::AxisAlignedBoundingBox(const std::vector<glm::vec3>& poi
 	AddPoints(points, t);
 }
 
+bool AxisAlignedBoundingBox::Vaid() const
+{
+	return
+		m_MinX <= m_MaxX &&
+		m_MinY <= m_MaxY &&
+		m_MinZ <= m_MaxZ;
+}
+
 AxisAlignedBoundingBox::AxisAlignedBoundingBox(const std::vector<glm::vec3>& points)
 	: AxisAlignedBoundingBox()
 {

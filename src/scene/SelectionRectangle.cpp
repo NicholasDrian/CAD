@@ -3,6 +3,7 @@
 #include "SelectionRectangle.h"
 #include "../Window.h"
 #include "../render/Renderer.h"
+#include "Scene.h"
 
 #include <iostream>
 
@@ -10,6 +11,13 @@ SelectionRectangle::SelectionRectangle(int left, int top, int right, int bottom)
 	: m_Left(left), m_Top(top), m_Right(right), m_Bottom(bottom)
 {
 	UpdateVertexArray();
+}
+
+Frustum SelectionRectangle::GetFrustum() const
+{
+	return Frustum(
+		Scene::GetCamera()->GetRayAtPixel(m_Left, m_Top), 
+		Scene::GetCamera()->GetRayAtPixel(m_Right, m_Bottom));
 }
 
 void SelectionRectangle::Update(int left, int top, int right, int bottom)

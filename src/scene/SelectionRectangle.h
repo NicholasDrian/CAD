@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../render/VertexArrayScreenSpaceTriangles.h"
+#include "../geometry/Frustum.h"
 
 #include <unordered_set>
 #include <memory>
@@ -10,6 +11,8 @@ class SelectionRectangle {
 public:
 
 	SelectionRectangle(int left, int top, int right, int bottom);
+
+	Frustum GetFrustum() const;
 
 	void Update(int left, int top, int right, int bottom);
 	void Render() const;

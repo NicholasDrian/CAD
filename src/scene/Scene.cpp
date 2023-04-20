@@ -60,8 +60,7 @@ glm::mat4 Scene::GetSelectionTransform()
 
 void Scene::SelectionTransformUpdated()
 {
-	for (uint32_t id : m_Selected) m_Contents[id]->SelectionTransformUpdated();
-	for (uint32_t id : m_SubSelected) m_Contents[id]->SelectionTransformUpdated();
+	for (auto& e : m_Contents) e.second->SelectionTransformUpdated();
 }
 
 void Scene::AddToScene(std::unique_ptr<Renderable> obj)
@@ -80,7 +79,11 @@ void Scene::UpdateSelectionRectangle(int left, int top, int right, int bottom)
 void Scene::ApplySelectionRectangle(bool subSelection, bool inclusive)
 {
 	if (m_SelectionRectangle) {
-		//todo
+		Frustum frustum = m_SelectionRectangle->GetFrustum();
+		if (subSelection) 
+			for (auto& e : m_Contents) e.second->SubSelectWithinFrustum(frustum, inclusive);
+		else 
+			for (auto& e : m_Contents) e.second->SelectWithinFrustum(frustum, inclusive);
 		m_SelectionRectangle.reset();
 	}
 }
@@ -95,18 +98,20 @@ void Scene::Destroy()
 
 void Scene::ClearSelection()
 {
-	for (uint32_t s : m_Selected) m_Contents[s]->UnSelect();
-	for (uint32_t s : m_SubSelected) m_Contents[s]->ClearSubSelection();
-	m_Selected.clear();
-	m_SubSelected.clear();
+	for (auto& e : m_Contents) {
+		e.second->UnSelect();
+		e.second->ClearSubSelection();
+	}
 }
 
 
 AxisAlignedBoundingBox Scene::GetSelectedBoundingBox()
 {
 	AxisAlignedBoundingBox bb;
-	for (uint32_t i : m_Selected) bb += m_Contents[i]->GetBoundingBox();
-	for (uint32_t i : m_SubSelected) bb += m_Contents[i]->GetSubSelectionBoundingBox();
+	for (const auto& e : m_Contents) {
+		if (e.second->IsSelected()) bb += e.second->GetBoundingBox();
+		else bb += e.second->GetSubSelectionBoundingBox();
+	}
 	return bb;
 }
 
@@ -122,65 +127,56 @@ void Scene::HandleClick(int x, int y, int mods)
 		m_TransformWidget.reset();
 	}
 
-	if (uint32_t ID = IDs >> 32)
-	{
-		uint32_t subID = IDs & 0x00000000FFFFFFFFLLU;
-
-		if (control && shift)
+	if (uint32_t ID = IDs >> 32) {
+		if (shift) 
 		{
-			if (!m_Selected.contains(ID)) {
-				m_SubSelected.insert(ID);
+			if (control)
+			{
+				uint32_t subID = 0x0FFFFFFFFULL & IDs;
 				m_Contents[ID]->AddSubSelection(subID);
 			}
+			else
+			{
+				m_Contents[ID]->Select();
+			}
 		}
-		else if (control)
+		else 
 		{
-			m_Selected.erase(ID);
-			m_SubSelected.erase(ID);
-			m_Contents[ID]->UnSelect();
-			m_Contents[ID]->RemoveSubSelection(subID);
-		}
-		else if (shift)
-		{
-			m_Selected.insert(ID);
-			m_SubSelected.erase(ID);
-			m_Contents[ID]->ClearSubSelection();
-			m_Contents[ID]->Select();
-		}
-		else
-		{
-			ClearSelection();
-			m_Selected.insert(ID);
-			m_Contents[ID]->Select();
+			if (control) 
+			{
+				uint32_t subID = 0x0FFFFFFFFULL & IDs;
+				m_Contents[ID]->RemoveSubSelection(subID);
+				m_Contents[ID]->UnSelect();
+			}
+			else
+			{
+				ClearSelection();
+				m_Contents[ID]->Select();
+			}
 		}
 	}
 	else
 	{
-		if (!shift && !control) {
-			ClearSelection();
-		}
+		ClearSelection();
 	}
 
-	
-	if (numSelected > 0) m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
+	AxisAlignedBoundingBox bb = GetSelectedBoundingBox();
+	if (bb.Vaid()) m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
 }
 
 // Invariant: never both selected and sub selected!
 void Scene::DeleteSelection() 
 {
-	m_TransformWidget.reset();
-
-	for (int i : m_Selected) m_Contents.erase(i);
-	m_Selected.clear();
-
-	// Todo: handle deletion of sub selection!
-
+	std::vector<uint32_t> deleteQ;
+	for (auto& e : m_Contents) {
+		if (e.second->IsSelected()) deleteQ.push_back(e.first);
+		else (e.second->DeleteSubSelection());
+	}
+	for (auto id : deleteQ) m_Contents.erase(id);
 }
 
 void Scene::Delete(unsigned id)
 {
-	m_Selected.erase(id);
-	m_SubSelected.erase(id);
 	m_Contents.erase(id);
 }
 
@@ -202,5 +198,3 @@ bool Scene::IntersectScene(int x, int y, glm::vec3& outPoint)
 	}
 
 }
-
-// todo fix - curve writes to id buffer even when drawn last???????? 

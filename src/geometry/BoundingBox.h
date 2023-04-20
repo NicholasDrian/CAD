@@ -15,6 +15,7 @@ public:
 	AxisAlignedBoundingBox(const std::vector<glm::vec3>& points);
 	AxisAlignedBoundingBox(const std::vector<glm::vec3>& points, const glm::mat4& t);
 
+	bool Vaid() const;
 
 	void AddPoint(const glm::vec3& p);
 	void AddPoints(const std::vector<glm::vec3>& points);

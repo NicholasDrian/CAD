@@ -4,6 +4,7 @@
 #include "glm/glm.hpp"
 #include "BoundingBox.h"
 #include "Ray.h"
+#include "Frustum.h"
 
 #include <stdint.h>
 #include <vector>
@@ -24,6 +25,10 @@ public:
 	virtual void Select() = 0;
 	virtual void UnSelect() = 0;
 
+	virtual void SelectWithinFrustum(const Frustum& frustum, bool inclusive) {}
+	virtual void SubSelectWithinFrustum(const Frustum& frustum, bool inclusive) {}
+
+	virtual void DeleteSubSelection() {}
 	virtual void AddSubSelection(uint32_t subID) {}
 	virtual void RemoveSubSelection(uint32_t subID) {}
 	virtual void ClearSubSelection() {}
