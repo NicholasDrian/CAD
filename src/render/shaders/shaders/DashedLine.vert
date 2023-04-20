@@ -15,7 +15,7 @@ layout (std140, binding = 0) uniform global
 {
     mat4 view_proj;
 	mat4 selected_transform;
-	//uvec2 screen_size; // for correct tangent space jawn...
+	//uvec2 screen_size; // for correcing screen space tangent and jawn...
 };
 
 layout (std140, binding = 0) readonly buffer VertSubSelection
@@ -42,10 +42,12 @@ void main()
 	uint bit = 1 << (gl_VertexID % 32);
 	if (bool(data & SELECTED_BIT) || (bool(data & SUB_SELECTABLE_BIT) && bool(vert_selection_buffer[idx] & bit))) {
 		gl_Position = view_proj * selected_transform * model * vec4(position, 1.0);
-		frag_tangent = (view_proj * selected_transform * model * vec4(tangent, 0.0)).xyz;
+		vec4 forward = view_proj * selected_transform * model * vec4(position + tangent, 1.0);
+		frag_tangent = (forward - gl_Position).xyz;
 	} else {
 		gl_Position = view_proj * model * vec4(position, 1.0);
-		frag_tangent = (view_proj * model * vec4(tangent, 0.0)).xyz;
+		vec4 forward = view_proj * model * vec4(position + tangent, 1.0);
+		frag_tangent = (forward - gl_Position).xyz;
 	}
 
 

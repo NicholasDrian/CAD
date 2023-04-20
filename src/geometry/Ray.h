@@ -10,6 +10,8 @@ public :
 	Ray(glm::vec3 origin, glm::vec3 direction);
 
 	glm::vec3 At(float t) const;
+	inline glm::vec3 GetOrigin() const { return m_Origin; }
+	inline glm::vec3 GetDirection() const { return m_Direction; }
 
 	bool IntersectPlane(glm::vec3 origin, glm::vec3 normal, glm::vec3& outPoint) const;
 	glm::vec3 IntersectPlaneUnsafe(glm::vec3 origin, glm::vec3 normal) const;

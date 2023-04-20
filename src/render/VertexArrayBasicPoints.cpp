@@ -70,7 +70,7 @@ void VertexArrayBasicPoints::UpdatePositions(const std::vector<glm::vec3>& posit
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_PointBuffer));
 	if (updateSize) {
 		GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * positions.size(), positions.data(), GL_STATIC_DRAW));
-		m_PointCount = positions.size();
+		m_PointCount = (unsigned) positions.size();
 	}
 	else GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * positions.size(), positions.data()));
 }

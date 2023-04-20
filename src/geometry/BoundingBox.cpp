@@ -41,6 +41,32 @@ glm::vec3 AxisAlignedBoundingBox::GetCenter() const
 	};
 }
 
+bool AxisAlignedBoundingBox::PartiallyWithin(const Frustum& frustum) const
+{
+	return
+		frustum.Contains({ m_MinX, m_MinY, m_MinZ }) ||
+		frustum.Contains({ m_MinX, m_MinY, m_MaxZ }) ||
+		frustum.Contains({ m_MinX, m_MaxY, m_MinZ }) ||
+		frustum.Contains({ m_MinX, m_MaxY, m_MaxZ }) ||
+		frustum.Contains({ m_MaxX, m_MinY, m_MinZ }) ||
+		frustum.Contains({ m_MaxX, m_MinY, m_MaxZ }) ||
+		frustum.Contains({ m_MaxX, m_MaxY, m_MinZ }) ||
+		frustum.Contains({ m_MaxX, m_MaxY, m_MaxZ });
+}
+
+bool AxisAlignedBoundingBox::FullyWithin(const Frustum& frustum) const
+{
+	return
+		frustum.Contains({ m_MinX, m_MinY, m_MinZ }) &&
+		frustum.Contains({ m_MinX, m_MinY, m_MaxZ }) &&
+		frustum.Contains({ m_MinX, m_MaxY, m_MinZ }) &&
+		frustum.Contains({ m_MinX, m_MaxY, m_MaxZ }) &&
+		frustum.Contains({ m_MaxX, m_MinY, m_MinZ }) &&
+		frustum.Contains({ m_MaxX, m_MinY, m_MaxZ }) &&
+		frustum.Contains({ m_MaxX, m_MaxY, m_MinZ }) &&
+		frustum.Contains({ m_MaxX, m_MaxY, m_MaxZ });
+}
+
 
 void AxisAlignedBoundingBox::AddPoint(const glm::vec3& p)
 {

@@ -110,7 +110,7 @@ void PolyLine::UpdateVertexArrays()
 {
 	m_VertexArrayLines = std::make_unique<VertexArrayBasicLines>(m_Points, m_Color, m_ID, m_Indecies, 2.0f, 0U, true, m_Dashed, m_SegmentSelectionBuffer, m_VertexSelectionBuffer);
 
-	m_VertexArrayPoints = std::make_unique<VertexArrayBasicPoints>(m_Points, m_VertexSelectionBuffer, m_Color, GetNumSegments());
+	m_VertexArrayPoints = std::make_unique<VertexArrayBasicPoints>(m_Points, m_VertexSelectionBuffer, m_Color, (unsigned)GetNumSegments());
 }
 
 void PolyLine::UpdatePositions()

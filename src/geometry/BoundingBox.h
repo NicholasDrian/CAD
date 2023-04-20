@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "Frustum.h"
 
 #include <algorithm>
 #include <vector>
@@ -19,6 +20,9 @@ public:
 	void AddPoints(const std::vector<glm::vec3>& points);
 	void AddPoints(const std::vector<glm::vec3>& points, const glm::mat4& t);
 	glm::vec3 GetCenter() const;
+
+	bool PartiallyWithin(const Frustum& frustum) const;
+	bool FullyWithin(const Frustum& frustum) const;
 
 	friend AxisAlignedBoundingBox operator+(const AxisAlignedBoundingBox& b1, const AxisAlignedBoundingBox& b2)
 	{

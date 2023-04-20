@@ -27,9 +27,9 @@ public:
 	static void AddToScene(std::unique_ptr<Renderable> obj);
 
 	static void UpdateSelectionRectangle(int left, int top, int right, int bottom);
-	static void ApplySelectionRectangle();
+	static void ApplySelectionRectangle(bool subSelection, bool inclusive);
 
-	static void HandleClick(int x, int y, int button, int mods);
+	static void HandleClick(int x, int y, int mods);
 
 	static void DeleteSelection();
 	static void Delete(unsigned id);
@@ -53,9 +53,6 @@ private:
 
 	inline static std::unique_ptr<AffineTransformWidget> m_TransformWidget;
 	inline static std::unique_ptr<SelectionRectangle> m_SelectionRectangle;
-
-	inline static std::unordered_set<uint32_t> m_Selected;
-	inline static std::unordered_set<uint32_t> m_SubSelected;
 
 	inline static std::unique_ptr<Camera> m_Camera;
 	inline static std::unordered_map<unsigned, std::unique_ptr<Renderable>> m_Contents;

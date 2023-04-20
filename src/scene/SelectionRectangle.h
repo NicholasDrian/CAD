@@ -2,6 +2,7 @@
 
 #include "../render/VertexArrayScreenSpaceTriangles.h"
 
+#include <unordered_set>
 #include <memory>
 
 class SelectionRectangle {

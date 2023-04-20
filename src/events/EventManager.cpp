@@ -50,10 +50,11 @@ void EventManager::Tick()
         {
             double left, top;
             glfwGetCursorPos(Window::GetGLFWWindow(), &left, &top);
-            int l = left;
-            int t = top;
-            int r = m_InitialMouseX;
-            int b = m_InitialMouseY;
+            int l = (int)left;
+            int t = (int)top;
+            int r = (int)m_InitialMouseX;
+            int b = (int)m_InitialMouseY;
+            m_MouseDragged = l != r || t != b;
             if (l > r) std::swap(l, r);
             if (t > b) std::swap(t, b);
             Scene::UpdateSelectionRectangle(l, t, r, b);
@@ -85,15 +86,17 @@ void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int
         double mouseX, mouseY;
         glfwGetCursorPos(Window::GetGLFWWindow(), &mouseX, &mouseY);
 
-        if (!m_MouseDragged) { // click!
-            if (CommandManager::HasActiveCommand()) 
-            {
-                CommandManager::HandleClick((int)mouseX, (int)mouseY);
-            }
-            else 
-            {
-                Scene::HandleClick((int)mouseX, (int)mouseY, button, mods);
-            }
+        if (!m_MouseDragged) // click!
+        { 
+            if (CommandManager::HasActiveCommand())  CommandManager::HandleClick((int)mouseX, (int)mouseY);
+            else  Scene::HandleClick((int)mouseX, (int)mouseY, mods);
+        }
+        else 
+        {
+            int subSelectionMask = GLFW_MOD_SHIFT | GLFW_MOD_CONTROL;
+            bool subSelection = (mods & subSelectionMask) == subSelectionMask;
+            bool inclusive = m_InitialMouseX > mouseX;
+            Scene::ApplySelectionRectangle(subSelection, inclusive);
         }
         m_MouseButtonDown = false;
         m_CameraMovementInput = 0;

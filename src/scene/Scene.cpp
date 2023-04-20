@@ -77,10 +77,12 @@ void Scene::UpdateSelectionRectangle(int left, int top, int right, int bottom)
 	}
 }
 
-void Scene::ApplySelectionRectangle()
+void Scene::ApplySelectionRectangle(bool subSelection, bool inclusive)
 {
-	std::cout << "applying selection rectangle!" << std::endl;
-	m_SelectionRectangle.reset();
+	if (m_SelectionRectangle) {
+		//todo
+		m_SelectionRectangle.reset();
+	}
 }
 
 void Scene::Destroy()
@@ -108,7 +110,7 @@ AxisAlignedBoundingBox Scene::GetSelectedBoundingBox()
 	return bb;
 }
 
-void Scene::HandleClick(int x, int y, int button, int mods) 
+void Scene::HandleClick(int x, int y, int mods) 
 {
 	uint64_t IDs = Renderer::ReadIDAtPixel(x, y);
 	bool shift = GLFW_MOD_SHIFT & mods;
@@ -116,8 +118,7 @@ void Scene::HandleClick(int x, int y, int button, int mods)
 
 	if (m_TransformWidget) {
 		glm::mat4 t = GetSelectionTransform();
-		for (uint32_t selected : m_Selected) m_Contents[selected]->BakeSelectionTransform(t);
-		for (uint32_t subSelected : m_SubSelected) m_Contents[subSelected]->BakeSelectionTransform(t);
+		for (auto& p : m_Contents) p.second->BakeSelectionTransform(t);
 		m_TransformWidget.reset();
 	}
 
@@ -160,7 +161,7 @@ void Scene::HandleClick(int x, int y, int button, int mods)
 		}
 	}
 
-	size_t numSelected = m_Selected.size() + m_SubSelected.size();
+	
 	if (numSelected > 0) m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
 }
 
