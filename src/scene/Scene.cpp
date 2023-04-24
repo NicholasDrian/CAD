@@ -34,7 +34,7 @@ void Scene::Init()
 
 
 	m_ConstructionPlane = std::make_unique<ConstructionPlane>(10, 10, 1);
-	m_Camera = std::make_unique<Camera>(glm::vec3{ 0.0f, -50.0f, 50.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::pi<float>() / 3.0f);
+	m_Camera = std::make_unique<Camera>(glm::vec3{ 0.0f, -50.0f, 20.0f }, glm::vec3{ 0.0f, 0.0f, 20.0f }, glm::pi<float>() / 3.0f);
 }
 
 void Scene::Render() {
@@ -85,6 +85,9 @@ void Scene::ApplySelectionRectangle(bool subSelection, bool inclusive)
 		else 
 			for (auto& e : m_Contents) e.second->SelectWithinFrustum(frustum, inclusive);
 		m_SelectionRectangle.reset();
+
+		AxisAlignedBoundingBox bb = GetSelectedBoundingBox();
+		if (bb.Vaid()) m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
 	}
 }
 
@@ -173,6 +176,7 @@ void Scene::DeleteSelection()
 		else (e.second->DeleteSubSelection());
 	}
 	for (auto id : deleteQ) m_Contents.erase(id);
+	m_TransformWidget.reset();
 }
 
 void Scene::Delete(unsigned id)

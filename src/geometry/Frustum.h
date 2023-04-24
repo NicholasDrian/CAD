@@ -10,11 +10,11 @@ public:
 
 	bool Contains(const glm::vec3& p) const;
 
-	bool PartiallyContainsLine(const glm::vec3& a, const glm::vec3& b) const;
+	bool PartiallyContainsLine(glm::vec3 a, glm::vec3 b) const;
 	bool FullyContainsLine(const glm::vec3& a, const glm::vec3& b) const;
 
 private:
 
-	glm::vec3 m_Origin, m_N1, m_N2, m_N3, m_N4;
+	glm::vec3 m_Origin, m_NTop, m_NRight, m_NBottom, m_NLeft;
 
 };

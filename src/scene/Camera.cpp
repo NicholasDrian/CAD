@@ -27,6 +27,11 @@ glm::mat4 Camera::GetProj() const {
 	return glm::perspective(m_Fovy, Window::GetAspect(), m_NearPlane, m_FarPlane);
 }
 
+glm::vec3 Camera::GetForward() const
+{
+	return glm::normalize(m_FocalPoint - m_Position);
+}
+
 void Camera::TurnUp(int delta)
 {
 

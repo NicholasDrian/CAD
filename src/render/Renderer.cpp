@@ -172,7 +172,6 @@ void Renderer::DestroyFrameBuffer()
 
 
 uint64_t Renderer::ReadIDAtPixel(int x, int y) {
-	std::cout << x << ' ' << y << std::endl;
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 	GLCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
 	uint64_t val;
@@ -185,7 +184,6 @@ std::vector<uint64_t> Renderer::ReadIDsInRectangle(int left, int top, int right,
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer));
 	GLCall(glReadBuffer(GL_COLOR_ATTACHMENT1));
 	std::vector<uint64_t> res((right - left + 1) * (bottom - top + 1));
-	std::cout << left << ' ' << right << ' ' << top << ' ' << bottom << std::endl;
 	GLCall(glReadPixels(left, top, right - left + 1, bottom - top + 1, GL_RG_INTEGER, GL_INT, res.data()));
 	return res;
 }

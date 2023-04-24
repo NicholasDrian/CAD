@@ -3,6 +3,8 @@
 
 #include "glm/glm.hpp"
 
+// could delete this interface...
+
 class VertexArray {
 
 public:

@@ -2,6 +2,7 @@
 
 #include "PolyLine.h"
 
+#include "../debug/Print.h"
 #include "../render/Renderer.h"
 
 PolyLine::PolyLine(const std::vector<glm::vec3>& points, bool dashed, unsigned id)
@@ -94,7 +95,7 @@ AxisAlignedBoundingBox PolyLine::GetSubSelectionBoundingBox() const
 void PolyLine::SelectWithinFrustum(const Frustum& frustum, bool inclusive)
 {
 	AxisAlignedBoundingBox bb = GetBoundingBox();
-	
+
 	if (bb.FullyWithin(frustum)) {
 		m_Selected = true;
 		return;
@@ -102,7 +103,7 @@ void PolyLine::SelectWithinFrustum(const Frustum& frustum, bool inclusive)
 	if (inclusive) 
 	{
 		for (int i = 0; i < m_Points.size() - 1; i++) {
-			if (frustum.PartiallyContainsLine(m_Points[i], m_Points[i + 1])) {
+			if (frustum.PartiallyContainsLine(m_Model * glm::vec4(m_Points[i], 1.0), m_Model * glm::vec4(m_Points[i + 1], 1.0))) {
 				m_Selected = true;
 				return;
 			}
@@ -157,7 +158,6 @@ void PolyLine::UpdateSubSelections()
 
 void PolyLine::AddSubSelection(uint32_t subID)
 {
-	std::cout << subID << std::endl;
 	if (subID < GetNumSegments()) AddSubSelectionLine(subID);
 	else AddSubSelectionPoint(subID - (uint32_t)GetNumSegments());
 }

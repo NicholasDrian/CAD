@@ -27,6 +27,7 @@ public:
 	glm::mat4 GetViewProj() const;
 	glm::mat4 GetView() const;
 	glm::mat4 GetProj() const;
+	glm::vec3 GetForward() const;
 
 	static float GetNearPlane() { return m_NearPlane; }
 	static float GetFarPlane() { return m_FarPlane; }
