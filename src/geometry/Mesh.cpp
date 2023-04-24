@@ -27,9 +27,10 @@ void Mesh::BakeSelectionTransform(const glm::mat4& t)
 {
 	if (m_Selected) m_Model = t * m_Model;
 	else {
+		const glm::mat4 tObj = glm::inverse(m_Model) * t * m_Model;
 		for (auto e : m_SelectedVertexCounter) {
-			m_Positions[e.first] = t * glm::vec4(m_Positions[e.first], 1.0);
-			m_Normals[e.first] = t * glm::vec4(m_Normals[e.first], 0.0);
+			m_Positions[e.first] = tObj * glm::vec4(m_Positions[e.first], 1.0);
+			m_Normals[e.first] = tObj * glm::vec4(m_Normals[e.first], 0.0);
 		}
 		m_VertexArray->UpdateVertexOrientation(m_Positions, m_Normals);
 	}

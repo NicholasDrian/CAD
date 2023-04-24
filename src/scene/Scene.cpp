@@ -76,18 +76,38 @@ void Scene::UpdateSelectionRectangle(int left, int top, int right, int bottom)
 	}
 }
 
-void Scene::ApplySelectionRectangle(bool subSelection, bool inclusive)
+void Scene::ApplySelectionRectangle(bool inclusive, int mods)
 {
 	if (m_SelectionRectangle) {
-		Frustum frustum = m_SelectionRectangle->GetFrustum();
-		if (subSelection) 
-			for (auto& e : m_Contents) e.second->SubSelectWithinFrustum(frustum, inclusive);
-		else 
-			for (auto& e : m_Contents) e.second->SelectWithinFrustum(frustum, inclusive);
-		m_SelectionRectangle.reset();
+		if (m_TransformWidget) {
+			glm::mat4 t = GetSelectionTransform();
+			for (auto& p : m_Contents) p.second->BakeSelectionTransform(t);
+		}
 
+		const bool shift = mods & GLFW_MOD_SHIFT;
+		const bool control = mods & GLFW_MOD_CONTROL;
+		const Frustum frustum = m_SelectionRectangle->GetFrustum();
+
+		if (shift && control) {
+			for (auto& e : m_Contents) e.second->SubSelectWithinFrustum(frustum, inclusive);
+		}
+		else if (shift) {
+			for (auto& e : m_Contents) e.second->SelectWithinFrustum(frustum, inclusive);
+		}
+		else if (control) {
+			for (auto& e : m_Contents)
+				e.second->UnSelectWithinFrustum(frustum, inclusive),
+				e.second->UnSubSelectWithinFrustum(frustum, inclusive);
+		}
+		else {
+			ClearSelection();
+			for (auto& e : m_Contents) e.second->SelectWithinFrustum(frustum, inclusive);
+		}
+
+		m_SelectionRectangle.reset();
 		AxisAlignedBoundingBox bb = GetSelectedBoundingBox();
 		if (bb.Vaid()) m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
+		else m_TransformWidget.reset();
 	}
 }
 
@@ -127,47 +147,40 @@ void Scene::HandleClick(int x, int y, int mods)
 	if (m_TransformWidget) {
 		glm::mat4 t = GetSelectionTransform();
 		for (auto& p : m_Contents) p.second->BakeSelectionTransform(t);
-		m_TransformWidget.reset();
 	}
 
 	if (uint32_t ID = IDs >> 32) {
-		if (shift) 
-		{
-			if (control)
-			{
+		if (shift) {
+			if (control) {
 				uint32_t subID = 0x0FFFFFFFFULL & IDs;
 				m_Contents[ID]->AddSubSelection(subID);
 			}
-			else
-			{
+			else {
 				m_Contents[ID]->Select();
 			}
 		}
-		else 
-		{
-			if (control) 
-			{
+		else  {
+			if (control) {
 				uint32_t subID = 0x0FFFFFFFFULL & IDs;
 				m_Contents[ID]->RemoveSubSelection(subID);
 				m_Contents[ID]->UnSelect();
 			}
-			else
-			{
+			else {
 				ClearSelection();
 				m_Contents[ID]->Select();
 			}
 		}
 	}
-	else
-	{
+	else {
 		ClearSelection();
 	}
 
 	AxisAlignedBoundingBox bb = GetSelectedBoundingBox();
 	if (bb.Vaid()) m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
+	else m_TransformWidget.reset();
 }
 
-// Invariant: never both selected and sub selected!
+// Invariant: never both selected and sub-selected
 void Scene::DeleteSelection() 
 {
 	std::vector<uint32_t> deleteQ;
@@ -186,7 +199,6 @@ void Scene::Delete(unsigned id)
 
 bool Scene::IntersectScene(int x, int y, glm::vec3& outPoint)
 {
-
 	uint64_t IDs = Renderer::ReadIDAtPixel(x, y);
 	uint32_t ID = IDs >> 32;
 	Ray ray = m_Camera->GetRayAtPixel(x, y);
@@ -200,5 +212,4 @@ bool Scene::IntersectScene(int x, int y, glm::vec3& outPoint)
 		outPoint = item->Intersect(ray, subID);
 		return true;
 	}
-
 }

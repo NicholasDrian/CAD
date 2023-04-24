@@ -27,6 +27,8 @@ public:
 
 	virtual void SelectWithinFrustum(const Frustum& frustum, bool inclusive) {}
 	virtual void SubSelectWithinFrustum(const Frustum& frustum, bool inclusive) {}
+	virtual void UnSelectWithinFrustum(const Frustum& frustum, bool inclusive) {}
+	virtual void UnSubSelectWithinFrustum(const Frustum& frustum, bool inclusive) {}
 
 	virtual void DeleteSubSelection() {}
 	virtual void AddSubSelection(uint32_t subID) {}

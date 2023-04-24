@@ -27,7 +27,7 @@ public:
 	static void AddToScene(std::unique_ptr<Renderable> obj);
 
 	static void UpdateSelectionRectangle(int left, int top, int right, int bottom);
-	static void ApplySelectionRectangle(bool subSelection, bool inclusive);
+	static void ApplySelectionRectangle(bool inclusive, int mods);
 
 	static void HandleClick(int x, int y, int mods);
 

@@ -50,5 +50,9 @@ void SelectionRectangle::UpdateVertexArray()
 		glm::vec3{l, b, 0}
 	};
 
-	m_VertexArray = std::make_unique<VertexArrayScreenSpaceTriangles>(positions, std::vector<uint32_t>{0, 1, 2, 2, 3, 0}, glm::vec4{ 0.0f, 0.0f, 0.0f, 0.3f });
+	m_VertexArray = std::make_unique<VertexArrayScreenSpaceTriangles>(
+		positions, 
+		std::vector<uint32_t>{0, 1, 2, 2, 3, 0}, 
+		glm::vec4{ 0.0f, 0.0f, 0.0f, 0.3f }
+	);
 }

@@ -93,10 +93,10 @@ void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int
         }
         else 
         {
-            int subSelectionMask = GLFW_MOD_SHIFT | GLFW_MOD_CONTROL;
-            bool subSelection = (mods & subSelectionMask) == subSelectionMask;
-            bool inclusive = m_InitialMouseX > mouseX;
-            Scene::ApplySelectionRectangle(subSelection, inclusive);
+            if (m_MouseButton == GLFW_MOUSE_BUTTON_LEFT) {
+                const bool inclusive = m_InitialMouseX > mouseX;
+                Scene::ApplySelectionRectangle(inclusive, mods);
+            }
         }
         m_MouseButtonDown = false;
         m_CameraMovementInput = 0;
