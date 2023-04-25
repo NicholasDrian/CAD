@@ -41,6 +41,9 @@ public:
 	inline const std::vector<glm::vec4>& GetControlPoints() const { return m_Points; }
 	inline std::vector<glm::vec4>& GetControlPoints() { return m_Points; }
 
+	virtual void PointsOn() override { m_PointsOn = true; }
+	virtual void PointsOff() override { m_PointsOn = false; }
+
 	void AddControlPoint(const glm::vec3& point, bool incrementDegree = false);
 	void ChangeDegree(unsigned degree);
 
@@ -50,6 +53,7 @@ public:
 private:
 
 	bool m_Selected;
+	bool m_PointsOn;
 
 	std::vector<float> BasisFuncs(float u) const;
 	int KnotSpan(float u) const;

@@ -47,9 +47,9 @@ void VertexArrayBasicLines::UpdateVertexPositions(const std::vector<glm::vec3>& 
 {
 	std::vector<BasicLineVertex> data(positions.size());
 	for (int i = 0; i < positions.size() - 1; i++) {
-		data[i] = {positions[i], glm::normalize(positions[i] - positions[i + 1])};
+		data[i] = {positions[i], positions[i] - positions[i + 1]};
 	}
-	data.back() = {positions.back(), {1.0,0.0,0.0}};
+	data.back() = { positions.back(), { 1.0f, 0.0f, 0.0f } };
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID));
 	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(BasicLineVertex) * data.size(), data.data(), GL_STATIC_DRAW));
 }
@@ -64,8 +64,10 @@ VertexArrayBasicLines::~VertexArrayBasicLines()
 }
 
 void VertexArrayBasicLines::Render(const glm::mat4& model, unsigned id, bool selectable, bool subSelectable, bool selected) const {
-	if (m_Dashed) ShaderManager::Bind(ShaderProgramType::DashedLineShader);
-	else ShaderManager::Bind(ShaderProgramType::BasicLineShader);
+
+	if (m_Dashed) GLCall(glEnable(GL_LINE_STIPPLE));
+	
+	ShaderManager::Bind(ShaderProgramType::BasicLineShader);
 	ShaderManager::UpdateLocalUniforms(model, m_Color, selectable, subSelectable, selected, id, m_SubIDOffset);
 	GLCall(glBindVertexArray(m_RenderID));
 	if (subSelectable) {
@@ -74,6 +76,8 @@ void VertexArrayBasicLines::Render(const glm::mat4& model, unsigned id, bool sel
 	}
 	GLCall(glLineWidth(m_LineWidth));
 	GLCall(glDrawElements(GL_LINES, m_IndexCount, GL_UNSIGNED_INT, (GLvoid*)0));
+
+	GLCall(glDisable(GL_LINE_STIPPLE));
 }
 
 

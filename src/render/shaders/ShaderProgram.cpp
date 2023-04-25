@@ -26,10 +26,6 @@ ShaderProgram::ShaderProgram(ShaderProgramType type)
 		vertPath = SHADER_BASE_PATH + "BasicPoint.vert";
 		fragPath = SHADER_BASE_PATH + "BasicPoint.frag";
 		break;
-	case ShaderProgramType::DashedLineShader:
-		vertPath = SHADER_BASE_PATH + "DashedLine.vert";
-		fragPath = SHADER_BASE_PATH + "DashedLine.frag";
-		break;
 	case ShaderProgramType::ScreenSpaceTriShader:
 		vertPath = SHADER_BASE_PATH + "ScreenSpaceTri.vert";
 		fragPath = SHADER_BASE_PATH + "ScreenSpaceTri.frag";

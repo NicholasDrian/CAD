@@ -7,8 +7,9 @@ const unsigned SAMPLES_PER_EDGE = 20;
 
 NURBS::NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
 	: m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color), m_Model(1.0f), m_Selected(false),
-	m_ControlPolyLine(std::make_unique<PolyLine>(points, true, m_ID))
+	m_ControlPolyLine(std::make_unique<PolyLine>(points, true, m_ID)), m_PointsOn(false)
 {
+	m_ControlPolyLine->PointsOn();
 	if (weights.size() == 0) 
 	{
 		for (const glm::vec3& point : points) m_Points.emplace_back(point.x, point.y, point.z, 1.0f);
@@ -30,7 +31,7 @@ void NURBS::Render() const
 {
 	if (!m_Selectable) Renderer::UnbindIDBuffer();
 	m_VertexArrayLines->Render(m_Model, m_ID, m_Selectable, false, m_Selected);
-	m_ControlPolyLine->Render();
+	if (m_PointsOn) m_ControlPolyLine->Render();
 	Renderer::BindIDBuffer();
 }
 
@@ -76,7 +77,8 @@ void NURBS::UnSelect()
 AxisAlignedBoundingBox NURBS::GetBoundingBox() const
 {
 	std::vector<glm::vec3> points(m_Points.size());
-	for (const glm::vec4& point : m_Points) points.emplace_back(point.x, point.y, point.z);
+	for (const glm::vec4& point : m_Points) points.emplace_back(
+		point.x / point.w, point.y / point.w, point.z / point.w);
 	return AxisAlignedBoundingBox(points, m_Model);
 }
 

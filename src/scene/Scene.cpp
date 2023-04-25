@@ -80,8 +80,7 @@ void Scene::ApplySelectionRectangle(bool inclusive, int mods)
 {
 	if (m_SelectionRectangle) {
 		if (m_TransformWidget) {
-			glm::mat4 t = GetSelectionTransform();
-			for (auto& p : m_Contents) p.second->BakeSelectionTransform(t);
+			BakeSelectionTransform();
 		}
 
 		const bool shift = mods & GLFW_MOD_SHIFT;
@@ -121,12 +120,7 @@ void Scene::Destroy()
 
 void Scene::ClearSelection()
 {
-	if (m_TransformWidget && m_TransformWidget->GetDelta() != glm::mat4(1.0f)) {
-		for (auto& e : m_Contents) {
-			e.second->BakeSelectionTransform(m_TransformWidget->GetDelta());
-		}
-		m_TransformWidget.reset();
-	}
+	m_TransformWidget.reset();
 	for (auto& e : m_Contents) {
 		e.second->UnSelect();
 		e.second->ClearSubSelection();
@@ -151,8 +145,8 @@ void Scene::HandleClick(int x, int y, int mods)
 	bool control = GLFW_MOD_CONTROL & mods;
 
 	if (m_TransformWidget) {
-		glm::mat4 t = GetSelectionTransform();
-		for (auto& p : m_Contents) p.second->BakeSelectionTransform(t);
+		BakeSelectionTransform();
+		m_TransformWidget.reset();
 	}
 
 	if (uint32_t ID = IDs >> 32) {
@@ -183,7 +177,6 @@ void Scene::HandleClick(int x, int y, int mods)
 
 	AxisAlignedBoundingBox bb = GetSelectedBoundingBox();
 	if (bb.Vaid()) m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
-	else m_TransformWidget.reset();
 }
 
 // Invariant: never both selected and sub-selected
@@ -201,6 +194,13 @@ void Scene::DeleteSelection()
 void Scene::Delete(unsigned id)
 {
 	m_Contents.erase(id);
+}
+
+void Scene::BakeSelectionTransform()
+{
+	glm::mat4 t = GetSelectionTransform();
+	for (auto& p : m_Contents) 
+		p.second->BakeSelectionTransform(t);
 }
 
 bool Scene::IntersectScene(int x, int y, glm::vec3& outPoint)

@@ -11,7 +11,6 @@ enum class ShaderProgramType {
 	BasicTriShader,
 	ScreenSpaceTriShader,
 	BasicLineShader,
-	DashedLineShader,
 	BasicPointShader,
 	TexturedShader
 };

@@ -30,6 +30,7 @@ void CommandPointsOff::TextInput(const std::string& input)
 		for (auto& e : contents) if (e.second->IsSelected()) e.second->PointsOff();
 	}
 	m_Finished = true;
+	Scene::BakeSelectionTransform();
 	Scene::ClearSelection();
 	Scene::ShowTransformWidget();
 }

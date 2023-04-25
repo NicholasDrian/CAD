@@ -108,6 +108,7 @@ void PolyLine::SelectWithinFrustum(const Frustum& frustum, bool inclusive)
 				m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0), 
 				m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0))) 
 			{
+				ClearSubSelection();
 				m_Selected = true;
 				return;
 			}
@@ -118,6 +119,7 @@ void PolyLine::SelectWithinFrustum(const Frustum& frustum, bool inclusive)
 		for (const auto& p : m_Points) {
 			if (!frustum.Contains(p)) return;
 		}
+		ClearSubSelection();
 		m_Selected = true;
 	}
 }
@@ -130,27 +132,93 @@ void PolyLine::SubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 		for (int i = 0; i < m_Indecies.size() / 2; i++) {
 			AddSubSelectionLine(i);
 		}
-	}
-	else if (inclusive) {
-		for (int i = 0; i < m_Indecies.size() / 2; i++) {
-			if (frustum.PartiallyContainsLine(
-				m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0),
-				m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
-			{
-				AddSubSelectionLine(i);
-			}
+		for (int i = 0; i < m_Points.size(); i++) {
+			AddSubSelectionPoint(i);
 		}
 	}
 	else {
-		for (int i = 0; i < m_Indecies.size() / 2; i++) {
-			if (frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0)) &&
-				frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
-			{
-				AddSubSelectionLine(i);
+		if (m_PointsOn) {
+			for (int i = 0; i < m_Points.size(); i++) {
+				if (frustum.Contains(m_Points[i]))
+					AddSubSelectionPoint(i);
+			}
+		}
+		if (inclusive) {
+			for (int i = 0; i < m_Indecies.size() / 2; i++) {
+				if (frustum.PartiallyContainsLine(
+					m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0),
+					m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
+				{
+					AddSubSelectionLine(i);
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < m_Indecies.size() / 2; i++) {
+				if (frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0)) &&
+					frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
+				{
+					AddSubSelectionLine(i);
+				}
 			}
 		}
 	}
 
+}
+
+void PolyLine::UnSelectWithinFrustum(const Frustum& frustum, bool inclusive)
+{
+	if (!m_Selected) return;
+	if (GetBoundingBox().FullyWithin(frustum)) {
+		m_Selected = false;
+	}
+	else if (inclusive) {
+		for (int i = 0; i < m_Indecies.size() / 2; i++) {
+			if (frustum.PartiallyContainsLine(m_Points[m_Indecies[i * 2]], m_Points[m_Indecies[i * 2 * 1]])) {
+				m_Selected = false;
+				break;
+			}
+		}
+	}
+	else {
+		for (const glm::vec3& point : m_Points) {
+			if (!frustum.Contains(point)) return;
+		}
+		m_Selected = false;
+	}
+}
+
+void PolyLine::UnSubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
+{
+	if (m_VertexSelectionCounter.empty()) return;
+	if (GetBoundingBox().FullyWithin(frustum)) {
+		ClearSubSelection();
+	}
+	else {
+		for (int i = 0; i < m_Points.size(); i++) {
+			if (frustum.Contains(m_Points[i]))
+				RemoveSubSelectionPoint(i);
+		}
+		if (inclusive) {
+			for (int i = 0; i < m_Indecies.size() / 2; i++) {
+				if (frustum.PartiallyContainsLine(
+					m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0),
+					m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
+				{
+					RemoveSubSelectionLine(i);
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < m_Indecies.size() / 2; i++) {
+				if (frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0)) &&
+					frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
+				{
+					RemoveSubSelectionLine(i);
+				}
+			}
+		}
+	}
 }
 
 void PolyLine::UpdateLast(const glm::vec3& point) { 

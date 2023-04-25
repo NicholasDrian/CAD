@@ -34,6 +34,8 @@ public:
 	static void DeleteSelection();
 	static void Delete(unsigned id);
 
+	static void BakeSelectionTransform();
+
 	static glm::mat4 GetSelectionTransform();
 	static void SelectionTransformUpdated();
 

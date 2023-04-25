@@ -23,6 +23,8 @@ public:
 
 	virtual void SelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
 	virtual void SubSelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
+	virtual void UnSelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
+	virtual void UnSubSelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
 
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
