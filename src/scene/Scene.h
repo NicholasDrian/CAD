@@ -42,12 +42,17 @@ public:
 	static bool IntersectScene(int x, int y, glm::vec3& outPoint);
 
 	inline static unsigned GetNewID() { return m_IDGenerator++; }
-
 	inline static Camera* GetCamera() { return m_Camera.get(); }
+	inline static std::unordered_map<unsigned, std::unique_ptr<Renderable>>& GetContents() { return m_Contents; }
 
 	static void ClearSelection();
 
+	inline static void ShowTransformWidget() { m_ShowTransformWidget = true; }
+	inline static void HideTransformWidget() { m_ShowTransformWidget = false; }
+
 private:
+
+	inline static bool m_ShowTransformWidget = true;
 
 	inline static const float m_MaxExtend = 10000.0f;
 

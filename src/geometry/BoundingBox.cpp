@@ -51,6 +51,10 @@ glm::vec3 AxisAlignedBoundingBox::GetCenter() const
 
 bool AxisAlignedBoundingBox::PartiallyWithin(const Frustum& frustum) const
 {
+	// return 
+	//		at least one point of bb within frustum ||
+	//		at least one ray of frustum within bb...
+
 	throw std::runtime_error("not implemented");
 }
 

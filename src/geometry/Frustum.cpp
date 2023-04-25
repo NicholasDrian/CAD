@@ -2,7 +2,6 @@
 
 #include "Frustum.h"
 
-#include "utils/Intersection.h"
 #include "../debug/Print.h"
 
 #include "../scene/Scene.h"
@@ -28,11 +27,13 @@ bool Frustum::PartiallyContainsLine(glm::vec3 a, glm::vec3 b) const
 	const float size = glm::length(dir);
 	dir /= size;	
 
+	Ray r(a, dir);
+
 	float tTop, tRight, tBottom, tLeft;
-	bool p1 = !IntersectRayPlane(a, dir, m_Origin, m_NTop, tTop, true);
-	bool p2 = !IntersectRayPlane(a, dir, m_Origin, m_NRight, tRight, true);
-	bool p3 = !IntersectRayPlane(a, dir, m_Origin, m_NBottom, tBottom, true);
-	bool p4 = !IntersectRayPlane(a, dir, m_Origin, m_NLeft, tLeft, true);
+	bool p1 = r.IntersectPlane(m_Origin, m_NTop, tTop, true);
+	bool p2 = r.IntersectPlane(m_Origin, m_NRight, tRight, true);
+	bool p3 = r.IntersectPlane(m_Origin, m_NBottom, tBottom, true);
+	bool p4 = r.IntersectPlane(m_Origin, m_NLeft, tLeft, true);
 
 	float near = 0.0f, far = size;
 	

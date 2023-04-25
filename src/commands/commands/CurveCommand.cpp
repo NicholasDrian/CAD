@@ -31,7 +31,7 @@ void CurveCommand::TextInput(const std::string& input)
 	}
 }
 
-void CurveCommand::ClickInput(int x, int y)
+void CurveCommand::ClickInput(int x, int y, int mods)
 {
 	if (Window::IsWithinLocal(x, y)) {
 		if (m_Mode == CurveCommandMode::AddPoint) {

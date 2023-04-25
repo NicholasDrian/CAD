@@ -23,7 +23,7 @@ void PolyLineCommand::TextInput(const std::string& input)
 	}
 }
 
-void PolyLineCommand::ClickInput(int x, int y)
+void PolyLineCommand::ClickInput(int x, int y, int mods)
 {
 	if (Window::IsWithinLocal(x, y)) {
 		glm::vec3 intersection;

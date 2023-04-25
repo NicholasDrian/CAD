@@ -32,6 +32,9 @@ public:
 	virtual void RemoveSubSelection(uint32_t subID) override;
 	virtual void ClearSubSelection() override;
 
+	inline virtual void PointsOn() override { m_PointsOn = true; }
+	inline virtual void PointsOff() override { m_PointsOn = false; }
+
 	inline virtual bool IsSelected() const override { return m_Selected; }
 	inline virtual void Select() override { m_Selected = true; }
 	inline virtual void UnSelect() override { m_Selected = false; }
@@ -61,7 +64,7 @@ private:
 	void UpdateSubSelections();
 
 	unsigned m_ID;
-	bool m_Dashed;
+	bool m_Dashed, m_PointsOn;
 	std::vector<unsigned> m_Indecies;
 
 	std::vector<uint32_t> m_SegmentSelectionBuffer, m_VertexSelectionBuffer;

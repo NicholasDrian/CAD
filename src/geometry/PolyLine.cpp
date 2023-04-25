@@ -8,7 +8,8 @@
 PolyLine::PolyLine(const std::vector<glm::vec3>& points, bool dashed, unsigned id)
 	: m_Points(points), m_ID(id), m_Color({0.0f, 0.0f, 0.0f, 1.0f}), m_Model(1.0),
 	m_SegmentSelectionBuffer(std::vector<uint32_t>(((points.size() - 1) + 31) / 32, 0U)),
-	m_VertexSelectionBuffer(std::vector<uint32_t>((points.size() + 31) / 32, 0U)), m_Dashed(dashed), m_Selected(false)
+	m_VertexSelectionBuffer(std::vector<uint32_t>((points.size() + 31) / 32, 0U)), m_Dashed(dashed), 
+	m_Selected(false), m_PointsOn(false)
 {
 	for (unsigned i = 0U; i < points.size() - 1; i++) {
 		m_Indecies.push_back(i);
@@ -21,7 +22,7 @@ void PolyLine::Render() const
 {
 	if (!m_Selectable) Renderer::UnbindIDBuffer();
 	m_VertexArrayLines->Render(m_Model, m_ID, m_Selectable, true, m_Selected);
-	m_VertexArrayPoints->Render(m_Model, m_ID, m_Selectable, true, m_Selected);
+	if (m_PointsOn) m_VertexArrayPoints->Render(m_Model, m_ID, m_Selectable, true, m_Selected);
 	Renderer::BindIDBuffer();
 }
 
@@ -29,10 +30,9 @@ void PolyLine::BakeSelectionTransform(const glm::mat4& t)
 {
 	if (m_Selected) m_Model = t * m_Model;
 	else {
+		glm::mat4 tObj = glm::inverse(m_Model) * t * m_Model;
 		for (auto e : m_VertexSelectionCounter) {
-			glm::vec4 vert = { m_Points[e.first], 1.0 };
-			vert = t * vert;
-			m_Points[e.first] = { vert.x, vert.y, vert.z };
+			m_Points[e.first] = tObj * glm::vec4(m_Points[e.first], 1.0);
 		}
 		UpdatePositions();
 	}
@@ -77,7 +77,6 @@ AxisAlignedBoundingBox PolyLine::GetBoundingBox() const
 {
 	return AxisAlignedBoundingBox(m_Points, m_Model);
 }
-
 
 AxisAlignedBoundingBox PolyLine::GetSubSelectionBoundingBox() const
 {

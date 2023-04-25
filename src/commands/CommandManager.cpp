@@ -5,6 +5,9 @@
 #include "commands/FocusCommand.h"
 #include "commands/PolyLineCommand.h"
 #include "commands/CurveCommand.h"
+#include "commands/CommandPointsOn.h"
+#include "commands/CommandPointsOff.h"
+
 #include "TextParser.h"
 #include "../scene/Scene.h"
 
@@ -52,8 +55,11 @@ void CommandManager::AddInput(int c) {
 			else if (m_TextInput == "CURVE") {
 				m_CurrentCommand = std::make_unique<CurveCommand>();
 			}
-			else if (m_TextInput == "") {
-
+			else if (m_TextInput == "POINTS ON") {
+				m_CurrentCommand = std::make_unique<CommandPointsOn>();
+			}
+			else if (m_TextInput == "POINTS OFF") {
+				m_CurrentCommand = std::make_unique<CommandPointsOff>();
 			}
 			m_PreviousCommand = m_TextInput;
 		}
@@ -63,18 +69,19 @@ void CommandManager::AddInput(int c) {
 	{
 		m_TextInput += c;
 	}
-	if (m_CurrentCommand && m_CurrentCommand->IsFinished()) m_CurrentCommand.reset();
 }
 
-void CommandManager::HandleClick(int x, int y) {
+void CommandManager::HandleClick(int x, int y, int mods) {
 	if (m_CurrentCommand) {
-		m_CurrentCommand->ClickInput(x, y);
-		if (m_CurrentCommand->IsFinished()) m_CurrentCommand.reset();
+		m_CurrentCommand->ClickInput(x, y, mods);
 	}
 }
 
 void CommandManager::Tick() {
-	if (m_CurrentCommand) m_CurrentCommand->Tick();
+	if (m_CurrentCommand) {
+		m_CurrentCommand->Tick();
+		if (m_CurrentCommand->IsFinished()) m_CurrentCommand.reset();
+	}
 }
 
 std::string CommandManager::GetInstructions()

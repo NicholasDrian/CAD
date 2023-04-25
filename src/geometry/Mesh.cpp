@@ -94,8 +94,10 @@ void Mesh::Render() const {
 
 glm::vec3 Mesh::Intersect(Ray r, uint32_t subID) const
 {
-	return r.IntersectTriangleUnsafe(
+	glm::vec3 point;
+	r.IntersectPlane(
 		m_Positions[m_Indices[subID * 3]],
 		m_Positions[m_Indices[subID * 3 + 1]],
-		m_Positions[m_Indices[subID * 3 + 2]]);
+		m_Positions[m_Indices[subID * 3 + 2]], point, true);
+	return point;
 }

@@ -13,19 +13,37 @@ glm::vec3 Ray::At(float t) const {
 	return m_Origin + m_Direction * t;
 }
 
-bool Ray::IntersectPlane(glm::vec3 origin, glm::vec3 normal, glm::vec3& outPoint) const 
+bool Ray::IntersectPlane(glm::vec3 origin, glm::vec3 normal, float& outTime, bool allowNegativeT) const 
 {
-	float t;
-	bool intersected = glm::intersectRayPlane(m_Origin, m_Direction, origin, normal, t);
-	if (intersected) outPoint = At(t);
-	return intersected;
+	float denominator = glm::dot(normal, m_Direction);
+	if (denominator == 0.0f) return false;
+	outTime = glm::dot(origin - m_Origin, normal) / denominator;
+	return allowNegativeT || outTime >= 0.0f;
 }
 
-glm::vec3 Ray::IntersectPlaneUnsafe(glm::vec3 origin, glm::vec3 normal) const
+bool Ray::IntersectPlane(glm::vec3 origin, glm::vec3 normal, glm::vec3& outPoint, bool allowNegativeT) const
 {
-	float t;
-	bool intersected = glm::intersectRayPlane(m_Origin, m_Direction, origin, normal, t);
-	return At(t);
+	float outTime;
+	bool res = IntersectPlane(origin, normal, outTime, allowNegativeT);
+	outPoint = At(outTime);
+	return res;
+}
+
+bool Ray::IntersectPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float& outTime, bool allowNegativeT) const
+{
+	glm::vec3 normal = glm::normalize(glm::cross(p2 - p1, p3 - p1));
+	float denominator = glm::dot(normal, m_Direction);
+	if (denominator == 0.0f) return false;
+	outTime = glm::dot(p1 - m_Origin, normal) / denominator;
+	return allowNegativeT || outTime >= 0.0f;
+}
+
+bool Ray::IntersectPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint, bool allowNegativeT) const
+{
+	float outTime;
+	bool res = IntersectPlane(p1, p2, p3, outTime, allowNegativeT);
+	outPoint = At(outTime);
+	return res;
 }
 
 void Ray::Print() const {
@@ -33,18 +51,59 @@ void Ray::Print() const {
 		" direction: " << m_Direction.x << ',' << m_Direction.y << ',' << m_Direction.z << '\n';
 }
 
-bool Ray::IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint) const
+bool Ray::IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint, bool allowNegativeT) const
 {
 	glm::vec3 normal = glm::normalize(glm::cross(p2 - p1, p3 - p1));
-	return IntersectPlane(p1, normal, outPoint);
+	float denominator = glm::dot(normal, m_Direction);
+	if (denominator == 0.0f) return false;
+	float outTime = glm::dot(p1 - m_Origin, normal) / denominator;
+	if (!allowNegativeT && outTime < 0.0f) return false;
+
+	outPoint = At(outTime);
+
+	glm::vec3 v1 = outPoint - p1;
+	glm::vec3 v2 = outPoint - p2;
+	glm::vec3 v3 = outPoint - p3;
+	glm::vec3 e1 = p2 - p1;
+	glm::vec3 e2 = p3 - p2;
+	glm::vec3 e3 = p1 - p3;
+
+	float d1 = glm::dot(normal, glm::cross(v1, e1));
+	float d2 = glm::dot(normal, glm::cross(v2, e2));
+	float d3 = glm::dot(normal, glm::cross(v3, e3));
+
+	// remove one of these lines for back face culling.
+	return 
+		d1 > 0.0f && d2 > 0.0f && d3 > 0.0f || 
+		d1 < 0.0f && d2 < 0.0f && d3 < 0.0f;
 }
 
-glm::vec3 Ray::IntersectTriangleUnsafe(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) const
+bool Ray::IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float& outTime, bool allowNegativeT) const
 {
 	glm::vec3 normal = glm::normalize(glm::cross(p2 - p1, p3 - p1));
-	return IntersectPlaneUnsafe(p1, normal);
-}
+	float denominator = glm::dot(normal, m_Direction);
+	if (denominator == 0.0f) return false;
+	outTime = glm::dot(p1 - m_Origin, normal) / denominator;
+	if (!allowNegativeT && outTime < 0.0f) return false;
 
+	glm::vec3 p = At(outTime);
+
+	glm::vec3 v1 = p - p1;
+	glm::vec3 v2 = p - p2;
+	glm::vec3 v3 = p - p3;
+	glm::vec3 e1 = p2 - p1;
+	glm::vec3 e2 = p3 - p2;
+	glm::vec3 e3 = p1 - p3;
+
+	float d1 = glm::dot(normal, glm::cross(v1, e1));
+	float d2 = glm::dot(normal, glm::cross(v2, e2));
+	float d3 = glm::dot(normal, glm::cross(v3, e3));
+
+	// remove one of these lines for back face culling.
+	return
+		d1 > 0.0f && d2 > 0.0f && d3 > 0.0f ||
+		d1 < 0.0f && d2 < 0.0f && d3 < 0.0f;
+}
 
 glm::vec3 Ray::ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP) const
 {

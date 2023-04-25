@@ -13,11 +13,14 @@ public :
 	inline glm::vec3 GetOrigin() const { return m_Origin; }
 	inline glm::vec3 GetDirection() const { return m_Direction; }
 
-	bool IntersectPlane(glm::vec3 origin, glm::vec3 normal, glm::vec3& outPoint) const;
-	glm::vec3 IntersectPlaneUnsafe(glm::vec3 origin, glm::vec3 normal) const;
+	bool IntersectPlane(glm::vec3 origin, glm::vec3 normal, float& outTime, bool allowNegativeT = false) const;
+	bool IntersectPlane(glm::vec3 origin, glm::vec3 normal, glm::vec3& outPoint, bool allowNegativeT = false) const;
+	bool IntersectPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float& outTime, bool allowNegativeT = false) const;
+	bool IntersectPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint, bool allowNegativeT = false) const;
 
-	bool IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint) const;
-	glm::vec3 IntersectTriangleUnsafe(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) const;
+	bool IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint, bool allowNegativeT = false) const;
+	bool IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float& outTime, bool allowNegativeT = false) const;
+
 
 
 	// Closest point to line extended to infinte length.

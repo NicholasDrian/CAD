@@ -11,7 +11,7 @@ class CommandManager {
 public:
 
 	static void AddInput(int c);
-	static void HandleClick(int x, int y);
+	static void HandleClick(int x, int y, int mods);
 
 	static void Render();
 

@@ -47,7 +47,7 @@ void Scene::Render() {
 
 void Scene::DrawGUI()
 {
-	if (m_TransformWidget) m_TransformWidget->Draw();
+	if (m_ShowTransformWidget && m_TransformWidget) m_TransformWidget->Draw();
 	ShaderManager::UpdateGlobalUniforms();
 }
 
@@ -121,6 +121,12 @@ void Scene::Destroy()
 
 void Scene::ClearSelection()
 {
+	if (m_TransformWidget && m_TransformWidget->GetDelta() != glm::mat4(1.0f)) {
+		for (auto& e : m_Contents) {
+			e.second->BakeSelectionTransform(m_TransformWidget->GetDelta());
+		}
+		m_TransformWidget.reset();
+	}
 	for (auto& e : m_Contents) {
 		e.second->UnSelect();
 		e.second->ClearSubSelection();

@@ -20,7 +20,7 @@ void FocusCommand::TextInput(const std::string& input) {
 }
 
 
-void FocusCommand::ClickInput(int x, int y) 
+void FocusCommand::ClickInput(int x, int y, int mods) 
 {
 	if (Window::IsWithinLocal(x, y)) {
 		glm::vec3 intersection;

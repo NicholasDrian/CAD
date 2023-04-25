@@ -11,7 +11,7 @@ class PolyLineCommand : public Command {
 public:
 
 	virtual void TextInput(const std::string& input) override;
-	virtual void ClickInput(int x, int y) override;
+	virtual void ClickInput(int x, int y, int mods) override;
 	virtual void Tick() override;
 	virtual void Escape() override;
 	virtual void Render() const override;

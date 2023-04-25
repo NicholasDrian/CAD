@@ -88,7 +88,7 @@ void EventManager::MouseCallback(GLFWwindow* window, int button, int action, int
 
         if (!m_MouseDragged) // click!
         { 
-            if (CommandManager::HasActiveCommand())  CommandManager::HandleClick((int)mouseX, (int)mouseY);
+            if (CommandManager::HasActiveCommand())  CommandManager::HandleClick((int)mouseX, (int)mouseY, mods);
             else  Scene::HandleClick((int)mouseX, (int)mouseY, mods);
         }
         else 
