@@ -33,7 +33,7 @@ void Renderer::Init()
 	GLCall(glEnable(GL_POINT_SMOOTH));
 	GLCall(glPointSize(5.0));
 
-	GLCall(glLineStipple(4, 0xAAAA));
+	GLCall(glLineStipple(2, 0x1111));
 
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));

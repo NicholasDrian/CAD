@@ -40,13 +40,14 @@ void PolyLine::BakeSelectionTransform(const glm::mat4& t)
 
 std::vector<glm::vec3> PolyLine::GetControlPoints(bool withSelectionTransform)
 {
+	std::cout << withSelectionTransform << std::endl;
 	if (!withSelectionTransform || (!m_Selected && m_VertexSelectionCounter.empty()))
 	{
 		return m_Points;
 	}
 	else
 	{
-		glm::mat4 t = Scene::GetSelectionTransform();
+		glm::mat4 t = glm::inverse(m_Model) * Scene::GetSelectionTransform() * m_Model;
 		if (m_Selected) {
 			std::vector<glm::vec3> points(m_Points.size());
 			for (int i = 0; i < points.size(); i++) {
@@ -117,7 +118,7 @@ void PolyLine::SelectWithinFrustum(const Frustum& frustum, bool inclusive)
 	else 
 	{
 		for (const auto& p : m_Points) {
-			if (!frustum.Contains(p)) return;
+			if (!frustum.Contains(m_Model * glm::vec4(p, 1.0))) return;
 		}
 		ClearSubSelection();
 		m_Selected = true;
@@ -139,7 +140,7 @@ void PolyLine::SubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 	else {
 		if (m_PointsOn) {
 			for (int i = 0; i < m_Points.size(); i++) {
-				if (frustum.Contains(m_Points[i]))
+				if (frustum.Contains(m_Model * glm::vec4(m_Points[i], 1.0)))
 					AddSubSelectionPoint(i);
 			}
 		}
@@ -174,7 +175,9 @@ void PolyLine::UnSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 	}
 	else if (inclusive) {
 		for (int i = 0; i < m_Indecies.size() / 2; i++) {
-			if (frustum.PartiallyContainsLine(m_Points[m_Indecies[i * 2]], m_Points[m_Indecies[i * 2 * 1]])) {
+			if (frustum.PartiallyContainsLine(
+					m_Model * glm::vec4(m_Points[m_Indecies[i * 2]], 1.0), 
+					m_Model * glm::vec4(m_Points[m_Indecies[i * 2 * 1]], 1.0))) {
 				m_Selected = false;
 				break;
 			}
@@ -182,7 +185,7 @@ void PolyLine::UnSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 	}
 	else {
 		for (const glm::vec3& point : m_Points) {
-			if (!frustum.Contains(point)) return;
+			if (!frustum.Contains(m_Model * glm::vec4(point, 1.0))) return;
 		}
 		m_Selected = false;
 	}
@@ -196,7 +199,7 @@ void PolyLine::UnSubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 	}
 	else {
 		for (int i = 0; i < m_Points.size(); i++) {
-			if (frustum.Contains(m_Points[i]))
+			if (frustum.Contains(m_Model * glm::vec4(m_Points[i], 1.0)))
 				RemoveSubSelectionPoint(i);
 		}
 		if (inclusive) {

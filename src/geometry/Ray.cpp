@@ -46,11 +46,6 @@ bool Ray::IntersectPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::ve
 	return res;
 }
 
-void Ray::Print() const {
-	std::cout << "ray origin: " << m_Origin.x << ',' << m_Origin.y << ',' << m_Origin.z <<
-		" direction: " << m_Direction.x << ',' << m_Direction.y << ',' << m_Direction.z << '\n';
-}
-
 bool Ray::IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint, bool allowNegativeT) const
 {
 	glm::vec3 normal = glm::normalize(glm::cross(p2 - p1, p3 - p1));
@@ -60,17 +55,9 @@ bool Ray::IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm:
 	if (!allowNegativeT && outTime < 0.0f) return false;
 
 	outPoint = At(outTime);
-
-	glm::vec3 v1 = outPoint - p1;
-	glm::vec3 v2 = outPoint - p2;
-	glm::vec3 v3 = outPoint - p3;
-	glm::vec3 e1 = p2 - p1;
-	glm::vec3 e2 = p3 - p2;
-	glm::vec3 e3 = p1 - p3;
-
-	float d1 = glm::dot(normal, glm::cross(v1, e1));
-	float d2 = glm::dot(normal, glm::cross(v2, e2));
-	float d3 = glm::dot(normal, glm::cross(v3, e3));
+	float d1 = glm::dot(normal, glm::cross(outPoint - p1, p2 - p1));
+	float d2 = glm::dot(normal, glm::cross(outPoint - p2, p3 - p2));
+	float d3 = glm::dot(normal, glm::cross(outPoint - p3, p1 - p3));
 
 	// remove one of these lines for back face culling.
 	return 

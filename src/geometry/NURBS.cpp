@@ -51,6 +51,7 @@ void NURBS::SelectionTransformUpdated()
 {
 	if (!m_Selected && m_ControlPolyLine->IsSubSelected()) {
 		std::vector<glm::vec3> newPositions = m_ControlPolyLine->GetControlPoints(true);
+		// fix!
 		std::vector<glm::vec4> newControlPoints(m_Points.size());
 		for (int i = 0; i < m_Points.size(); i++) {
 			newControlPoints[i] = glm::vec4(newPositions[i] * m_Points[i].w, m_Points[i].w);
@@ -79,7 +80,9 @@ AxisAlignedBoundingBox NURBS::GetBoundingBox() const
 	std::vector<glm::vec3> points(m_Points.size());
 	for (const glm::vec4& point : m_Points) points.emplace_back(
 		point.x / point.w, point.y / point.w, point.z / point.w);
-	return AxisAlignedBoundingBox(points, m_Model);
+	AxisAlignedBoundingBox bb(points, m_Model);
+	if (m_PointsOn) bb += m_ControlPolyLine->GetBoundingBox();
+	return bb;
 }
 
 
@@ -99,6 +102,80 @@ void NURBS::RemoveSubSelection(uint32_t subID)
 void NURBS::ClearSubSelection()
 {
 	m_ControlPolyLine->ClearSubSelection();
+}
+
+void NURBS::SelectWithinFrustum(const Frustum& frustum, bool inclusive)
+{
+	if (GetBoundingBox().FullyWithin(frustum)) {
+		Select();
+		return;
+	}
+	else if (inclusive) {
+		for (int i = 0; i < m_Indecies.size() / 2; i++) {
+			if (frustum.PartiallyContainsLine(
+				m_Model * glm::vec4(m_Samples[m_Indecies[2 * i]], 1.0), 
+				m_Model * glm::vec4(m_Samples[m_Indecies[2 * i + 1]], 1.0))) {
+				Select();
+				return;
+			}
+		}
+	} else {
+		bool contained = true;
+		for (const glm::vec3& p : m_Samples) {
+			if (!frustum.Contains(m_Model * glm::vec4(p, 1.0))) {
+				contained = false;
+				break;
+			}
+		}
+		if (contained) {
+			Select();
+			return;
+		}
+	}
+	if (m_PointsOn) m_ControlPolyLine->SelectWithinFrustum(frustum, inclusive);
+	m_Selected = m_ControlPolyLine->IsSelected();
+}
+
+void NURBS::SubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
+{
+	if (m_PointsOn) m_ControlPolyLine->SubSelectWithinFrustum(frustum, inclusive);
+}
+
+void NURBS::UnSelectWithinFrustum(const Frustum& frustum, bool inclusive)
+{
+	if (GetBoundingBox().FullyWithin(frustum)) {
+		UnSelect();
+	}
+	else if (inclusive) {
+		for (int i = 0; i < m_Indecies.size() / 2; i++) {
+			if (frustum.PartiallyContainsLine(
+				m_Model * glm::vec4(m_Samples[m_Indecies[2 * i]], 1.0), 
+				m_Model * glm::vec4(m_Samples[m_Indecies[2 * i + 1]], 1.0))) {
+				UnSelect();
+				return;
+			}
+		}
+	}
+	else {
+		bool contained = true;
+		for (const glm::vec3& p : m_Samples) {
+			if (!frustum.Contains(m_Model * glm::vec4(p, 1.0))) {
+				contained = false;
+				return;
+			}
+		}
+		if (contained) {
+			UnSelect();
+			return;
+		}
+	}
+	if (m_PointsOn) m_ControlPolyLine->UnSelectWithinFrustum(frustum, inclusive);
+	m_Selected = m_ControlPolyLine->IsSelected();
+}
+
+void NURBS::UnSubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
+{
+	if (m_PointsOn) m_ControlPolyLine->UnSubSelectWithinFrustum(frustum, inclusive);
 }
 
 void NURBS::AddControlPoint(const glm::vec3& point, bool incrementDegree)

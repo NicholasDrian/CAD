@@ -21,12 +21,8 @@ public :
 	bool IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint, bool allowNegativeT = false) const;
 	bool IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float& outTime, bool allowNegativeT = false) const;
 
-
-
 	// Closest point to line extended to infinte length.
 	glm::vec3 ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP) const;
-
-	void Print() const;
 
 private:
 

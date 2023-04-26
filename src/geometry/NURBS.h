@@ -27,6 +27,11 @@ public:
 	virtual void RemoveSubSelection(uint32_t subID) override;
 	virtual void ClearSubSelection() override;
 
+	virtual void SelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
+	virtual void SubSelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
+	virtual void UnSelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
+	virtual void UnSubSelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
+
 	virtual bool IsSelected() const override { return m_Selected; }
 	virtual void Select() override;
 	virtual void UnSelect() override;
