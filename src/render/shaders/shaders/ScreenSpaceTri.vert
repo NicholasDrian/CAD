@@ -10,7 +10,6 @@ layout (std140, binding = 2) uniform local
 	vec4 color;
 	uint data;
 	uint id;
-	uint subIDOffset;
 };
 
 void main() 

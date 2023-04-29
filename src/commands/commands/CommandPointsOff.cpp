@@ -12,7 +12,7 @@ CommandPointsOff::CommandPointsOff()
 	auto& contents = Scene::GetContents();
 	for (auto& e : contents) if (e.second->IsSelected())
 	{
-		e.second->PointsOn();
+		e.second->PointsOff();
 		selected = true;
 	}
 	if (selected) m_Finished = true;

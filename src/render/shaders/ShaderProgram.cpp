@@ -14,15 +14,15 @@ ShaderProgram::ShaderProgram(ShaderProgramType type)
 	std::string fragPath;
 
 	switch (type) {
-	case ShaderProgramType::BasicTriShader:
+	case ShaderProgramType::TriShader:
 		vertPath = SHADER_BASE_PATH + "BasicTri.vert";
 		fragPath = SHADER_BASE_PATH + "BasicTri.frag";
 		break;
-	case ShaderProgramType::BasicLineShader:
+	case ShaderProgramType::LineShader:
 		vertPath = SHADER_BASE_PATH + "BasicLine.vert";
 		fragPath = SHADER_BASE_PATH + "BasicLine.frag";
 		break;
-	case ShaderProgramType::BasicPointShader:
+	case ShaderProgramType::PointShader:
 		vertPath = SHADER_BASE_PATH + "BasicPoint.vert";
 		fragPath = SHADER_BASE_PATH + "BasicPoint.frag";
 		break;

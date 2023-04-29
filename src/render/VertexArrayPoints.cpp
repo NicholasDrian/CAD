@@ -1,24 +1,24 @@
 #pragma once
 
-#include "VertexArrayBasicPoints.h"
+#include "VertexArrayPoints.h"
 #include "OpenGLUtils.h"
 #include "shaders/ShaderManager.h"
 
 #include <iostream>
 
-VertexArrayBasicPoints::VertexArrayBasicPoints(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset)
+VertexArrayPoints::VertexArrayPoints(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset)
 {
 	Init(points, subSelection, color, subIDOffset);
 }
 
-VertexArrayBasicPoints::VertexArrayBasicPoints(const std::vector<glm::vec4>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset)
+VertexArrayPoints::VertexArrayPoints(const std::vector<glm::vec4>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset)
 {
 	std::vector<glm::vec3> point3s(points.size());
 	for (int i = 0; i < points.size(); i++) point3s[i] = points[i];
 	Init(point3s, subSelection, color, subIDOffset);
 }
 
-void VertexArrayBasicPoints::Init(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset) 
+void VertexArrayPoints::Init(const std::vector<glm::vec3>& points, const std::vector<uint32_t>& subSelection, const glm::vec4& color, unsigned subIDOffset) 
 {
 	m_SubIDOffset = subIDOffset;
 	m_Color = color;
@@ -40,17 +40,17 @@ void VertexArrayBasicPoints::Init(const std::vector<glm::vec3>& points, const st
 	GLCall(glBindVertexArray(0));
 }
 
-VertexArrayBasicPoints::~VertexArrayBasicPoints()
+VertexArrayPoints::~VertexArrayPoints()
 {
 	GLCall(glDeleteVertexArrays(1, &m_ID));
 	GLCall(glDeleteBuffers(1, &m_PointBuffer));
 	GLCall(glDeleteBuffers(1, &m_SubSelectionBuffer));
 }
 
-void VertexArrayBasicPoints::Render(const glm::mat4& model, unsigned id, bool selectable, bool subSelectable, bool selected) const
+void VertexArrayPoints::Render(const glm::mat4& model, unsigned id, bool selectable, bool subSelectable, bool selected) const
 {
-	ShaderManager::Bind(ShaderProgramType::BasicPointShader);
-	ShaderManager::UpdateLocalUniforms(model, m_Color, selectable, subSelectable, selected, id, m_SubIDOffset);
+	ShaderManager::Bind(ShaderProgramType::PointShader);
+	ShaderManager::UpdateLocalUniforms(model, m_Color, selectable, subSelectable, selected, id);
 	if (subSelectable) {
 		GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_SubSelectionBuffer));
 	}
@@ -59,13 +59,13 @@ void VertexArrayBasicPoints::Render(const glm::mat4& model, unsigned id, bool se
 	GLCall(glDrawArrays(GL_POINTS, 0, m_PointCount));
 }
 
-void VertexArrayBasicPoints::UpdateSubSelection(const std::vector<uint32_t>& subSelection)
+void VertexArrayPoints::UpdateSubSelection(const std::vector<uint32_t>& subSelection)
 {
 	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SubSelectionBuffer));
 	GLCall(glBufferData(GL_SHADER_STORAGE_BUFFER, subSelection.size() * sizeof(uint32_t), subSelection.data(), GL_STATIC_DRAW));
 }
 
-void VertexArrayBasicPoints::UpdatePositions(const std::vector<glm::vec3>& positions, bool updateSize)
+void VertexArrayPoints::UpdatePositions(const std::vector<glm::vec3>& positions, bool updateSize)
 {
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_PointBuffer));
 	if (updateSize) {

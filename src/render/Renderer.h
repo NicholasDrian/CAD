@@ -1,7 +1,6 @@
 #pragma once
 
 #include "shaders/ShaderManager.h"
-#include "VertexArray.h"
 #include "OpenGLUtils.h"
 
 #include "glm/glm.hpp"

@@ -27,7 +27,6 @@ layout (std140, binding = 2) uniform local
 	vec4 color;
 	uint data;
 	uint id;
-	uint subIDOffset;
 };
 
 vec4 ShiftColor(vec4 color)
@@ -49,5 +48,5 @@ void main()
 
 	frag_id = id;
 	frag_data = data;
-	frag_sub_id = gl_VertexID + subIDOffset;
+	frag_sub_id = gl_VertexID;
 }

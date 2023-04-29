@@ -1,8 +1,8 @@
 #pragma once 
 
 #include "Renderable.h"
-#include "../render/VertexArrayBasicLines.h"
-#include "../render/VertexArrayBasicPoints.h"
+#include "../render/VertexArrayLines.h"
+#include "../render/VertexArrayPoints.h"
 #include "PolyLine.h"
 #include "../scene/Scene.h"
 
@@ -78,7 +78,7 @@ protected:
 
 	std::vector<glm::vec3> m_Samples;
 
-	std::unique_ptr<VertexArrayBasicLines> m_VertexArrayLines;
+	std::unique_ptr<VertexArrayLines> m_VertexArrayLines;
 	std::unique_ptr<PolyLine> m_ControlPolyLine;
 
 };

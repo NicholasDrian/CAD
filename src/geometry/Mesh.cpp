@@ -8,7 +8,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>
 	m_SelectedTriangles(std::vector<uint32_t>(((indices.size() / 3) + 31) / 32, 0U)),
 	m_SelectedVertices(std::vector<uint32_t>(((m_Positions.size()) + 31) / 32, 0U)), m_Selected(false)
 {
-	m_VertexArray = std::make_unique<VertexArrayBasicTriangles>(m_Positions, m_Normals, m_SelectedTriangles, m_SelectedVertices, m_Color, m_ID, 0, m_Indices);
+	m_VertexArray = std::make_unique<VertexArraySubSelectableTriangles>(m_Positions, m_Normals, m_SelectedTriangles, m_SelectedVertices, m_Color, m_ID, m_Indices);
 }
 
 AxisAlignedBoundingBox Mesh::GetBoundingBox() const
@@ -41,9 +41,7 @@ void Mesh::AddSubSelection(uint32_t subID)
 	int index = subID / 32;
 	int shift = subID % 32;
 	if ((m_SelectedTriangles[index] & (1 << shift)) == 0) {
-
 		m_SelectedTriangles[index] |= 1 << shift;
-
 		for (int i = 0; i < 3; i++)
 		{
 			int vertIdx = m_Indices[3 * subID + i];
@@ -57,15 +55,11 @@ void Mesh::AddSubSelection(uint32_t subID)
 }
 void Mesh::RemoveSubSelection(uint32_t subID)
 {
-
 	int index = subID / 32;
 	int shift = subID % 32;
 	if ((m_SelectedTriangles[index] & (1 << shift)) != 0) {
-
 		m_SelectedTriangles[index] &= ~(1 << shift);
-
-		for (int i = 0; i < 3; i++)
-		{
+		for (int i = 0; i < 3; i++) {
 			int vertIdx = m_Indices[3 * subID + i];
 			m_SelectedVertexCounter[vertIdx]--;
 			if (m_SelectedVertexCounter[vertIdx] == 0) {
@@ -88,7 +82,7 @@ void Mesh::ClearSubSelection()
 
 void Mesh::Render() const {
 	if (!m_Selectable) Renderer::UnbindIDBuffer();
-	m_VertexArray->Render(m_Model, m_ID, m_Selectable, true, m_Selected);
+	m_VertexArray->Render(m_Model, m_ID, m_Selectable, m_Selected);
 	Renderer::BindIDBuffer();
 }
 

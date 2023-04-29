@@ -5,7 +5,6 @@ layout (location = 0) in vec3 position;
 out vec4 frag_color;
 out flat uint frag_id;
 out flat uint frag_data;
-out flat uint frag_sub_id_offset;
 
 layout (std140, binding = 0) uniform global
 {
@@ -27,7 +26,6 @@ layout (std140, binding = 2) uniform local
 	vec4 color;
 	uint data;
 	uint id;
-	uint subIDOffset;
 };
 
 void main() 
@@ -43,5 +41,4 @@ void main()
 	frag_color = color;
 	frag_id = id;
 	frag_data = data;
-	frag_sub_id_offset = subIDOffset;
 }

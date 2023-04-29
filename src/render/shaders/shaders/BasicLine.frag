@@ -3,7 +3,6 @@
 in vec4 frag_color;
 in flat uint frag_id;
 in flat uint frag_data;
-in flat uint frag_sub_id_offset;
 	   
 layout (location = 0) out vec4 out_color;
 layout (location = 1) out uvec2 out_id;
@@ -27,7 +26,7 @@ void main()
 	bool selected =  bool(frag_data & SELECTED_BIT);
 	if (!selected && bool(frag_data & SUB_SELECTABLE_BIT)) 
 	{
-		uint subID = gl_PrimitiveID + frag_sub_id_offset;
+		uint subID = gl_PrimitiveID;
 		uint index = subID / 32;
 		uint bit = 1 << (subID % 32);
 		selected = bool(primitive_selection_buffer[index] & bit);
@@ -36,7 +35,7 @@ void main()
 	else out_color = frag_color;
 	
 	// why is this vector backwards!!!
-	if (frag_data & SELECTABLE_BIT) out_id = uvec2(gl_PrimitiveID + frag_sub_id_offset, frag_id);
+	if (frag_data & SELECTABLE_BIT) out_id = uvec2(gl_PrimitiveID, frag_id);
 
 	gl_FragDepth = gl_FragCoord.z - 0.00001;
 }

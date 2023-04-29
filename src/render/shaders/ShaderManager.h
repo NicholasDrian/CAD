@@ -16,7 +16,7 @@ public:
 	static void Bind(ShaderProgramType type);
 
 	static void UpdateGlobalUniforms();
-	static void UpdateLocalUniforms(const glm::mat4& model, const glm::vec4& color, bool selectable, bool subSelectable, bool selected, uint32_t id, uint32_t subIDOffset);
+	static void UpdateLocalUniforms(const glm::mat4& model, const glm::vec4& color, bool selectable, bool subSelectable, bool selected, uint32_t id);
 
 private:
 

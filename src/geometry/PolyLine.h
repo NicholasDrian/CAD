@@ -2,8 +2,8 @@
 
 #include "Renderable.h"
 #include "../scene/Scene.h"
-#include "../render/VertexArrayBasicLines.h"
-#include "../render/VertexArrayBasicPoints.h"
+#include "../render/VertexArraySubSelectableLines.h"
+#include "../render/VertexArrayPoints.h"
 #include "glm/glm.hpp"
 
 #include <vector>
@@ -77,7 +77,7 @@ private:
 	std::vector<glm::vec3> m_Points;
 	glm::vec4 m_Color;
 	glm::mat4 m_Model;
-	std::unique_ptr<VertexArrayBasicLines> m_VertexArrayLines;
-	std::unique_ptr<VertexArrayBasicPoints>	m_VertexArrayPoints;
+	std::unique_ptr<VertexArraySubSelectableLines> m_VertexArrayLines;
+	std::unique_ptr<VertexArrayPoints>	m_VertexArrayPoints;
 
 };

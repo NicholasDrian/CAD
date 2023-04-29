@@ -11,12 +11,10 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> 
 	m_ControlPolyLine(std::make_unique<PolyLine>(points, true, m_ID)), m_PointsOn(false)
 {
 	m_ControlPolyLine->PointsOn();
-	if (weights.size() == 0) 
-	{
+	if (weights.size() == 0) {
 		for (const glm::vec3& point : points) m_Points.emplace_back(point.x, point.y, point.z, 1.0f);
 	}
-	else 
-	{
+	else {
 		for (int i = 0; i < points.size(); i++) {
 			const glm::vec3& point = points[i];
 			m_Points.emplace_back(point.x * weights[i], point.y * weights[i], point.z * weights[i], weights[i]);
@@ -31,7 +29,7 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> 
 void NURBS::Render() const
 {
 	if (!m_Selectable) Renderer::UnbindIDBuffer();
-	m_VertexArrayLines->Render(m_Model, m_ID, m_Selectable, false, m_Selected);
+	m_VertexArrayLines->Render(m_Model, m_ID, m_Selectable, m_Selected);
 	if (m_PointsOn) m_ControlPolyLine->Render();
 	Renderer::BindIDBuffer();
 }
@@ -41,10 +39,8 @@ void NURBS::BakeSelectionTransform(const glm::mat4& t)
 	if (m_Selected) {
 		m_Model = t * m_Model;
 		m_ControlPolyLine->BakeSelectionTransform(t);
-		print(m_Model);
 	}
 	else {	
-		// TODO: CHECK - i think its fine to transform homogenious points
 		m_ControlPolyLine->BakeSelectionTransform(t);
 	}
 }
@@ -286,7 +282,7 @@ void NURBS::UpdateSamples()
 
 void NURBS::UpdateVertexArray()
 {
-	m_VertexArrayLines = std::make_unique<VertexArrayBasicLines>(m_Samples, m_Color, m_ID, m_Indecies, 2.0f, 0U);
+	m_VertexArrayLines = std::make_unique<VertexArrayLines>(m_Samples, m_Color, m_ID, m_Indecies, 2.0f, 0U);
 }
 
 glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const

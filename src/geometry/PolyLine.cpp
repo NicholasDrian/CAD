@@ -21,7 +21,7 @@ PolyLine::PolyLine(const std::vector<glm::vec3>& points, bool dashed, unsigned i
 void PolyLine::Render() const
 {
 	if (!m_Selectable) Renderer::UnbindIDBuffer();
-	m_VertexArrayLines->Render(m_Model, m_ID, m_Selectable, true, m_Selected);
+	m_VertexArrayLines->Render(m_Model, m_ID, m_Selectable, m_Selected);
 	if (m_PointsOn) m_VertexArrayPoints->Render(m_Model, m_ID, m_Selectable, true, m_Selected);
 	Renderer::BindIDBuffer();
 }
@@ -240,9 +240,9 @@ void PolyLine::RemoveLast()
 
 void PolyLine::UpdateVertexArrays()
 {
-	m_VertexArrayLines = std::make_unique<VertexArrayBasicLines>(m_Points, m_Color, m_ID, m_Indecies, 2.0f, 0U, true, m_Dashed, m_SegmentSelectionBuffer, m_VertexSelectionBuffer);
+	m_VertexArrayLines = std::make_unique<VertexArraySubSelectableLines>(m_Points, m_Color, m_ID, m_Indecies, 2.0f, m_Dashed, m_SegmentSelectionBuffer, m_VertexSelectionBuffer);
 
-	m_VertexArrayPoints = std::make_unique<VertexArrayBasicPoints>(m_Points, m_VertexSelectionBuffer, m_Color, (unsigned)GetNumSegments());
+	m_VertexArrayPoints = std::make_unique<VertexArrayPoints>(m_Points, m_VertexSelectionBuffer, m_Color, (unsigned)GetNumSegments());
 }
 
 void PolyLine::UpdatePositions()

@@ -69,8 +69,8 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 
 		}
 	}
-	m_MajorLinesVertexArray = std::make_unique<VertexArrayBasicLines>(majorLines, color, GetID(), majorIndices, MAJOR_WIDTH, 0U);
-	m_MinorLinesVertexArray = std::make_unique<VertexArrayBasicLines>(minorLines, color, GetID(), minorIndices, MINOR_WIDTH, 0U);
+	m_MajorLinesVertexArray = std::make_unique<VertexArrayLines>(majorLines, color, GetID(), majorIndices, MAJOR_WIDTH, 0U);
+	m_MinorLinesVertexArray = std::make_unique<VertexArrayLines>(minorLines, color, GetID(), minorIndices, MINOR_WIDTH, 0U);
 
 }
 
@@ -92,8 +92,8 @@ void ConstructionPlane::BakeSelectionTransform(const glm::mat4& t)
 }
 
 void ConstructionPlane::Render() const {
-	m_MajorLinesVertexArray->Render(glm::mat4(1.0), 0, false, false, false);
-	m_MinorLinesVertexArray->Render(glm::mat4(1.0), 0, false, false, false);
+	m_MajorLinesVertexArray->Render(glm::mat4(1.0), 0, false, false);
+	m_MinorLinesVertexArray->Render(glm::mat4(1.0), 0, false, false);
 }
 
 AxisAlignedBoundingBox ConstructionPlane::GetBoundingBox() const

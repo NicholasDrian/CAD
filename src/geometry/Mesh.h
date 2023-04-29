@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Renderable.h"
-#include "../render/VertexArrayBasicTriangles.h"
+#include "../render/VertexArraySubSelectableTriangles.h"
 #include "../scene/Scene.h"
 #include "glm/vec3.hpp"
 
@@ -46,6 +46,6 @@ private:
 
 	std::vector<unsigned> m_Indices;
 
-	std::unique_ptr<VertexArrayBasicTriangles> m_VertexArray;
+	std::unique_ptr<VertexArraySubSelectableTriangles> m_VertexArray;
 
 };

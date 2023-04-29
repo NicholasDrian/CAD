@@ -48,7 +48,7 @@ void VertexArrayScreenSpaceTriangles::Render() const
 
 	//ShaderManager::Bind(ShaderProgramType::BasicTriShader);
 	ShaderManager::Bind(ShaderProgramType::ScreenSpaceTriShader);
-	ShaderManager::UpdateLocalUniforms(glm::mat4(1.0), m_Color, false, false, false, 0, 0);
+	ShaderManager::UpdateLocalUniforms(glm::mat4(1.0), m_Color, false, false, false, 0);
 
 	GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, (GLvoid*)0));
 
