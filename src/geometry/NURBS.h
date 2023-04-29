@@ -55,7 +55,7 @@ public:
 	void UpdateLastPoint(const glm::vec3& point);
 	void RemoveLastPoint();
 
-private:
+protected:
 
 	bool m_Selected;
 	bool m_PointsOn;

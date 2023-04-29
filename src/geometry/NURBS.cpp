@@ -2,6 +2,7 @@
 
 #include "NURBS.h"
 #include "../render/Renderer.h"
+#include "../debug/Print.h"
 
 const unsigned SAMPLES_PER_EDGE = 20;
 
@@ -22,7 +23,7 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> 
 		}
 	}
 	while (m_Degree > m_Points.size() - 1) m_Degree--;
-	UpdateKnotVector();
+	if (m_Knots.size() == 0) UpdateKnotVector();
 	UpdateSamples();
 	UpdateVertexArray();
 }
@@ -40,6 +41,7 @@ void NURBS::BakeSelectionTransform(const glm::mat4& t)
 	if (m_Selected) {
 		m_Model = t * m_Model;
 		m_ControlPolyLine->BakeSelectionTransform(t);
+		print(m_Model);
 	}
 	else {	
 		// TODO: CHECK - i think its fine to transform homogenious points
@@ -219,11 +221,11 @@ std::vector<float> NURBS::BasisFuncs(float u) const
 {
 	int i = KnotSpan(u);
 	std::vector<float> res(m_Degree + 1);
-	res[0] = 1.0;
+	res[0] = 1.0f;
 	auto left = [&](int j) { return u - m_Knots[i - j + 1]; };
 	auto right = [&](int j) { return m_Knots[i + j] - u; };
 	for (unsigned j = 1; j <= m_Degree; j++) {
-		float saved = 0.0;
+		float saved = 0.0f;
 		for (unsigned r = 0; r < j; r++) {
 			float temp = res[r] / (right(r + 1U) + left(j - r));
 			res[r] = saved + right(r + 1U) * temp;
@@ -236,16 +238,15 @@ std::vector<float> NURBS::BasisFuncs(float u) const
 
 int NURBS::KnotSpan(float u) const
 {
+	// Vastly improved algo from NURBS Bible!
 	int n = (int)m_Knots.size() - m_Degree - 2;
-	if (u == m_Knots[n + 1]) return n;
-	int low = m_Degree, high = n + 1;
-	int mid = (low + high) / 2;
-	while (u < m_Knots[mid] || u >= m_Knots[mid + 1]) { 
-		if (u < m_Knots[mid]) high = mid;
-		else low = mid;
-		mid = (low + high) / 2;
+	int l = m_Degree, h = n, m;
+	while (l < h) {
+		m = (l + h) / 2;
+		if (u >= m_Knots[m + 1]) l = m + 1;
+		else h = m;
 	}
-	return mid;
+	return l;
 }
 
 

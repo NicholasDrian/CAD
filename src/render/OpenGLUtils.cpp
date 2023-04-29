@@ -6,8 +6,6 @@
 
 void PrintOpenGLErrors(char const* const Function, char const* const File, int const Line)
 {
-	bool Succeeded = true;
-
 	GLenum Error = glGetError();
 	if (Error != GL_NO_ERROR)
 	{
@@ -21,8 +19,7 @@ void PrintOpenGLErrors(char const* const Function, char const* const File, int c
 
 void PrintShaderInfoLog(GLint const shader)
 {
-	int InfoLogLength = 0;
-	int CharsWritten = 0;
+	int InfoLogLength = 0, CharsWritten = 0;
 
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &InfoLogLength);
 
@@ -37,8 +34,7 @@ void PrintShaderInfoLog(GLint const shader)
 
 void PrintProgramInfoLog(GLint const program)
 {
-	int InfoLogLength = 0;
-	int CharsWritten = 0;
+	int InfoLogLength = 0, CharsWritten = 0;
 
 	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &InfoLogLength);
 

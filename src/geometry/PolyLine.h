@@ -52,6 +52,8 @@ public:
 
 	inline virtual unsigned GetID() const override { return m_ID; };
 
+	inline void SetModel(const glm::mat4& model) { m_Model = model; }
+
 private:
 
 	bool m_Selected;

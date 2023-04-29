@@ -40,7 +40,6 @@ void PolyLine::BakeSelectionTransform(const glm::mat4& t)
 
 std::vector<glm::vec3> PolyLine::GetControlPoints(bool withSelectionTransform)
 {
-	std::cout << withSelectionTransform << std::endl;
 	if (!withSelectionTransform || (!m_Selected && m_VertexSelectionCounter.empty()))
 	{
 		return m_Points;

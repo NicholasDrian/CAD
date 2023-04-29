@@ -18,7 +18,7 @@ ConstructionPlane::ConstructionPlane(int majorCount, int minorCount, int spacing
 	std::vector<unsigned> majorIndices, minorIndices;
 	int majorIndex = 0, minorIndex = 0;
 	float half = (float)majorCount * minorCount * spacing / 2.0f;
-	float epsilon = 0.1f;
+	float epsilon = 0.01f;
 	glm::vec4 color(0.4, 0.4, 0.4, 1.0);
 	for (int i = 0; i <= minorCount * majorCount; i++) {
 		if (i == majorCount * minorCount / 2.0) 

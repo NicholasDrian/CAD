@@ -7,6 +7,7 @@
 #include "../geometry/Renderable.h"
 #include "../geometry/Mesh.h"
 #include "../geometry/NURBS.h"
+#include "../geometry/Circle.h"
 #include "../render/Renderer.h"
 
 #include "glm/gtc/constants.hpp"
@@ -26,11 +27,14 @@ void Scene::Init()
 	std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(positions, normals, color, indices);
 	AddToScene(std::move(mesh));
 
+	std::unique_ptr<Circle> circle = std::make_unique<Circle>(glm::vec3{0,0,1}, glm::vec3{0,0,0}, 10.0f);
+	AddToScene(std::move(circle));
+
+	circle = std::make_unique<Circle>(glm::vec3{ 0,0,0 }, glm::vec3{ 1,0,0 }, glm::vec3{5,1,0});
+	AddToScene(std::move(circle));
+	
+
 	std::vector<glm::vec3> points = { { 10.0f, 0.0f, 0.0f }, { 10.0f, 10.0f, 0.0f }, { 0.0f, 20.0f, 0.0f }, {100.0, -20.0, 0.0}, {100.0, 100.0, 0.0} };
-
-
-	std::unique_ptr<NURBS> curve = std::make_unique<NURBS>(points, color);
-	AddToScene(std::move(curve));
 
 
 	m_ConstructionPlane = std::make_unique<ConstructionPlane>(10, 10, 1);
