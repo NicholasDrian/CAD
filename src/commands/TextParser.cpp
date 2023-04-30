@@ -22,7 +22,14 @@ bool TextParser::IsTypable(int character)
 
 bool TextParser::ParseVector3F(const std::string& text, glm::vec3& outVector) 
 {
-	return false;
+	float a, b, c;
+	int i = 0;
+	bool success = true;
+	success &= NextFloat(text, i, a);
+	success &= NextFloat(text, i, b);
+	success &= NextFloat(text, i, c);
+	outVector = { a, b, c };
+	return success;
 }
 
 bool TextParser::ParseUnsignedInt(const std::string& text, unsigned& outUnsignedInt)
@@ -47,8 +54,28 @@ bool TextParser::NextUnsignedInt(const std::string& text, int& i, unsigned& outU
 
 bool TextParser::NextFloat(const std::string& text, int& i, float& outFloat)
 {
-	// todo
-	return false;
+	while (i < text.size() && text[i] == ' ') i++;
+
+	int end = i;
+	while (end < text.size() && text[i] != GLFW_KEY_COMMA) end++;
+
+	outFloat = 0.0f;
+	
+	while (i < end && IsDigit(text[i])) {
+		outFloat *= 10;
+		outFloat += ToDigit(text[i++]);
+	}
+
+	if (i < end && text[i] == GLFW_KEY_PERIOD) i++;
+
+
+	float mul = 1.0f;
+	while (i < end && IsDigit(text[i])) {
+		mul /= 10.0f;
+		outFloat += mul * (float) ToDigit(text[i++]);
+	}
+
+	return i != end;
 }
 
 bool TextParser::IsDigit(char c)

@@ -37,37 +37,26 @@ Circle::Circle(glm::vec3 a, glm::vec3 b, glm::vec3 c)
 
 	float radious = glm::distance(a, center);
 
-	glm::vec3 x, y;
-	if (normal == glm::vec3{ 0.0f, 0.0f, 1.0f })
-		x = glm::vec3{ 1.0f, 0.0f, 0.0f } * radious,
-		y = glm::vec3{ 0.0f, 1.0f, 0.0f } * radious;
-	else
-		x = glm::normalize(glm::cross(normal, { 0.0f, 0.0f, 1.0f })) * radious,
-		y = glm::normalize(glm::cross(normal, x)) * radious;
-
-	normal *= radious;
-
-	m_Model = {
-		x.x,		x.y,		x.z,		0.0f,
-		y.x,		y.y,		y.z,		0.0f,
-		normal.x,	normal.y, 	normal.z,	0.0f,
-		center.x,	center.y,	center.z,	1.0f,
-	};
-
-	m_ControlPolyLine->SetModel(m_Model);
+	Create(normal, center, radious);
 }
 
 Circle::Circle(glm::vec3 normal, glm::vec3 center, float radious)
 	: NURBS(UNIT_CIRCLE_POINTS, { 0,0,0,1 }, UNIT_CIRCLE_WEIGHTS, UNIT_CIRCLE_DEGREE, UNIT_CIRCLE_KNOTS)
 {
+	Create(normal, center, radious);
+}
+
+void Circle::Create(glm::vec3 normal, glm::vec3 center, float radious)
+{
 	glm::vec3 x, y;
-	if (normal == glm::vec3{ 0.0f, 0.0f, 1.0f }) 
-		x = glm::vec3{ 1.0f, 0.0f, 0.0f } * radious,
-		y = glm::vec3{ 0.0f, 1.0f, 0.0f } * radious;
-	else 
+	if (normal.z < 0.0f) normal *= -1;
+	if (glm::distance(normal, glm::vec3{ 0.0f, 0.0f, 1.0f}) < 0.00001f)
+		x = glm::vec3{ 1.0f, 0.0f, 0.0f } *radious,
+		y = glm::vec3{ 0.0f, 1.0f, 0.0f } *radious;
+	else
 		x = glm::normalize(glm::cross(normal, { 0.0f, 0.0f, 1.0f })) * radious,
-		y = glm::normalize(glm::cross(normal, x )) * radious;
-	
+		y = glm::normalize(glm::cross(normal, x)) * radious;
+
 	normal *= radious;
 
 	m_Model = {

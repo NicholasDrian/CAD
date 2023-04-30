@@ -10,4 +10,8 @@ public:
 
 	Circle(glm::vec3 normal, glm::vec3 center, float radious);
 
+private:
+
+	void Create(glm::vec3 normal, glm::vec3 center, float radious);
+
 };

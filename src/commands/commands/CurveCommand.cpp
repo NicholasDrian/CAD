@@ -33,21 +33,19 @@ void CurveCommand::TextInput(const std::string& input)
 
 void CurveCommand::ClickInput(int x, int y, int mods)
 {
-	if (Window::IsWithinLocal(x, y)) {
-		if (m_Mode == CurveCommandMode::AddPoint) {
-			glm::vec3 intersection;
-			if (Scene::IntersectScene(x, y, intersection)) {
-				if (m_Curve)
-				{
-					if (m_NeedsExtraPoint) m_Curve->AddControlPoint(intersection, m_Curve->GetDegree() != m_Degree);
-					m_NeedsExtraPoint = true;
-				}
-				else
-				{
-					std::vector<glm::vec3> points = { intersection, intersection };
-					m_Curve = std::make_unique<NURBS>(points, glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f });
-					m_Curve->m_Selectable = false;
-				}
+	if (Window::IsWithinLocal(x, y) && m_Mode == CurveCommandMode::AddPoint) {
+		glm::vec3 intersection;
+		if (Scene::IntersectScene(x, y, intersection)) {
+			if (m_Curve)
+			{
+				if (m_NeedsExtraPoint) m_Curve->AddControlPoint(intersection, m_Curve->GetDegree() != m_Degree);
+				m_NeedsExtraPoint = true;
+			}
+			else
+			{
+				std::vector<glm::vec3> points = { intersection, intersection };
+				m_Curve = std::make_unique<NURBS>(points, glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f });
+				m_Curve->m_Selectable = false;
 			}
 		}
 	}
@@ -55,24 +53,20 @@ void CurveCommand::ClickInput(int x, int y, int mods)
 
 void CurveCommand::Tick()
 {
-	if (m_Mode == CurveCommandMode::AddPoint) {
-		if (m_Curve) {
-			auto [x, y] = Window::GetCursorPosition();
-			if (Window::IsWithinLocal(x, y)) {
-				if (x != m_PrevX || y != m_PrevY) {
-					glm::vec3 intersection;
-					if (Scene::IntersectScene(x, y, intersection)) {
-						if (m_NeedsExtraPoint) {
-							m_Curve->AddControlPoint(intersection, m_Curve->GetDegree() != m_Degree);
-							m_NeedsExtraPoint = false;
-						}
-						else m_Curve->UpdateLastPoint(intersection);
-					}
-					m_PrevX = x;
-					m_PrevY = y;
+	if (m_Mode == CurveCommandMode::AddPoint && m_Curve) {
+		auto [x, y] = Window::GetCursorPosition();
+		if (Window::IsWithinLocal(x, y) && (x != m_PrevX || y != m_PrevY)) {
+			glm::vec3 intersection;
+			if (Scene::IntersectScene(x, y, intersection)) {
+				if (m_NeedsExtraPoint) {
+					m_Curve->AddControlPoint(intersection, m_Curve->GetDegree() != m_Degree);
+					m_NeedsExtraPoint = false;
 				}
+				else m_Curve->UpdateLastPoint(intersection);
 			}
-		}
+			m_PrevX = x;
+			m_PrevY = y;
+		}	
 	}
 }
 

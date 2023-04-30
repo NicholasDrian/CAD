@@ -24,6 +24,14 @@ void print(glm::vec4 v, bool newLine)
 #endif
 }
 
+void print(float f, bool newLine)
+{
+#ifdef CAD_DEBUG
+	printf("%.2f", f);
+	if (newLine) std::cout << '\n';
+#endif
+}
+
 void print(const glm::mat4& m)
 {
 #ifdef CAD_DEBUG

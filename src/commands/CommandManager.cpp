@@ -5,8 +5,9 @@
 #include "commands/FocusCommand.h"
 #include "commands/PolyLineCommand.h"
 #include "commands/CurveCommand.h"
-#include "commands/CommandPointsOn.h"
-#include "commands/CommandPointsOff.h"
+#include "commands/PointsOnCommand.h"
+#include "commands/PointsOffCommand.h"
+#include "commands/CircleCommand.h"
 
 #include "TextParser.h"
 #include "../scene/Scene.h"
@@ -60,6 +61,9 @@ void CommandManager::AddInput(int c) {
 			}
 			else if (m_TextInput == "POINTS OFF") {
 				m_CurrentCommand = std::make_unique<CommandPointsOff>();
+			}
+			else if (m_TextInput == "CIRCLE") {
+				m_CurrentCommand = std::make_unique<CircleCommand>();
 			}
 			m_PreviousCommand = m_TextInput;
 		}
