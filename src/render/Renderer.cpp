@@ -31,7 +31,7 @@ void Renderer::Init()
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glEnable(GL_POINT_SMOOTH));
-	GLCall(glPointSize(5.0));
+	GLCall(glPointSize(6.0));
 
 	GLCall(glLineStipple(2, 0x1111));
 

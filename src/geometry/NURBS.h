@@ -50,7 +50,12 @@ public:
 	virtual void PointsOff() override { m_PointsOn = false; }
 
 	void AddControlPoint(const glm::vec3& point, bool incrementDegree = false);
+
+	// Changes curve
 	void ChangeDegree(unsigned degree);
+
+	// Does not change curve
+	void ElevateDegree(unsigned n);
 
 	void UpdateLastPoint(const glm::vec3& point);
 	void RemoveLastPoint();

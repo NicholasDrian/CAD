@@ -289,3 +289,70 @@ glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const
 {
 	return r.ClosestPointOnLine(m_Samples[subID], m_Samples[subID + 1]);
 }
+
+
+void NURBS::ElevateDegree(unsigned n)
+{
+	// TODO: factor, clean
+	std::vector<std::vector<float>> BezierAlphas(m_Degree + n + 1, std::vector(m_Degree + 1, 0.0f));
+	std::vector<glm::vec3> BezControls(m_Degree + 1), ElvevatedBezControls(m_Degree + n + 1), NextBezControls(m_Degree - 1);
+	std::vector<float> Alphas(m_Degree - 1);
+
+	auto Bin = [](int a, int b) -> int {
+		int res = 1.0;
+		for (int i = a; i > a - b; i--) res *= i;
+		for (int i = 2; i <= b; i++) res /= i;
+		return res;
+	};
+
+	int DistinctKnots = 1;
+	for (int i = 1; i < m_Knots.size(); i++)
+		if (m_Knots[i] != m_Knots[i - 1]) DistinctKnots++;
+
+
+	// new point count = prev + n * (distinct knots - 1)
+	// new knot count = prev + n * (distinct knots)
+
+	std::vector<glm::vec4> NewPoints(m_Points.size() + n * (DistinctKnots - 1));
+	std::vector<float> NewKnots(m_Knots.size() + n * DistinctKnots);
+	unsigned NewDegree = m_Degree + n;
+
+	// Compute Bezier Coeficients
+
+	BezierAlphas[0][0] = BezierAlphas[NewDegree][m_Degree] = 1.0f;
+	for (unsigned i = 1; i < NewDegree / 2; i++) {
+		float inv = 1.0 / Bin(NewDegree, i);
+		float mpi = std::min(m_Degree, i);
+		for (unsigned j = std::max(0U, i - n); j <= mpi; j++)
+			BezierAlphas[i][j] = inv * Bin(m_Degree, j) * Bin(n, i - j);
+	}
+	for (unsigned i = NewDegree / 2 + 1; i <= NewDegree - 1; i++) {
+		float mpi = std::min(m_Degree, i);
+		for (unsigned j = std::max(0U, i - n); j <= mpi; j++)
+			BezierAlphas[i][j] = BezierAlphas[NewDegree - i][m_Degree - j];
+	}
+
+	// Initialize First Segment
+
+	unsigned mh = NewDegree, kind = NewDegree + 1;
+	int r = -1;
+	unsigned a = m_Degree, b = m_Degree + 1, cind = 1;
+	float ua = m_Knots[0];
+	NewPoints[0] = m_Points[0];
+	for (int i = 0; i <= NewDegree; i++) NewKnots[i] = ua;
+	for (int i = 0; i <= m_Degree; i++) BezControls[i] = m_Points[i];
+
+	while (b < m_Knots.size() - 1) {
+
+	}
+
+	// TODO...
+
+
+	m_Points = NewPoints;
+	m_Knots = NewKnots;
+	m_Degree = NewDegree;
+	
+	UpdateSamples();
+	m_VertexArrayLines->UpdateVertexPositions(m_Samples);
+}
