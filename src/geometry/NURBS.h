@@ -57,6 +57,8 @@ public:
 	// Does not change curve
 	void ElevateDegree(unsigned n);
 
+	void DebugPrint();
+
 	void UpdateLastPoint(const glm::vec3& point);
 	void RemoveLastPoint();
 

@@ -8,6 +8,7 @@
 #include "commands/PointsOnCommand.h"
 #include "commands/PointsOffCommand.h"
 #include "commands/CircleCommand.h"
+#include "commands/ElevateCurveDegreeCommand.h"
 
 #include "TextParser.h"
 #include "../scene/Scene.h"
@@ -64,6 +65,9 @@ void CommandManager::AddInput(int c) {
 			}
 			else if (m_TextInput == "CIRCLE") {
 				m_CurrentCommand = std::make_unique<CircleCommand>();
+			}
+			else if (m_TextInput == "ELEVATE CURVE DEGREE") {
+				m_CurrentCommand = std::make_unique<ElevateCurveDegreeCommand>();
 			}
 			m_PreviousCommand = m_TextInput;
 		}
