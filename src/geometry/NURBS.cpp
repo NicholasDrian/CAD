@@ -295,8 +295,8 @@ void NURBS::ElevateDegree(unsigned n)
 {
 	DebugPrint();
 
-	// TODO: factor, clean, fix
-	// bug if n > degree + 1;
+	// TODO: factor, clean
+
 	std::vector<std::vector<float>> BezierAlphas(m_Degree + n + 1, std::vector(m_Degree + 1, 0.0f));
 	std::vector<glm::vec4> BezControls(m_Degree + 1), ElvevatedBezControls(m_Degree + n + 1), NextBezControls(m_Degree - 1);
 	std::vector<float> Alphas(m_Degree - 1);
@@ -314,28 +314,29 @@ void NURBS::ElevateDegree(unsigned n)
 
 	std::vector<glm::vec4> NewPoints(m_Points.size() + n * (DistinctKnots - 1));
 	std::vector<float> NewKnots(m_Knots.size() + n * DistinctKnots);
-	unsigned NewDegree = m_Degree + n;
+	int NewDegree = m_Degree + n;
 
 	// Compute Bezier Coeficients
 
 	BezierAlphas[0][0] = BezierAlphas[NewDegree][m_Degree] = 1.0f;
-	for (unsigned i = 1; i <= NewDegree / 2; i++) {
+	for (int i = 1; i <= NewDegree / 2; i++) {
 		float inv = 1.0 / Bin(NewDegree, i);
-		float mpi = std::min(m_Degree, i);
-		for (unsigned j = std::max(0U, i - n); j <= mpi; j++)
+		float mpi = std::min((int)m_Degree, i);
+		for (int j = std::max(0, i - (int)n); j <= mpi; j++) 
 			BezierAlphas[i][j] = inv * Bin(m_Degree, j) * Bin(n, i - j);
+
 	}
-	for (unsigned i = NewDegree / 2 + 1; i <= NewDegree - 1; i++) {
-		float mpi = std::min(m_Degree, i);
-		for (unsigned j = std::max(0U, i - n); j <= mpi; j++)
+	for (int i = NewDegree / 2 + 1; i <= NewDegree - 1; i++) {
+		float mpi = std::min((int)m_Degree, i);
+		for (int j = std::max(0, i - (int)n); j <= mpi; j++)
 			BezierAlphas[i][j] = BezierAlphas[NewDegree - i][m_Degree - j];
 	}
 
 	// Initialize First Segment
 
-	unsigned mh = NewDegree, kind = NewDegree + 1;
+	int mh = NewDegree, kind = NewDegree + 1;
 	int r = -1;
-	unsigned a = m_Degree, b = m_Degree + 1, cind = 1;
+	int a = m_Degree, b = m_Degree + 1, cind = 1;
 	float ua = m_Knots[0];
 	NewPoints[0] = m_Points[0];
 	for (int i = 0; i <= NewDegree; i++) NewKnots[i] = ua;
@@ -365,11 +366,12 @@ void NURBS::ElevateDegree(unsigned n)
 			}
 		}
 		// Elevate Bezier 
-		for (unsigned i = lbz; i <= NewDegree; i++) {
-			ElvevatedBezControls[i] = {0.0f, 0.0f, 0.0f, 0.0f};
-			for (unsigned j = std::max(0U, i - n); j <= std::min(m_Degree, i); j++) {
+		for (int i = lbz; i <= NewDegree; i++) {
+			ElvevatedBezControls[i] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			for (int j = std::max(0, i - (int)n); j <= std::min((int)m_Degree, i); j++) {
 				ElvevatedBezControls[i] += BezierAlphas[i][j] * BezControls[j];
 			}
+
 		}
 		//  Remove knots
 		if (oldr > 1) {
@@ -444,11 +446,15 @@ void NURBS::ElevateDegree(unsigned n)
 
 void NURBS::DebugPrint()
 {
-	printf("Degree %d\n", m_Degree);
-	printf("Point count %d\n", m_Points.size());
-	printf("Knot count %d\n", m_Knots.size());
+#ifdef CAD_DEBUG
+
+	//printf("Degree %d\n", m_Degree);
+	//printf("Point count %d\n", m_Points.size());
+	//printf("Knot count %d\n", m_Knots.size());
 	//std::cout << "knots ";
 	//for (float f : m_Knots) std::cout << f << ", "; std::cout << std::endl;
 	//for (const auto& p : m_Points) print(p, true);
-	std::cout << std::endl;
+	//std::cout << std::endl;
+
+#endif // CAD_DEBUG
 }

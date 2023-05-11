@@ -9,12 +9,10 @@
 ElevateCurveDegreeCommand::ElevateCurveDegreeCommand()
 {
 	Scene::HideTransformWidget();
-	std::cout << "created" << std::endl;
 }
 
 ElevateCurveDegreeCommand::~ElevateCurveDegreeCommand()
 {
-	std::cout << "destroyed" << std::endl;
 	Scene::ClearSelection();
 	Scene::ShowTransformWidget();
 }
