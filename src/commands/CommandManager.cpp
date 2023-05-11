@@ -9,6 +9,7 @@
 #include "commands/PointsOffCommand.h"
 #include "commands/CircleCommand.h"
 #include "commands/ElevateCurveDegreeCommand.h"
+#include "commands/InsertKnotCommand.h"
 
 #include "TextParser.h"
 #include "../scene/Scene.h"
@@ -68,6 +69,9 @@ void CommandManager::AddInput(int c) {
 			}
 			else if (m_TextInput == "ELEVATE CURVE DEGREE") {
 				m_CurrentCommand = std::make_unique<ElevateCurveDegreeCommand>();
+			}
+			else if (m_TextInput == "INSERT KNOT") {
+				m_CurrentCommand = std::make_unique<InsertKnotCommand>();
 			}
 			m_PreviousCommand = m_TextInput;
 		}

@@ -38,6 +38,18 @@ bool TextParser::ParseUnsignedInt(const std::string& text, unsigned& outUnsigned
 	return NextUnsignedInt(text, i, outUnsignedInt);
 }
 
+bool TextParser::ParseInt(const std::string& text, unsigned& outInt)
+{
+	int i = 0;
+	return NextInt(text, i, outInt);
+}
+
+bool TextParser::ParseFloat(const std::string& text, float& outFloat)
+{
+	int i = 0;
+	return NextFloat(text, i, outFloat);
+}
+
 bool TextParser::NextUnsignedInt(const std::string& text, int& i, unsigned& outUnsignedInt)
 {	
 	outUnsignedInt = 0;
@@ -52,9 +64,31 @@ bool TextParser::NextUnsignedInt(const std::string& text, int& i, unsigned& outU
 	return res;
 }
 
+bool TextParser::NextInt(const std::string& text, int& i, unsigned& outInt)
+{
+	outInt = 0;
+	bool res = false, neg = false;
+	while (i < text.size() && !IsDigit(text[i])) {
+		if (text[i++] == '-') neg = !neg;
+	}
+	while (i < text.size() && IsDigit(text[i])) {
+		res = true;
+		outInt *= 10;
+		outInt += ToDigit(text[i++]);
+	}
+	if (neg) outInt *= -1;
+	while (i < text.size() && text[i] == GLFW_KEY_PERIOD || IsDigit(text[i])) i++;
+	return res;
+}
+
 bool TextParser::NextFloat(const std::string& text, int& i, float& outFloat)
 {
-	while (i < text.size() && text[i] == ' ') i++;
+	bool neg = false;
+	while (i < text.size() && text[i] == ' ') {
+		if (text[i++] == '-') neg = !neg;
+	}
+
+	if (i == text.size()) return false;
 
 	int end = i;
 	while (end < text.size() && text[i] != GLFW_KEY_COMMA) end++;
@@ -74,8 +108,9 @@ bool TextParser::NextFloat(const std::string& text, int& i, float& outFloat)
 		mul /= 10.0f;
 		outFloat += mul * (float) ToDigit(text[i++]);
 	}
-
-	return i != end;
+	if (neg) outFloat != -1;
+	std::cout << outFloat << std::endl;
+	return true;
 }
 
 bool TextParser::IsDigit(char c)

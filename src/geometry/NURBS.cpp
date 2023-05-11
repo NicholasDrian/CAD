@@ -444,6 +444,33 @@ void NURBS::ElevateDegree(unsigned n)
 	DebugPrint();
 }
 
+void NURBS::InsertKnot(float knot)
+{
+	std::cout << "inserting" << std::endl;
+	int idx = KnotSpan(knot);
+	std::vector<glm::vec4> newPoints;
+
+	newPoints.push_back(m_Points[0]);
+	for (int i = 1; i < m_Points.size(); i++) {
+		float alpha;
+		if (i <= idx - m_Degree) alpha = 1.0f;
+		else if (i >= idx + 1) alpha = 0.0f;
+		else alpha = (knot - m_Knots[i]) / (m_Knots[i + m_Degree] - m_Knots[i]);
+		newPoints.push_back(alpha * m_Points[i] + (1.0f - alpha) * m_Points[i - 1]);
+	}
+	newPoints.push_back(m_Points.back());
+
+	m_Points = newPoints;
+	m_Knots.insert(std::upper_bound(m_Knots.begin(), m_Knots.end(), knot), knot);
+
+	std::vector<glm::vec3> controlPoints;
+	for (const auto& p : m_Points) controlPoints.push_back(glm::vec3(p.x, p.y, p.z) / p.w);
+	m_ControlPolyLine = std::make_unique<PolyLine>(controlPoints, true, m_ID);
+	m_ControlPolyLine->PointsOn();
+	m_ControlPolyLine->SetModel(m_Model);
+
+}
+
 void NURBS::DebugPrint()
 {
 #ifdef CAD_DEBUG
