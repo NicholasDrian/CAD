@@ -5,6 +5,7 @@
 #include "../commands/CommandManager.h"
 #include "../Window.h"
 #include "../scene/Scene.h"
+#include "CommandInfoGUI.h"
 #include "Style.h"
 
 #include <imgui_impl_glfw.h>
@@ -35,6 +36,8 @@ void GUI::Init() {
         throw std::runtime_error("error!");
     if (!ImGui_ImplOpenGL3_Init()) 
         throw std::runtime_error("error!");
+
+    CommandInfoGUI::Init();
 }
 void GUI::Destroy() {
     ImGui::DestroyContext();
@@ -118,6 +121,7 @@ void GUI::Render() {
             ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None)) {
             if (m_ShowCommandInfo) {
                 if (ImGui::BeginTabItem("Command Info")) {
+                    CommandInfoGUI::Render();
                     ImGui::EndTabItem();
                 }
             }

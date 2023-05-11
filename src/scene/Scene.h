@@ -48,6 +48,7 @@ public:
 	inline static std::unordered_map<unsigned, std::unique_ptr<Renderable>>& GetContents() { return m_Contents; }
 
 	static void ClearSelection();
+	static void UnSelect(uint32_t id);
 
 	inline static void ShowTransformWidget() { m_ShowTransformWidget = true; }
 	inline static void HideTransformWidget() { m_ShowTransformWidget = false; }

@@ -250,7 +250,6 @@ glm::vec3 NURBS::Sample(float t) const
 {
 	float u = t * (m_Knots.back() - m_Knots[0]);
 	int knotSpan = KnotSpan(u);
-	std::cout << knotSpan << '\n';
 	std::vector<float> basisFuncs = BasisFuncs(u);
 	glm::vec4 res = { 0.0f, 0.0f, 0.0f, 0.0f };
 	for (unsigned i = 0; i <= m_Degree; i++) {
@@ -296,7 +295,8 @@ void NURBS::ElevateDegree(unsigned n)
 {
 	DebugPrint();
 
-	// TODO: factor, clean
+	// TODO: factor, clean, fix
+	// bug if n > degree + 1;
 	std::vector<std::vector<float>> BezierAlphas(m_Degree + n + 1, std::vector(m_Degree + 1, 0.0f));
 	std::vector<glm::vec4> BezControls(m_Degree + 1), ElvevatedBezControls(m_Degree + n + 1), NextBezControls(m_Degree - 1);
 	std::vector<float> Alphas(m_Degree - 1);
@@ -447,8 +447,8 @@ void NURBS::DebugPrint()
 	printf("Degree %d\n", m_Degree);
 	printf("Point count %d\n", m_Points.size());
 	printf("Knot count %d\n", m_Knots.size());
-	std::cout << "knots ";
-	for (float f : m_Knots) std::cout << f << ", "; std::cout << std::endl;
-	for (const auto& p : m_Points) print(p, true);
+	//std::cout << "knots ";
+	//for (float f : m_Knots) std::cout << f << ", "; std::cout << std::endl;
+	//for (const auto& p : m_Points) print(p, true);
 	std::cout << std::endl;
 }

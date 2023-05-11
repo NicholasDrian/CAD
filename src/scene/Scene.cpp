@@ -131,6 +131,14 @@ void Scene::ClearSelection()
 	}
 }
 
+void Scene::UnSelect(uint32_t id)
+{
+	m_Contents[id]->UnSelect();
+	AxisAlignedBoundingBox bb = GetSelectedBoundingBox();
+	if (bb.Vaid()) m_TransformWidget = std::make_unique<AffineTransformWidget>(GetSelectedBoundingBox());
+	else m_TransformWidget.reset();
+}
+
 
 AxisAlignedBoundingBox Scene::GetSelectedBoundingBox()
 {

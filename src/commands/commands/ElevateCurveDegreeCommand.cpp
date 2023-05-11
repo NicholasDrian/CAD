@@ -9,10 +9,12 @@
 ElevateCurveDegreeCommand::ElevateCurveDegreeCommand()
 {
 	Scene::HideTransformWidget();
+	std::cout << "created" << std::endl;
 }
 
 ElevateCurveDegreeCommand::~ElevateCurveDegreeCommand()
 {
+	std::cout << "destroyed" << std::endl;
 	Scene::ClearSelection();
 	Scene::ShowTransformWidget();
 }
@@ -41,8 +43,7 @@ std::string ElevateCurveDegreeCommand::GetInstructions() const
 	for (auto&[k, v] : Scene::GetContents()) {
 		if (v->IsSelected()) {
 			if (!dynamic_cast<NURBS*>(v.get())) {
-				// TODO: scene unselect method
-				// Scene::
+				Scene::UnSelect(v->GetID());
 			}
 			else {
 				found = true;
