@@ -108,7 +108,7 @@ bool TextParser::NextFloat(const std::string& text, int& i, float& outFloat)
 		mul /= 10.0f;
 		outFloat += mul * (float) ToDigit(text[i++]);
 	}
-	if (neg) outFloat != -1;
+	if (neg) outFloat *= -1;
 	std::cout << outFloat << std::endl;
 	return true;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Circle.h"
-#include "../debug/Print.h"
+#include "../../debug/Print.h"
 
 #include "glm/gtc/constants.hpp"
 

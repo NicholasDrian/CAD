@@ -1,26 +1,20 @@
 #pragma once
 
-#include "Renderable.h"
+#include "../Renderable.h"
+
+#include "../../render/VertexArrayTriangles.h"
 
 #include <memory>
-
-//
-// Strategy:
-// - fix mesh
-// - add parent
-// - add degree elevation and knot refinement to nurbs curvs
-// - only then can we have the long awaited NURBS surface...
-//
 
 class NURBSurface : public Renderable {
 
 public:
 
 	NURBSurface(
-		const std::vector<std::vector<glm::vec3>>& points, 
-		const std::vector<std::vector<float>>& weights, 
-		const std::vector<std::vector<float>>& knots,
-		int p, int q);
+		const std::vector<std::vector<glm::vec4>>& points,
+		const std::vector<float>& knotsU,
+		const std::vector<float>& knotsV,
+		int degreeU, int degreeV);
 
 	virtual void Render() const override;
 
@@ -38,6 +32,19 @@ public:
 	inline virtual void UnSelect() override { m_Selected = false; }
 
 private:
+
+	void ControlPointsUpdated();
+	glm::vec3 Sample(float u, float v) const;
+
+	std::vector<std::vector<glm::vec4>> m_Points;
+	std::vector<std::vector<glm::vec3>> m_Samples;
+	std::vector<float> m_KnotsU;
+	std::vector<float> m_KnotsV;
+	int m_DegreeU, m_DegreeV;
+
+	glm::mat4 m_Model;
+
+	std::unique_ptr<VertexArrayTriangles> m_VertexArray;
 
 	bool m_Selected;
 	unsigned m_ID;

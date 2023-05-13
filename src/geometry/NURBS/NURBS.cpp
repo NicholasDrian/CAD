@@ -1,10 +1,9 @@
 #pragma once
 
 #include "NURBS.h"
-#include "../render/Renderer.h"
-#include "../debug/Print.h"
-
-const unsigned SAMPLES_PER_EDGE = 20;
+#include "NURBSUtils.h"
+#include "../../render/Renderer.h"
+#include "../../debug/Print.h"
 
 NURBS::NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> weights, unsigned degree, std::vector<float> knots, unsigned id)
 	: m_Degree(degree), m_Knots(knots), m_ID(id), m_Color(color), m_Model(1.0f), m_Selected(false),
@@ -213,44 +212,12 @@ void NURBS::RemoveLastPoint()
 	m_ControlPolyLine->RemoveLast();
 }
 
-std::vector<float> NURBS::BasisFuncs(float u) const
-{
-	int i = KnotSpan(u);
-	std::vector<float> res(m_Degree + 1);
-	res[0] = 1.0f;
-	auto left = [&](int j) { return u - m_Knots[i - j + 1]; };
-	auto right = [&](int j) { return m_Knots[i + j] - u; };
-	for (unsigned j = 1; j <= m_Degree; j++) {
-		float saved = 0.0f;
-		for (unsigned r = 0; r < j; r++) {
-			float temp = res[r] / (right(r + 1U) + left(j - r));
-			res[r] = saved + right(r + 1U) * temp;
-			saved = left(j - r) * temp;
-		}
-		res[j] = saved;
-	}
-	return res;
-}
-
-int NURBS::KnotSpan(float u) const
-{
-	// improved algo from NURBS Bible!
-	int n = (int)m_Knots.size() - m_Degree - 2;
-	int l = m_Degree, h = n, m;
-	while (l < h) {
-		m = (l + h) / 2;
-		if (u >= m_Knots[m + 1]) l = m + 1;
-		else h = m;
-	}
-	return l;
-}
-
 
 glm::vec3 NURBS::Sample(float t) const
 {
 	float u = t * (m_Knots.back() - m_Knots[0]);
-	int knotSpan = KnotSpan(u);
-	std::vector<float> basisFuncs = BasisFuncs(u);
+	int knotSpan = NURBSUtils::Span(m_Knots, u, m_Degree);
+	std::vector<float> basisFuncs = NURBSUtils::BasisFuncs(m_Knots, u, m_Degree);
 	glm::vec4 res = { 0.0f, 0.0f, 0.0f, 0.0f };
 	for (unsigned i = 0; i <= m_Degree; i++) {
 		res += basisFuncs[i] * m_Points[knotSpan - m_Degree + i];
@@ -270,7 +237,7 @@ void NURBS::UpdateSamples()
 {
 	m_Samples.clear();
 	m_Indecies.clear();
-	int sampleCount = SAMPLES_PER_EDGE * ((int)m_Points.size() - 1);
+	int sampleCount = NURBSUtils::SAMPLES_PER_EDGE * ((int)m_Points.size() - 1);
 	for (int i = 0; i <= sampleCount; i++) {
 		m_Samples.push_back(Sample((float)i / sampleCount));
 		m_Indecies.push_back(i);
@@ -446,8 +413,7 @@ void NURBS::ElevateDegree(unsigned n)
 
 void NURBS::InsertKnot(float knot)
 {
-	std::cout << "inserting" << std::endl;
-	int idx = KnotSpan(knot);
+	int idx = NURBSUtils::Span(m_Knots, knot, m_Degree);
 	std::vector<glm::vec4> newPoints;
 
 	newPoints.push_back(m_Points[0]);

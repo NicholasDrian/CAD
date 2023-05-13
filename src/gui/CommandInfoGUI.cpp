@@ -30,6 +30,10 @@ std::vector<CommandInfoEntry> CommandInfoGUI::m_Entries = {
 	{ "Polyline", {
 		"Creates a series of line segments between control points"
 	}},
+	{ "Insert Knot", {
+		"Inserts given knot into curve",
+		"Requires: First Knot <= Inserted Knot <= Last Knot"
+	}},
 };
 
 void CommandInfoGUI::Init()

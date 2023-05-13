@@ -6,8 +6,8 @@
 #include "../Window.h"
 #include "../geometry/Renderable.h"
 #include "../geometry/Mesh.h"
-#include "../geometry/NURBS.h"
-#include "../geometry/Circle.h"
+#include "../geometry/NURBS/NURBS.h"
+#include "../geometry/NURBS/Circle.h"
 #include "../render/Renderer.h"
 
 #include "glm/gtc/constants.hpp"

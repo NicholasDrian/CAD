@@ -4,6 +4,8 @@
 
 #include <string>
 
+// todo : define rigid syntax rools and make this actually useful
+
 class TextParser {
 
 public:

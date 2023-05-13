@@ -3,7 +3,7 @@
 #include "ElevateCurveDegreeCommand.h"
 
 #include "../../scene/Scene.h"
-#include "../../geometry/NURBS.h"
+#include "../../geometry/NURBS/NURBS.h"
 #include "../TextParser.h"
 
 ElevateCurveDegreeCommand::ElevateCurveDegreeCommand()

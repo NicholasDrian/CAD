@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Command.h"
-#include "../../geometry/NURBS.h"
+#include "../../geometry/NURBS/NURBS.h"
 
 #include <memory>
 

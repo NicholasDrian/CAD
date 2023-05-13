@@ -1,10 +1,10 @@
 #pragma once 
 
-#include "Renderable.h"
-#include "../render/VertexArrayLines.h"
-#include "../render/VertexArrayPoints.h"
-#include "PolyLine.h"
-#include "../scene/Scene.h"
+#include "../Renderable.h"
+#include "../../render/VertexArrayLines.h"
+#include "../../render/VertexArrayPoints.h"
+#include "../PolyLine.h"
+#include "../../scene/Scene.h"
 
 #include "glm/glm.hpp"
 
@@ -69,8 +69,6 @@ protected:
 	bool m_Selected;
 	bool m_PointsOn;
 
-	std::vector<float> BasisFuncs(float u) const;
-	int KnotSpan(float u) const;
 	glm::vec3 Sample(float t) const;
 
 	void UpdateKnotVector();

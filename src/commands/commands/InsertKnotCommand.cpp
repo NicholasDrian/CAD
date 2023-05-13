@@ -4,7 +4,7 @@
 
 #include "../../scene/Scene.h"
 #include "../TextParser.h"
-#include "../../geometry/NURBS.h"
+#include "../../geometry/NURBS/NURBS.h"
 
 void InsertKnotCommand::TextInput(const std::string& input)
 {

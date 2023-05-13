@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Command.h"
-#include "../../geometry/Circle.h"
+#include "../../geometry/NURBS/Circle.h"
 
 #include <memory>
 
