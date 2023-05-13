@@ -9,6 +9,7 @@
 #include "../geometry/NURBS/NURBS.h"
 #include "../geometry/NURBS/Circle.h"
 #include "../render/Renderer.h"
+#include "../geometry/NURBS/NURBSurface.h"
 
 #include "glm/gtc/constants.hpp"
 #include "glm/glm.hpp"
@@ -38,6 +39,21 @@ void Scene::Init()
 
 
 	m_ConstructionPlane = std::make_unique<ConstructionPlane>(10, 10, 1);
+
+
+	std::unique_ptr<NURBSurface> surface = std::make_unique<NURBSurface>(
+		std::vector<std::vector<glm::vec4>>{ 
+			std::vector<glm::vec4>{ {-10.0f, 10.0f, 0.0f, 1.0f}, { 0.0f, 10.0f, 0.0f, 1.0f }, { 10.0f, 10.0f, 0.0f, 1.0f }},
+			std::vector<glm::vec4>{ {-10.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 10.0f, 1.0f }, { 10.0f, 0.0f, 0.0f, 1.0f }},
+			std::vector<glm::vec4>{ {-10.0f, -10.0f, 0.0f, 1.0f }, { 0.0f, -10.0f, 0.0f, 1.0f }, { 10.0f, -10.0f, 0.0f, 1.0f }}
+		},
+		std::vector<float>{0, 0, 0, 1, 1, 1}, 
+		std::vector<float>{0, 0, 0, 1, 1, 1}, 
+		2, 2);
+	AddToScene(std::move(surface));
+
+
+
 	m_Camera = std::make_unique<Camera>(glm::vec3{ 0.0f, -50.0f, 20.0f }, glm::vec3{ 0.0f, 0.0f, 20.0f }, glm::pi<float>() / 3.0f);
 }
 

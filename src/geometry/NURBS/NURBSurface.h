@@ -37,7 +37,7 @@ private:
 	glm::vec3 Sample(float u, float v) const;
 
 	std::vector<std::vector<glm::vec4>> m_Points;
-	std::vector<std::vector<glm::vec3>> m_Samples;
+	std::vector<glm::vec3> m_Samples;
 	std::vector<float> m_KnotsU;
 	std::vector<float> m_KnotsV;
 	int m_DegreeU, m_DegreeV;
