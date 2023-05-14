@@ -34,3 +34,12 @@ std::vector<float> NURBSUtils::BasisFuncs(const std::vector<float>& knots, float
 	}
 	return res;
 }
+
+std::vector<float> NURBSUtils::GenericKnotVector(int pointCount, int degree)
+{
+	std::vector<float> res;
+	for (unsigned i = 0; i <= degree; i++) res.push_back(0.0f);
+	for (float i = 1.0f; i < pointCount - degree; i++)  res.push_back(i);
+	for (unsigned i = 0; i <= degree; i++) res.push_back((float)pointCount - degree);
+	return res;
+}

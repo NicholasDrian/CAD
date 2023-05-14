@@ -44,7 +44,6 @@ void NURBSurface::ControlPointsUpdated()
 {
 	int sampleCountU = NURBSUtils::SAMPLES_PER_EDGE * (m_Points.size() - 1);
 	int sampleCountV = NURBSUtils::SAMPLES_PER_EDGE * (m_Points[0].size() - 1);
-	std::cout << sampleCountU << ' ' << sampleCountV << std::endl;
 	float firstKnotU = m_KnotsU[0];
 	float firstKnotV = m_KnotsV[0];
 	float knotSizeU = m_KnotsU.back() - firstKnotU;
@@ -52,12 +51,9 @@ void NURBSurface::ControlPointsUpdated()
 	float stepU = knotSizeU / sampleCountU;
 	float stepV = knotSizeV / sampleCountV;
 	m_Samples.resize((sampleCountU + 1) * (sampleCountV + 1));
-	for (int i = 0; i <= sampleCountU; i++) {
-		for (int j = 0; j <= sampleCountV; j++) {
+	for (int i = 0; i <= sampleCountU; i++) 
+		for (int j = 0; j <= sampleCountV; j++) 
 			m_Samples[i * (sampleCountV + 1) + j] = Sample(firstKnotU + i * stepU, firstKnotV + j * stepV);
-			print(m_Samples[i * (sampleCountV + 1) + j]);
-		} std::cout << '\n';
-	}
 	std::vector<unsigned> indices;
 	for (int i = 0; i < sampleCountU; i++) {
 		for (int j = 0; j < sampleCountV; j++) {

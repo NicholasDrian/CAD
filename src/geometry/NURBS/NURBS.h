@@ -38,6 +38,12 @@ public:
 
 	virtual void SelectionTransformUpdated() override;
 
+	void NormalizeKnots();
+	inline float GetKnot(int i) const { return m_Knots[i]; }
+	inline int GetKnotCount() const { return m_Knots.size(); }
+	inline std::vector<float>& GetKnots() { return m_Knots; }
+	inline const std::vector<float>& GetKnots() const { return m_Knots; }
+
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
 
 	inline virtual unsigned GetID() const override { return m_ID; }
@@ -45,6 +51,7 @@ public:
 	inline unsigned GetDegree() const { return m_Degree; }
 	inline const std::vector<glm::vec4>& GetControlPoints() const { return m_Points; }
 	inline std::vector<glm::vec4>& GetControlPoints() { return m_Points; }
+	inline glm::mat4 GetModel() const { return m_Model; }
 
 	virtual void PointsOn() override { m_PointsOn = true; }
 	virtual void PointsOff() override { m_PointsOn = false; }
@@ -71,7 +78,7 @@ protected:
 
 	glm::vec3 Sample(float t) const;
 
-	void UpdateKnotVector();
+	//void UpdateKnotVector();
 	void UpdateSamples();
 	void UpdateVertexArray();
 

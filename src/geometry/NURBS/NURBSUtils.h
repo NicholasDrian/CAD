@@ -17,6 +17,8 @@ public:
 
 	static std::vector<float> BasisFuncs(const std::vector<float>& knots, float u, int p);
 
+	static std::vector<float> GenericKnotVector(int pointCount, int degree);
+
 	inline static const unsigned SAMPLES_PER_EDGE = 20;
 
 };

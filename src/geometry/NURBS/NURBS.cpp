@@ -20,7 +20,7 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> 
 		}
 	}
 	while (m_Degree > m_Points.size() - 1) m_Degree--;
-	if (m_Knots.size() == 0) UpdateKnotVector();
+	if (m_Knots.size() == 0) m_Knots = NURBSUtils::GenericKnotVector(GetNumControlPoints(), GetDegree());
 	UpdateSamples();
 	UpdateVertexArray();
 }
@@ -57,6 +57,13 @@ void NURBS::SelectionTransformUpdated()
 		UpdateSamples();
 		m_VertexArrayLines->UpdateVertexPositions(m_Samples);
 	}
+}
+
+void NURBS::NormalizeKnots()
+{
+	float shift = m_Knots[0];
+	float size = m_Knots.back() - shift;
+	for (auto& k : m_Knots) k = (k - shift) / size;
 }
 
 
@@ -178,8 +185,8 @@ void NURBS::UnSubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 void NURBS::AddControlPoint(const glm::vec3& point, bool incrementDegree)
 {
 	m_Points.emplace_back(point.x, point.y, point.z, 1.0f);
-	m_Degree += incrementDegree;
-	UpdateKnotVector();
+	m_Degree += incrementDegree;	
+	m_Knots = NURBSUtils::GenericKnotVector(GetNumControlPoints(), GetDegree());
 	UpdateSamples();
 	UpdateVertexArray();
 	m_ControlPolyLine->AddPoint(point);
@@ -189,7 +196,7 @@ void NURBS::ChangeDegree(unsigned degree)
 {
 	while (degree >= m_Points.size()) degree--;
 	m_Degree = degree;
-	UpdateKnotVector();
+	m_Knots = NURBSUtils::GenericKnotVector(GetNumControlPoints(), GetDegree());
 	UpdateSamples();
 	m_VertexArrayLines->UpdateVertexPositions(m_Samples);
 }
@@ -206,7 +213,7 @@ void NURBS::RemoveLastPoint()
 {
 	m_Points.pop_back();
 	if (m_Degree > m_Points.size() - 1) m_Degree--;
-	UpdateKnotVector();
+	m_Knots = NURBSUtils::GenericKnotVector(GetNumControlPoints(), GetDegree());
 	UpdateSamples();
 	UpdateVertexArray();
 	m_ControlPolyLine->RemoveLast();
@@ -225,13 +232,13 @@ glm::vec3 NURBS::Sample(float t) const
 	return glm::vec3{ res.x, res.y, res.z } / res.w;
 }
 
-void NURBS::UpdateKnotVector()
-{
-	m_Knots.clear();
-	for (unsigned i = 0; i <= m_Degree; i++) m_Knots.push_back(0.0f);
-	for (float i = 1.0f; i < m_Points.size() - m_Degree; i++)  m_Knots.push_back(i);
-	for (unsigned i = 0; i <= m_Degree; i++) m_Knots.push_back((float)m_Points.size() - m_Degree);
-}
+//void NURBS::UpdateKnotVector()
+//{
+//	m_Knots.clear();
+//	for (unsigned i = 0; i <= m_Degree; i++) m_Knots.push_back(0.0f);
+//	for (float i = 1.0f; i < m_Points.size() - m_Degree; i++)  m_Knots.push_back(i);
+//	for (unsigned i = 0; i <= m_Degree; i++) m_Knots.push_back((float)m_Points.size() - m_Degree);
+//}
 
 void NURBS::UpdateSamples()
 {

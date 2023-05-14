@@ -1,5 +1,7 @@
 #pragma once
 
+#include "NURBSurface.h"
+#include "NURBS.h"
 
 // Nurbs creating utils
 class NURBSFactory {
@@ -8,7 +10,7 @@ class NURBSFactory {
 
 public:
 
-
-
+	// modifies input curves...
+	static NURBSurface Loft(const std::vector<NURBS*>& curves, int degree = 2);
 
 };
