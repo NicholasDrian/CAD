@@ -10,6 +10,7 @@
 #include "../geometry/NURBS/Circle.h"
 #include "../render/Renderer.h"
 #include "../geometry/NURBS/NURBSurface.h"
+#include "../debug/Print.h"
 
 #include "glm/gtc/constants.hpp"
 #include "glm/glm.hpp"
@@ -74,6 +75,7 @@ void Scene::DrawGUI()
 
 glm::mat4 Scene::GetSelectionTransform()
 {
+	//if (m_TransformWidget) print(m_TransformWidget->GetDelta());
 	if (m_TransformWidget) return m_TransformWidget->GetDelta();
 	return glm::mat4(1.0);
 }

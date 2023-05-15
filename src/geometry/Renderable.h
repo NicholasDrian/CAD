@@ -18,11 +18,16 @@ public:
 	virtual unsigned GetID() const = 0;
 
 	virtual AxisAlignedBoundingBox GetBoundingBox() const = 0;
+	virtual AxisAlignedBoundingBox GetBoundingBoxLocalSpace(uint32_t subID) const = 0;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const = 0;
+
+	virtual const glm::mat4& GetModel() const = 0;
 
 	virtual void BakeSelectionTransform(const glm::mat4& t) = 0;
 
+	// Always returns intersection
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const = 0;
+	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const = 0;
 
 	virtual bool IsSelected() const = 0;
 	virtual void Select() = 0;

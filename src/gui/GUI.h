@@ -17,7 +17,7 @@ public:
 
 private:
 
-	inline static bool m_ShowDisplaySettings = true;
+	inline static bool m_ShowSettings = true;
 	inline static bool m_ShowCommandInfo = true;
 	inline static bool m_ShowDetails = true;
 

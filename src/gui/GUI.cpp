@@ -6,6 +6,7 @@
 #include "../Window.h"
 #include "../scene/Scene.h"
 #include "CommandInfoGUI.h"
+#include "SettingsGUI.h"
 #include "Style.h"
 
 #include <imgui_impl_glfw.h>
@@ -22,6 +23,7 @@
 #include <iostream>
 
 void GUI::Init() {
+
     IMGUI_CHECKVERSION();
     m_Context = ImGui::CreateContext();
 
@@ -29,13 +31,13 @@ void GUI::Init() {
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-    setImGuiStyle();
-
     // setup platform/renderer bindings
     if (!ImGui_ImplGlfw_InitForOpenGL(Window::GetGLFWWindow(), true))
         throw std::runtime_error("error!");
-    if (!ImGui_ImplOpenGL3_Init()) 
+    if (!ImGui_ImplOpenGL3_Init("#version 420"))
         throw std::runtime_error("error!");
+
+    setImGuiStyle();
 
     CommandInfoGUI::Init();
 }
@@ -87,8 +89,8 @@ void GUI::Render() {
 
         if (ImGui::BeginMenu("View"))
         {
-            if (ImGui::MenuItem(m_ShowDisplaySettings ? "Hide Display Options" : "Show Display Options")) {
-                m_ShowDisplaySettings = !m_ShowDisplaySettings;
+            if (ImGui::MenuItem(m_ShowSettings ? "Hide Display Options" : "Show Display Options")) {
+                m_ShowSettings = !m_ShowSettings;
             }
             if (ImGui::MenuItem(m_ShowDetails ? "Hide Details" : "Show Details")) {
                 m_ShowDetails = !m_ShowDetails;
@@ -115,7 +117,7 @@ void GUI::Render() {
         ImGui::End();
     }
 
-    if (m_ShowCommandInfo || m_ShowDetails || m_ShowDisplaySettings) {
+    if (m_ShowCommandInfo || m_ShowDetails || m_ShowSettings) {
         ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
         if (ImGui::Begin("Controls", NULL, flags) &&
             ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None)) {
@@ -130,8 +132,9 @@ void GUI::Render() {
                     ImGui::EndTabItem();
                 }
             }
-            if (m_ShowDisplaySettings) {
-                if (ImGui::BeginTabItem("DisplaySettings")) {
+            if (m_ShowSettings) {
+                if (ImGui::BeginTabItem("Settings")) {
+                    SettingsGUI::Render();
                     ImGui::EndTabItem();
                 }
             }

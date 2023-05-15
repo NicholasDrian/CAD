@@ -28,9 +28,7 @@ void LoftCommand::TextInput(const std::string& input)
 		m_Degree = val;
 	} else if (input == "") {
 		if (m_Curves.size()) {
-			std::cout << "Lofting" << std::endl;
 			Scene::AddToScene(std::make_unique<NURBSurface>(NURBSFactory::Loft(m_Curves, m_Degree)));
-			std::cout << "done" << std::endl;
 		}
 		m_Finished = true;
 	}

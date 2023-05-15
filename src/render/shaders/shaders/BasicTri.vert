@@ -1,10 +1,12 @@
 #version 460
 
 layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 normal;
 
 out vec4 frag_color;
 out flat uint frag_id;
 out flat uint frag_data;
+out vec4 frag_abs_norm;
 
 layout (std140, binding = 0) uniform global
 {
@@ -32,10 +34,13 @@ void main()
 {
 	uint idx = gl_VertexID / 32;
 	uint bit = 1 << (gl_VertexID % 32);
+	vec4 absnormal = vec4(abs(normal.x), abs(normal.y), abs(normal.z), 0.0);
 	if (bool(data & SELECTED_BIT) || (bool(data & SUB_SELECTABLE_BIT) && bool(vert_selection_buffer[idx] & bit))) {
 		gl_Position = view_proj * selected_transform * model * vec4(position, 1.0);
+		frag_abs_norm = selected_transform * model * absnormal;
 	} else {
 		gl_Position = view_proj * model * vec4(position, 1.0);
+		frag_abs_norm = model * absnormal;
 	}
 
 	frag_color = color;

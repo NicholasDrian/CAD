@@ -32,6 +32,12 @@ void print(float f, bool newLine)
 #endif
 }
 
+void print(AxisAlignedBoundingBox bb)
+{
+	printf("BB: X:[%.2f, %.2f], Y:[%.2f, %.2f], Z:[%.2f, %.2f]\n",
+		bb.MinX(), bb.MaxX(), bb.MinY(), bb.MaxY(), bb.MinZ(), bb.MaxZ());
+}
+
 void print(const glm::mat4& m)
 {
 #ifdef CAD_DEBUG

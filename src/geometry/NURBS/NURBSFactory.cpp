@@ -38,8 +38,9 @@ NURBSurface NURBSFactory::Loft(const std::vector<NURBS*>& curves, int degree)
             points[i].push_back(curve->GetModel() * curve->GetControlPoints()[j]);
         }
     }
-    std::vector<float> knotsU = NURBSUtils::GenericKnotVector(curves.size(), degreeU);
+    std::vector<float> knotsU = NURBSUtils::GenericKnotVector((int)curves.size(), degreeU);
 
     return NURBSurface(points, knotsU, curves[0]->GetKnots(), degreeU, degreeV);
 
 }
+

@@ -110,3 +110,28 @@ glm::vec3 Ray::ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP
 
 	return B + b * ((ab * ac - bc * aa) / (aa * bb - ab * ab));
 }
+
+glm::vec3 Ray::ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP, float& outDistance) const
+{
+	glm::vec3 a = m_Direction;
+	glm::vec3 b = glm::normalize(endP - startP);
+	glm::vec3 B = startP;
+	if (a == b) return B;
+
+	glm::vec3 A = m_Origin;
+	glm::vec3 c = B - A;
+
+	float ab = glm::dot(a, b);
+	float ac = glm::dot(a, c);
+	float bc = glm::dot(b, c);
+	float aa = glm::dot(a, a);
+	float bb = glm::dot(b, b);
+
+	float denom = aa * bb - ab * ab;
+
+	glm::vec3 res = B + b * ((ab * ac - bc * aa) / denom);
+	glm::vec3 other = A + a * ((ab * bc + ac * bb) / denom);
+
+	outDistance = glm::distance(res, other);
+	return res;
+}

@@ -21,11 +21,15 @@ public:
 	inline virtual unsigned GetID() const override { return m_ID; }
 
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
+	virtual AxisAlignedBoundingBox GetBoundingBoxLocalSpace(uint32_t subID) const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
 
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
+	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const override;
+
+	inline virtual const glm::mat4& GetModel() const override { return m_Model; }
 
 	inline virtual bool IsSelected() const override { return m_Selected; }
 	inline virtual void Select() override { m_Selected = true; }

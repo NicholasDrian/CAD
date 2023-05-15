@@ -16,6 +16,14 @@ AxisAlignedBoundingBox Mesh::GetBoundingBox() const
 	return AxisAlignedBoundingBox(m_Positions, m_Model);
 }
 
+AxisAlignedBoundingBox Mesh::GetBoundingBoxLocalSpace(uint32_t subID) const
+{
+	glm::vec3 p1 = m_Positions[m_Indices[subID * 3]];
+	glm::vec3 p2 = m_Positions[m_Indices[subID * 3 + 1]];
+	glm::vec3 p3 = m_Positions[m_Indices[subID * 3 + 2]];
+	return AxisAlignedBoundingBox({p1, p2, p3});
+}
+
 AxisAlignedBoundingBox Mesh::GetSubSelectionBoundingBox() const
 {
 	std::vector<glm::vec3> selectedVerts;
@@ -90,8 +98,17 @@ glm::vec3 Mesh::Intersect(Ray r, uint32_t subID) const
 {
 	glm::vec3 point;
 	r.IntersectPlane(
+		m_Model * glm::vec4(m_Positions[m_Indices[subID * 3]], 1.0f),
+		m_Model * glm::vec4(m_Positions[m_Indices[subID * 3 + 1]], 1.0f),
+		m_Model * glm::vec4(m_Positions[m_Indices[subID * 3 + 2]], 1.0f), point, false);
+	return point;
+}
+
+bool Mesh::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+{
+	glm::vec3 point;
+	return r.IntersectPlane(
 		m_Positions[m_Indices[subID * 3]],
 		m_Positions[m_Indices[subID * 3 + 1]],
-		m_Positions[m_Indices[subID * 3 + 2]], point, true);
-	return point;
+		m_Positions[m_Indices[subID * 3 + 2]], point, false);
 }

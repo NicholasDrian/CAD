@@ -23,9 +23,9 @@ std::vector<float> NURBSUtils::BasisFuncs(const std::vector<float>& knots, float
 	res[0] = 1.0f;
 	auto left = [&](int j) { return u - knots[i - j + 1]; };
 	auto right = [&](int j) { return knots[i + j] - u; };
-	for (unsigned j = 1; j <= p; j++) {
+	for (int j = 1; j <= p; j++) {
 		float saved = 0.0f;
-		for (unsigned r = 0; r < j; r++) {
+		for (int r = 0; r < j; r++) {
 			float temp = res[r] / (right(r + 1U) + left(j - r));
 			res[r] = saved + right(r + 1U) * temp;
 			saved = left(j - r) * temp;
@@ -38,8 +38,8 @@ std::vector<float> NURBSUtils::BasisFuncs(const std::vector<float>& knots, float
 std::vector<float> NURBSUtils::GenericKnotVector(int pointCount, int degree)
 {
 	std::vector<float> res;
-	for (unsigned i = 0; i <= degree; i++) res.push_back(0.0f);
+	for (int i = 0; i <= degree; i++) res.push_back(0.0f);
 	for (float i = 1.0f; i < pointCount - degree; i++)  res.push_back(i);
-	for (unsigned i = 0; i <= degree; i++) res.push_back((float)pointCount - degree);
+	for (int i = 0; i <= degree; i++) res.push_back((float)pointCount - (float)degree);
 	return res;
 }

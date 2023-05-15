@@ -23,6 +23,7 @@ public :
 
 	// Closest point to line extended to infinte length.
 	glm::vec3 ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP) const;
+	glm::vec3 ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP, float& outDistance) const;
 
 private:
 

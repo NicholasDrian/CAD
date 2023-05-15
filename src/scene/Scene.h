@@ -1,7 +1,6 @@
 #pragma once
 
 #include <unordered_map>
-#include <unordered_set>
 #include <memory>
 
 #include "Camera.h"
@@ -45,6 +44,7 @@ public:
 
 	inline static unsigned GetNewID() { return m_IDGenerator++; }
 	inline static Camera* GetCamera() { return m_Camera.get(); }
+
 	inline static std::unordered_map<unsigned, std::unique_ptr<Renderable>>& GetContents() { return m_Contents; }
 
 	static void ClearSelection();
@@ -64,7 +64,7 @@ private:
 
 	inline static std::unique_ptr<Camera> m_Camera;
 	inline static std::unordered_map<unsigned, std::unique_ptr<Renderable>> m_Contents;
-	inline static unsigned m_IDGenerator = 420U;
+	inline static unsigned m_IDGenerator = 1U;
 	inline static std::unique_ptr<ConstructionPlane> m_ConstructionPlane;
 
 };

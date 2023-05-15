@@ -86,6 +86,12 @@ glm::vec3 ConstructionPlane::Intersect(Ray r, uint32_t subID) const
 #endif
 }
 
+bool ConstructionPlane::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+{
+	float o = r.GetOrigin().z, d = r.GetDirection().z;
+	return o * d < 0.0f;
+}
+
 void ConstructionPlane::BakeSelectionTransform(const glm::mat4& t)
 {
 	// noop
@@ -97,6 +103,11 @@ void ConstructionPlane::Render() const {
 }
 
 AxisAlignedBoundingBox ConstructionPlane::GetBoundingBox() const
+{
+	return AxisAlignedBoundingBox();
+}
+
+AxisAlignedBoundingBox ConstructionPlane::GetBoundingBoxLocalSpace(uint32_t subID) const
 {
 	return AxisAlignedBoundingBox();
 }

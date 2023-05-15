@@ -14,6 +14,7 @@ public:
 	AxisAlignedBoundingBox(float minx, float maxx, float miny, float maxy, float minz, float maxz);
 	AxisAlignedBoundingBox(const std::vector<glm::vec3>& points);
 	AxisAlignedBoundingBox(const std::vector<glm::vec3>& points, const glm::mat4& t);
+	AxisAlignedBoundingBox(const std::vector<glm::vec4>& points, const glm::mat4& t);
 
 	bool Vaid() const;
 

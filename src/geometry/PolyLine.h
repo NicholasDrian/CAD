@@ -19,7 +19,9 @@ public:
 	virtual void Render() const override;
 
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
+	virtual AxisAlignedBoundingBox GetBoundingBoxLocalSpace(uint32_t subID) const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+
 
 	virtual void SelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
 	virtual void SubSelectWithinFrustum(const Frustum& frustum, bool inclusive) override;
@@ -29,6 +31,7 @@ public:
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
+	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const override;
 
 	virtual void AddSubSelection(uint32_t subID) override;
 	virtual void RemoveSubSelection(uint32_t subID) override;
@@ -41,6 +44,8 @@ public:
 	inline virtual void Select() override { m_Selected = true; }
 	inline virtual void UnSelect() override { m_Selected = false; }
 	inline bool IsSubSelected() const { return m_VertexSelectionCounter.size(); }
+	
+	inline virtual const glm::mat4& GetModel() const override { return m_Model; }
 
 	void AddPoint(const glm::vec3& point);
 	void RemoveLast();

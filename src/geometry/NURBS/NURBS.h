@@ -20,7 +20,9 @@ public:
 	virtual void Render() const override;
 
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
+	virtual AxisAlignedBoundingBox GetBoundingBoxLocalSpace(uint32_t subID) const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
 	virtual void AddSubSelection(uint32_t subID) override;
@@ -40,18 +42,21 @@ public:
 
 	void NormalizeKnots();
 	inline float GetKnot(int i) const { return m_Knots[i]; }
-	inline int GetKnotCount() const { return m_Knots.size(); }
+	inline int GetKnotCount() const { return (int) m_Knots.size(); }
 	inline std::vector<float>& GetKnots() { return m_Knots; }
 	inline const std::vector<float>& GetKnots() const { return m_Knots; }
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
+	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const override;
+
 
 	inline virtual unsigned GetID() const override { return m_ID; }
 	inline size_t GetNumControlPoints() const { return m_Points.size(); };
-	inline unsigned GetDegree() const { return m_Degree; }
+	inline int GetDegree() const { return m_Degree; }
 	inline const std::vector<glm::vec4>& GetControlPoints() const { return m_Points; }
 	inline std::vector<glm::vec4>& GetControlPoints() { return m_Points; }
-	inline glm::mat4 GetModel() const { return m_Model; }
+	inline virtual const glm::mat4& GetModel() const override { return m_Model; }
+
 
 	virtual void PointsOn() override { m_PointsOn = true; }
 	virtual void PointsOff() override { m_PointsOn = false; }
@@ -87,7 +92,7 @@ protected:
 	glm::vec4 m_Color;
 	std::vector<float> m_Knots;
 	std::vector<unsigned> m_Indecies;
-	unsigned m_Degree;
+	int m_Degree;
 	unsigned m_ID;
 
 	std::vector<glm::vec3> m_Samples;

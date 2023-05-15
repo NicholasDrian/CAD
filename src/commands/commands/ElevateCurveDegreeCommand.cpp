@@ -24,7 +24,7 @@ void ElevateCurveDegreeCommand::TextInput(const std::string& input)
 		for (auto& [k, v] : Scene::GetContents())
 			if (v->IsSelected()) {
 				NURBS* curve = dynamic_cast<NURBS*>(v.get());
-				if (curve && curve->GetDegree() < newDegree)
+				if (curve && curve->GetDegree() < (int)newDegree)
 					curve->ElevateDegree(newDegree - curve->GetDegree());
 			}
 	m_Finished = true;

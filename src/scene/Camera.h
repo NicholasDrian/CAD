@@ -24,6 +24,8 @@ public:
 
 	Ray GetRayAtPixel(int x, int y) const;
 
+	float GetPixelSizeAtPoint(const glm::vec3& point) const;
+
 	glm::mat4 GetViewProj() const;
 	glm::mat4 GetView() const;
 	glm::mat4 GetProj() const;

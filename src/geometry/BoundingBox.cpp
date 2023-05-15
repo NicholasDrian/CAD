@@ -2,6 +2,8 @@
 
 #include "BoundingBox.h"
 
+#include "../debug/Print.h"
+
 #include <limits>
 
 #define INF std::numeric_limits<float>::infinity()
@@ -24,6 +26,15 @@ AxisAlignedBoundingBox::AxisAlignedBoundingBox(const std::vector<glm::vec3>& poi
 	: AxisAlignedBoundingBox()
 {
 	AddPoints(points, t);
+}
+
+AxisAlignedBoundingBox::AxisAlignedBoundingBox(const std::vector<glm::vec4>& points, const glm::mat4& t) 
+	: AxisAlignedBoundingBox()
+{
+	for (const auto& p : points) {
+		glm::vec4 point = t * p;
+		AddPoint(glm::vec3{point.x, point.y, point.z} / point.w);
+	}
 }
 
 bool AxisAlignedBoundingBox::Vaid() const
@@ -89,6 +100,9 @@ void AxisAlignedBoundingBox::AddPoints(const std::vector<glm::vec3>& points)
 
 void  AxisAlignedBoundingBox::AddPoints(const std::vector<glm::vec3>& points, const glm::mat4& t)
 {
-	for (const glm::vec3& point : points) AddPoint(t * glm::vec4(point, 1.0));
+	for (const glm::vec3& point : points) {
+		glm::vec4 p = t * glm::vec4(point, 1.0);
+		AddPoint(glm::vec3{p.x, p.y, p.z} / p.w);
+	}
 }
 

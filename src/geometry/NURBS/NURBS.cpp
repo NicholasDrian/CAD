@@ -20,7 +20,7 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> 
 		}
 	}
 	while (m_Degree > m_Points.size() - 1) m_Degree--;
-	if (m_Knots.size() == 0) m_Knots = NURBSUtils::GenericKnotVector(GetNumControlPoints(), GetDegree());
+	if (m_Knots.size() == 0) m_Knots = NURBSUtils::GenericKnotVector((int)GetNumControlPoints(), GetDegree());
 	UpdateSamples();
 	UpdateVertexArray();
 }
@@ -81,14 +81,15 @@ void NURBS::UnSelect()
 
 AxisAlignedBoundingBox NURBS::GetBoundingBox() const
 {
-	std::vector<glm::vec3> points(m_Points.size());
-	for (const glm::vec4& point : m_Points) points.emplace_back(
-		point.x / point.w, point.y / point.w, point.z / point.w);
-	AxisAlignedBoundingBox bb(points, m_Model);
-	if (m_PointsOn) bb += m_ControlPolyLine->GetBoundingBox();
-	return bb;
+	return AxisAlignedBoundingBox(m_Points, m_Model);
 }
 
+AxisAlignedBoundingBox NURBS::GetBoundingBoxLocalSpace(uint32_t subID) const
+{
+	glm::vec3 p1 = m_Samples[m_Indecies[subID * 2]];
+	glm::vec3 p2 = m_Samples[m_Indecies[subID * 2 + 1]];
+	return AxisAlignedBoundingBox({p1, p2});
+}
 
 AxisAlignedBoundingBox NURBS::GetSubSelectionBoundingBox() const
 {
@@ -186,7 +187,7 @@ void NURBS::AddControlPoint(const glm::vec3& point, bool incrementDegree)
 {
 	m_Points.emplace_back(point.x, point.y, point.z, 1.0f);
 	m_Degree += incrementDegree;	
-	m_Knots = NURBSUtils::GenericKnotVector(GetNumControlPoints(), GetDegree());
+	m_Knots = NURBSUtils::GenericKnotVector((int)GetNumControlPoints(), GetDegree());
 	UpdateSamples();
 	UpdateVertexArray();
 	m_ControlPolyLine->AddPoint(point);
@@ -196,7 +197,7 @@ void NURBS::ChangeDegree(unsigned degree)
 {
 	while (degree >= m_Points.size()) degree--;
 	m_Degree = degree;
-	m_Knots = NURBSUtils::GenericKnotVector(GetNumControlPoints(), GetDegree());
+	m_Knots = NURBSUtils::GenericKnotVector((int)GetNumControlPoints(), GetDegree());
 	UpdateSamples();
 	m_VertexArrayLines->UpdateVertexPositions(m_Samples);
 }
@@ -213,7 +214,7 @@ void NURBS::RemoveLastPoint()
 {
 	m_Points.pop_back();
 	if (m_Degree > m_Points.size() - 1) m_Degree--;
-	m_Knots = NURBSUtils::GenericKnotVector(GetNumControlPoints(), GetDegree());
+	m_Knots = NURBSUtils::GenericKnotVector((int)GetNumControlPoints(), GetDegree());
 	UpdateSamples();
 	UpdateVertexArray();
 	m_ControlPolyLine->RemoveLast();
@@ -226,19 +227,11 @@ glm::vec3 NURBS::Sample(float t) const
 	int knotSpan = NURBSUtils::Span(m_Knots, u, m_Degree);
 	std::vector<float> basisFuncs = NURBSUtils::BasisFuncs(m_Knots, u, m_Degree);
 	glm::vec4 res = { 0.0f, 0.0f, 0.0f, 0.0f };
-	for (unsigned i = 0; i <= m_Degree; i++) {
+	for (int i = 0; i <= m_Degree; i++) {
 		res += basisFuncs[i] * m_Points[knotSpan - m_Degree + i];
 	}
 	return glm::vec3{ res.x, res.y, res.z } / res.w;
 }
-
-//void NURBS::UpdateKnotVector()
-//{
-//	m_Knots.clear();
-//	for (unsigned i = 0; i <= m_Degree; i++) m_Knots.push_back(0.0f);
-//	for (float i = 1.0f; i < m_Points.size() - m_Degree; i++)  m_Knots.push_back(i);
-//	for (unsigned i = 0; i <= m_Degree; i++) m_Knots.push_back((float)m_Points.size() - m_Degree);
-//}
 
 void NURBS::UpdateSamples()
 {
@@ -261,7 +254,15 @@ void NURBS::UpdateVertexArray()
 
 glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const
 {
-	return r.ClosestPointOnLine(m_Samples[subID], m_Samples[subID + 1]);
+	return r.ClosestPointOnLine(m_Model * glm::vec4(m_Samples[subID], 1.0f), m_Model * glm::vec4(m_Samples[subID + 1], 1.0f));
+}
+
+bool NURBS::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+{
+	float dist;
+	glm::vec3 p = r.ClosestPointOnLine(glm::vec4(m_Samples[subID], 1.0f), glm::vec4(m_Samples[subID + 1], 1.0f), dist);
+	float size = Scene::GetCamera()->GetPixelSizeAtPoint(p);
+	return dist / size <= MaxDistancePixels;
 }
 
 
@@ -276,7 +277,7 @@ void NURBS::ElevateDegree(unsigned n)
 	std::vector<float> Alphas(m_Degree - 1);
 
 	auto Bin = [](int a, int b) -> int {
-		int res = 1.0;
+		int res = 1;
 		for (int i = a; i > a - b; i--) res *= i;
 		for (int i = 2; i <= b; i++) res /= i;
 		return res;
@@ -294,14 +295,14 @@ void NURBS::ElevateDegree(unsigned n)
 
 	BezierAlphas[0][0] = BezierAlphas[NewDegree][m_Degree] = 1.0f;
 	for (int i = 1; i <= NewDegree / 2; i++) {
-		float inv = 1.0 / Bin(NewDegree, i);
-		float mpi = std::min((int)m_Degree, i);
+		float inv = 1.0f / Bin(NewDegree, i);
+		float mpi = (float)std::min((int)m_Degree, i);
 		for (int j = std::max(0, i - (int)n); j <= mpi; j++) 
 			BezierAlphas[i][j] = inv * Bin(m_Degree, j) * Bin(n, i - j);
 
 	}
 	for (int i = NewDegree / 2 + 1; i <= NewDegree - 1; i++) {
-		float mpi = std::min((int)m_Degree, i);
+		float mpi = (float)std::min((int)m_Degree, i);
 		for (int j = std::max(0, i - (int)n); j <= mpi; j++)
 			BezierAlphas[i][j] = BezierAlphas[NewDegree - i][m_Degree - j];
 	}

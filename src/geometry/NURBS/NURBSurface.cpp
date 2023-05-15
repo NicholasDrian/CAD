@@ -6,7 +6,7 @@
 #include "../../debug/Print.h"
 
 NURBSurface::NURBSurface(const std::vector<std::vector<glm::vec4>>& points, const std::vector<float>& knotsU, const std::vector<float>& knotsV, int degreeU, int degreeV)
-	: m_Points(points), m_KnotsU(knotsU), m_KnotsV(knotsV), m_DegreeU(degreeU), m_DegreeV(degreeV), m_ID(Scene::GetNewID()), m_Model(1.0)
+	: m_Points(points), m_KnotsU(knotsU), m_KnotsV(knotsV), m_DegreeU(degreeU), m_DegreeV(degreeV), m_ID(Scene::GetNewID()), m_Model(1.0), m_Selected(false)
 {
 	ControlPointsUpdated();
 }
@@ -20,6 +20,14 @@ AxisAlignedBoundingBox NURBSurface::GetBoundingBox() const
 {
 	// loose bb because its way cheaper...
 	//todo
+	AxisAlignedBoundingBox res;
+	for (const auto& v : m_Points) res += AxisAlignedBoundingBox(v, m_Model);
+	return res;
+}
+
+AxisAlignedBoundingBox NURBSurface::GetBoundingBoxLocalSpace(uint32_t subID) const
+{
+	//todo
 	return AxisAlignedBoundingBox();
 }
 
@@ -31,7 +39,11 @@ AxisAlignedBoundingBox NURBSurface::GetSubSelectionBoundingBox() const
 
 void NURBSurface::BakeSelectionTransform(const glm::mat4& t)
 {
-	//todo
+	if (m_Selected) {
+		m_Model = t * m_Model;
+	} else {
+		//todo
+	}
 }
 
 glm::vec3 NURBSurface::Intersect(Ray r, uint32_t subID) const
@@ -40,10 +52,16 @@ glm::vec3 NURBSurface::Intersect(Ray r, uint32_t subID) const
 	return glm::vec3();
 }
 
+bool NURBSurface::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+{
+	//todo
+	return false;
+}
+
 void NURBSurface::ControlPointsUpdated()
 {
-	int sampleCountU = NURBSUtils::SAMPLES_PER_EDGE * (m_Points.size() - 1);
-	int sampleCountV = NURBSUtils::SAMPLES_PER_EDGE * (m_Points[0].size() - 1);
+	int sampleCountU = NURBSUtils::SAMPLES_PER_EDGE * ((int)m_Points.size() - 1);
+	int sampleCountV = NURBSUtils::SAMPLES_PER_EDGE * ((int)m_Points[0].size() - 1);
 	float firstKnotU = m_KnotsU[0];
 	float firstKnotV = m_KnotsV[0];
 	float knotSizeU = m_KnotsU.back() - firstKnotU;
@@ -67,8 +85,21 @@ void NURBSurface::ControlPointsUpdated()
 		}
 	}
 	//todo normals
+	std::vector<glm::vec3> normals((sampleCountU + 1) * (sampleCountV + 1));
+	for (int i = 0; i <= sampleCountU; i++) {
+		for (int j = 0; j <= sampleCountV; j++) {
+			glm::vec3 v1 = (i == 0) 
+				? (m_Samples[i * (sampleCountV + 1) + j] - m_Samples[(i + 1) * (sampleCountV + 1) + j])
+				: (m_Samples[i * (sampleCountV + 1) + j] - m_Samples[(i - 1) * (sampleCountV + 1) + j]);
+			glm::vec3 v2 = (j == 0)
+				? (m_Samples[i * (sampleCountV + 1) + j] - m_Samples[i * (sampleCountV + 1) + j + 1])
+				: (m_Samples[i * (sampleCountV + 1) + j] - m_Samples[i * (sampleCountV + 1) + j - 1]);
+			normals[i * (sampleCountV + 1) + j] = glm::normalize(glm::cross(v1, v2));
+		}
+	}
+
 	glm::vec4 color{ 1.0,0.0,0.0,1.0 };
-	m_VertexArray = std::make_unique<VertexArrayTriangles>(m_Samples, m_Samples, color, indices);
+	m_VertexArray = std::make_unique<VertexArrayTriangles>(m_Samples, normals, color, indices);
 }
 
 glm::vec3 NURBSurface::Sample(float u, float v) const

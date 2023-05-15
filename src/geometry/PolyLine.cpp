@@ -78,6 +78,11 @@ AxisAlignedBoundingBox PolyLine::GetBoundingBox() const
 	return AxisAlignedBoundingBox(m_Points, m_Model);
 }
 
+AxisAlignedBoundingBox PolyLine::GetBoundingBoxLocalSpace(uint32_t subID) const
+{
+	return AxisAlignedBoundingBox({ m_Points[m_Indecies[subID * 2]] , m_Points[m_Indecies[subID * 2 + 1]] });
+}
+
 AxisAlignedBoundingBox PolyLine::GetSubSelectionBoundingBox() const
 {
 	std::vector<glm::vec3> selected;
@@ -338,7 +343,17 @@ void PolyLine::ClearSubSelection()
 
 glm::vec3 PolyLine::Intersect(Ray r, uint32_t subID) const
 {
-	return r.ClosestPointOnLine(m_Points[m_Indecies[subID * 2]], m_Points[m_Indecies[subID * 2 + 1]]);
+	glm::vec3 p1 = m_Model * glm::vec4(m_Points[m_Indecies[subID * 2]], 1.0f);
+	glm::vec3 p2 = m_Model * glm::vec4(m_Points[m_Indecies[subID * 2 + 1]], 1.0f);
+	return r.ClosestPointOnLine(p1, p2);
 }
 
-
+bool PolyLine::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+{
+	glm::vec3 p1 = m_Points[m_Indecies[subID * 2]];
+	glm::vec3 p2 = m_Points[m_Indecies[subID * 2 + 1]];
+	float dist;
+	glm::vec3 intersection = r.ClosestPointOnLine(p1, p2, dist);
+	float pixelSize = Scene::GetCamera()->GetPixelSizeAtPoint(intersection);
+	return dist / pixelSize >= MaxDistancePixels;
+}

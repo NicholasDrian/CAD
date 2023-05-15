@@ -16,10 +16,13 @@ public:
 	virtual void Render() const override;
 
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
+	virtual AxisAlignedBoundingBox GetBoundingBoxLocalSpace(uint32_t subID) const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
+	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const override;
 
 	virtual void AddSubSelection(uint32_t subID) override;
 	virtual void RemoveSubSelection(uint32_t subID) override;
@@ -28,6 +31,8 @@ public:
 	virtual bool IsSelected() const override { return m_Selected; }
 	virtual void Select() override { m_Selected = true; }
 	virtual void UnSelect() override { m_Selected = false; }
+
+	inline virtual const glm::mat4& GetModel() const override { return m_Model; }
 
 	inline virtual unsigned GetID() const override { return m_ID; };
 
