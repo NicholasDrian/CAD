@@ -13,15 +13,15 @@ class BoundingVolumeHeirarchy;
 
 struct BVHNode {
 
-	BVHNode(BoundingVolumeHeirarchy* heirarchy, const std::vector<int>& geo);
+	BVHNode(Renderable* geometry, const std::vector<int>& indices, int depth = 0);
 
-	bool Intersect(const Ray& ray, glm::vec3& outPoint) const;
+	bool Intersect(const Ray& ray, float& outT) const;
 
 	inline static constexpr int MAX_PRIMITIVE_PER_NODE = 5;
 
 	AxisAlignedBoundingBox m_BoundingBox;
-	BoundingVolumeHeirarchy* m_Heirarchy;
-	std::vector<unsigned> m_Geometry;
+	Renderable* m_Geometry;
+	std::vector<unsigned> m_Indices;
 	std::unique_ptr<BVHNode> m_ChildA, m_ChildB;
 
 };
@@ -32,7 +32,9 @@ public:
 
 	BoundingVolumeHeirarchy(Renderable* r);
 
-	bool Intersect(const Ray& ray, glm::vec3& outPoint) const;
+	bool Intersect(const Ray& ray, float& outT) const;
+
+	inline Renderable* GetGeometry() { return m_Geometry; }
 
 private:
 

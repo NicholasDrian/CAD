@@ -86,7 +86,7 @@ glm::vec3 ConstructionPlane::Intersect(Ray r, uint32_t subID) const
 #endif
 }
 
-bool ConstructionPlane::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+bool ConstructionPlane::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const
 {
 	float o = r.GetOrigin().z, d = r.GetDirection().z;
 	return o * d < 0.0f;

@@ -5,6 +5,7 @@
 #include "../debug/Print.h"
 
 #include <limits>
+#include <stdexcept>
 
 #define INF std::numeric_limits<float>::infinity()
 #define NEG_INF -std::numeric_limits<float>::infinity()
@@ -15,6 +16,7 @@ AxisAlignedBoundingBox::AxisAlignedBoundingBox()
 {
 
 }
+
 AxisAlignedBoundingBox::AxisAlignedBoundingBox(float minx, float maxx, float miny, float maxy, float minz, float maxz) 
 	: m_MinX(minx), m_MaxX(maxx), m_MinY(miny), m_MaxY(maxy), m_MinZ(minz), m_MaxZ(maxz)
 {

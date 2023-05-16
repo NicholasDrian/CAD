@@ -31,6 +31,8 @@ public:
 	glm::mat4 GetProj() const;
 	glm::vec3 GetForward() const;
 
+	inline glm::vec3 GetPosition() const { return m_Position; }
+
 	static float GetNearPlane() { return m_NearPlane; }
 	static float GetFarPlane() { return m_FarPlane; }
 

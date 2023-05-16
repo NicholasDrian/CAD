@@ -18,12 +18,14 @@ public:
 
 	// [WARNING] fails if there is no intersection!!!!
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
-	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const override;
+	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const override;
 
 
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;
 	virtual AxisAlignedBoundingBox GetBoundingBoxLocalSpace(uint32_t subID) const override;
 	virtual AxisAlignedBoundingBox GetSubSelectionBoundingBox() const override;
+
+	inline virtual int GetPrimitiveCount() const override { return 1; }
 
 	inline virtual bool IsSelected() const override { return false; }
 	inline virtual void Select() override {}

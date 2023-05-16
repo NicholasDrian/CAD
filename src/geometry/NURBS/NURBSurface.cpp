@@ -18,17 +18,12 @@ void NURBSurface::Render() const
 
 AxisAlignedBoundingBox NURBSurface::GetBoundingBox() const
 {
-	// loose bb because its way cheaper...
-	//todo
-	AxisAlignedBoundingBox res;
-	for (const auto& v : m_Points) res += AxisAlignedBoundingBox(v, m_Model);
-	return res;
+	return AxisAlignedBoundingBox(m_Samples, m_Model);
 }
 
 AxisAlignedBoundingBox NURBSurface::GetBoundingBoxLocalSpace(uint32_t subID) const
 {
-	//todo
-	return AxisAlignedBoundingBox();
+	return AxisAlignedBoundingBox(m_Samples);
 }
 
 AxisAlignedBoundingBox NURBSurface::GetSubSelectionBoundingBox() const
@@ -52,7 +47,7 @@ glm::vec3 NURBSurface::Intersect(Ray r, uint32_t subID) const
 	return glm::vec3();
 }
 
-bool NURBSurface::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+bool NURBSurface::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const
 {
 	//todo
 	return false;
@@ -72,16 +67,16 @@ void NURBSurface::ControlPointsUpdated()
 	for (int i = 0; i <= sampleCountU; i++) 
 		for (int j = 0; j <= sampleCountV; j++) 
 			m_Samples[i * (sampleCountV + 1) + j] = Sample(firstKnotU + i * stepU, firstKnotV + j * stepV);
-	std::vector<unsigned> indices;
+	m_Indices.clear();
 	for (int i = 0; i < sampleCountU; i++) {
 		for (int j = 0; j < sampleCountV; j++) {
-			indices.push_back(i * (sampleCountV + 1) + j);
-			indices.push_back(i * (sampleCountV + 1) + j + 1);
-			indices.push_back((i + 1) * (sampleCountV + 1) + j);
+			m_Indices.push_back(i * (sampleCountV + 1) + j);
+			m_Indices.push_back(i * (sampleCountV + 1) + j + 1);
+			m_Indices.push_back((i + 1) * (sampleCountV + 1) + j);
 
-			indices.push_back(i * (sampleCountV + 1) + j + 1);
-			indices.push_back((i + 1) * (sampleCountV + 1) + j + 1);
-			indices.push_back((i + 1) * (sampleCountV + 1) + j);
+			m_Indices.push_back(i * (sampleCountV + 1) + j + 1);
+			m_Indices.push_back((i + 1) * (sampleCountV + 1) + j + 1);
+			m_Indices.push_back((i + 1) * (sampleCountV + 1) + j);
 		}
 	}
 	//todo normals
@@ -99,7 +94,7 @@ void NURBSurface::ControlPointsUpdated()
 	}
 
 	glm::vec4 color{ 1.0,0.0,0.0,1.0 };
-	m_VertexArray = std::make_unique<VertexArrayTriangles>(m_Samples, normals, color, indices);
+	m_VertexArray = std::make_unique<VertexArrayTriangles>(m_Samples, normals, color, m_Indices);
 }
 
 glm::vec3 NURBSurface::Sample(float u, float v) const

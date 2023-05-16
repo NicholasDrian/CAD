@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BoundingBox.h"
+
 #include "glm/glm.hpp"
 #include <iostream>
 
@@ -21,9 +23,11 @@ public :
 	bool IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, glm::vec3& outPoint, bool allowNegativeT = false) const;
 	bool IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float& outTime, bool allowNegativeT = false) const;
 
+	bool IntersectBoundingBox(const AxisAlignedBoundingBox& bb, glm::vec3& outPoint) const;
+
 	// Closest point to line extended to infinte length.
 	glm::vec3 ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP) const;
-	glm::vec3 ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP, float& outDistance) const;
+	glm::vec3 ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP, float& outT, float& outDistance) const;
 
 private:
 

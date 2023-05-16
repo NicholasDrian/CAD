@@ -92,6 +92,30 @@ bool Ray::IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm:
 		d1 < 0.0f && d2 < 0.0f && d3 < 0.0f;
 }
 
+bool Ray::IntersectBoundingBox(const AxisAlignedBoundingBox& bb, glm::vec3& outPoint) const
+{
+	// test!!!
+	glm::vec3 a = { bb.MinX(), bb.MinY(), bb.MinZ() };
+	glm::vec3 b = { bb.MaxX(), bb.MaxY(), bb.MaxZ() };
+	if (m_Direction.x < 0.0f) std::swap(a.x, b.x);
+	if (m_Direction.y < 0.0f) std::swap(a.y, b.y);
+	if (m_Direction.z < 0.0f) std::swap(a.z, b.z);
+	glm::vec3 trash;
+	float txmin = IntersectPlane(a, { 1.0f, 0.0f, 0.0f }, trash, true);
+	float tymin = IntersectPlane(a, { 0.0f, 1.0f, 0.0f }, trash, true);
+	float tzmin = IntersectPlane(a, { 0.0f, 0.0f, 1.0f }, trash, true);
+	float txmax = IntersectPlane(b, { 1.0f, 0.0f, 0.0f }, trash, true);
+	float tymax = IntersectPlane(b, { 0.0f, 1.0f, 0.0f }, trash, true);
+	float tzmax = IntersectPlane(b, { 0.0f, 0.0f, 1.0f }, trash, true);
+
+	float end = std::min(txmax, std::min(tymax, tzmax));
+	float start = std::max(txmin, std::max(tymin, tzmin));
+	if (end < 0.0f || start > end) return false;
+
+	outPoint = (start >= 0.0f) ? At(start) : At(end);
+	return true;
+}
+
 glm::vec3 Ray::ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP) const
 {
 	glm::vec3 a = m_Direction;
@@ -111,7 +135,7 @@ glm::vec3 Ray::ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP
 	return B + b * ((ab * ac - bc * aa) / (aa * bb - ab * ab));
 }
 
-glm::vec3 Ray::ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP, float& outDistance) const
+glm::vec3 Ray::ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP, float& outT, float& outDistance) const
 {
 	glm::vec3 a = m_Direction;
 	glm::vec3 b = glm::normalize(endP - startP);
@@ -129,8 +153,12 @@ glm::vec3 Ray::ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP
 
 	float denom = aa * bb - ab * ab;
 
+	if (denom == 0) throw std::runtime_error("Your fired!");
+
+	outT = (ab * bc + ac * bb) / denom;
+
 	glm::vec3 res = B + b * ((ab * ac - bc * aa) / denom);
-	glm::vec3 other = A + a * ((ab * bc + ac * bb) / denom);
+	glm::vec3 other = A + a * outT;
 
 	outDistance = glm::distance(res, other);
 	return res;

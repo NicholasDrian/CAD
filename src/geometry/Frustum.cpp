@@ -6,13 +6,13 @@
 
 #include "../scene/Scene.h"
 
-Frustum::Frustum(const Ray& tl, const Ray& tr, const Ray& bl, const Ray& br)
-	: m_Origin(tl.GetOrigin())
+Frustum::Frustum(const glm::vec3& origin, const glm::vec3& tl, const glm::vec3& tr, const glm::vec3& bl, const glm::vec3& br)
+	: m_Origin(origin)
 {
-	m_NTop = glm::normalize(glm::cross(tl.GetDirection(), tr.GetDirection()));
-	m_NRight = glm::normalize(glm::cross(tr.GetDirection(), br.GetDirection()));
-	m_NBottom = glm::normalize(glm::cross(br.GetDirection(), bl.GetDirection()));
-	m_NLeft = glm::normalize(glm::cross(bl.GetDirection(), tl.GetDirection()));
+	m_NTop = glm::normalize(glm::cross(tl, tr));
+	m_NRight = glm::normalize(glm::cross(tr, br));
+	m_NBottom = glm::normalize(glm::cross(br, bl));
+	m_NLeft = glm::normalize(glm::cross(bl, tl));
 }
 
 bool Frustum::PartiallyContainsLine(glm::vec3 a, glm::vec3 b) const

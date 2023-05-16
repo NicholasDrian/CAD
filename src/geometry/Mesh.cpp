@@ -104,11 +104,10 @@ glm::vec3 Mesh::Intersect(Ray r, uint32_t subID) const
 	return point;
 }
 
-bool Mesh::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+bool Mesh::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const
 {
-	glm::vec3 point;
 	return r.IntersectPlane(
 		m_Positions[m_Indices[subID * 3]],
 		m_Positions[m_Indices[subID * 3 + 1]],
-		m_Positions[m_Indices[subID * 3 + 2]], point, false);
+		m_Positions[m_Indices[subID * 3 + 2]], outT, false);
 }

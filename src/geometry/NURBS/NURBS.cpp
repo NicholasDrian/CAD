@@ -86,8 +86,8 @@ AxisAlignedBoundingBox NURBS::GetBoundingBox() const
 
 AxisAlignedBoundingBox NURBS::GetBoundingBoxLocalSpace(uint32_t subID) const
 {
-	glm::vec3 p1 = m_Samples[m_Indecies[subID * 2]];
-	glm::vec3 p2 = m_Samples[m_Indecies[subID * 2 + 1]];
+	glm::vec3 p1 = m_Samples[m_Indices[subID * 2]];
+	glm::vec3 p2 = m_Samples[m_Indices[subID * 2 + 1]];
 	return AxisAlignedBoundingBox({p1, p2});
 }
 
@@ -116,10 +116,10 @@ void NURBS::SelectWithinFrustum(const Frustum& frustum, bool inclusive)
 		return;
 	}
 	else if (inclusive) {
-		for (int i = 0; i < m_Indecies.size() / 2; i++) {
+		for (int i = 0; i < m_Indices.size() / 2; i++) {
 			if (frustum.PartiallyContainsLine(
-				m_Model * glm::vec4(m_Samples[m_Indecies[2 * i]], 1.0), 
-				m_Model * glm::vec4(m_Samples[m_Indecies[2 * i + 1]], 1.0))) {
+				m_Model * glm::vec4(m_Samples[m_Indices[2 * i]], 1.0), 
+				m_Model * glm::vec4(m_Samples[m_Indices[2 * i + 1]], 1.0))) {
 				Select();
 				return;
 			}
@@ -152,10 +152,10 @@ void NURBS::UnSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 		UnSelect();
 	}
 	else if (inclusive) {
-		for (int i = 0; i < m_Indecies.size() / 2; i++) {
+		for (int i = 0; i < m_Indices.size() / 2; i++) {
 			if (frustum.PartiallyContainsLine(
-				m_Model * glm::vec4(m_Samples[m_Indecies[2 * i]], 1.0), 
-				m_Model * glm::vec4(m_Samples[m_Indecies[2 * i + 1]], 1.0))) {
+				m_Model * glm::vec4(m_Samples[m_Indices[2 * i]], 1.0), 
+				m_Model * glm::vec4(m_Samples[m_Indices[2 * i + 1]], 1.0))) {
 				UnSelect();
 				return;
 			}
@@ -236,20 +236,20 @@ glm::vec3 NURBS::Sample(float t) const
 void NURBS::UpdateSamples()
 {
 	m_Samples.clear();
-	m_Indecies.clear();
+	m_Indices.clear();
 	int sampleCount = NURBSUtils::SAMPLES_PER_EDGE * ((int)m_Points.size() - 1);
 	for (int i = 0; i <= sampleCount; i++) {
 		m_Samples.push_back(Sample((float)i / sampleCount));
-		m_Indecies.push_back(i);
-		m_Indecies.push_back(i + 1);
+		m_Indices.push_back(i);
+		m_Indices.push_back(i + 1);
 	}
-	m_Indecies.pop_back();
-	m_Indecies.pop_back();
+	m_Indices.pop_back();
+	m_Indices.pop_back();
 }
 
 void NURBS::UpdateVertexArray()
 {
-	m_VertexArrayLines = std::make_unique<VertexArrayLines>(m_Samples, m_Color, m_ID, m_Indecies, 2.0f, 0U);
+	m_VertexArrayLines = std::make_unique<VertexArrayLines>(m_Samples, m_Color, m_ID, m_Indices, 2.0f, 0U);
 }
 
 glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const
@@ -257,10 +257,10 @@ glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const
 	return r.ClosestPointOnLine(m_Model * glm::vec4(m_Samples[subID], 1.0f), m_Model * glm::vec4(m_Samples[subID + 1], 1.0f));
 }
 
-bool NURBS::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+bool NURBS::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const
 {
 	float dist;
-	glm::vec3 p = r.ClosestPointOnLine(glm::vec4(m_Samples[subID], 1.0f), glm::vec4(m_Samples[subID + 1], 1.0f), dist);
+	glm::vec3 p = r.ClosestPointOnLine(glm::vec4(m_Samples[subID], 1.0f), glm::vec4(m_Samples[subID + 1], 1.0f), outT, dist);
 	float size = Scene::GetCamera()->GetPixelSizeAtPoint(p);
 	return dist / size <= MaxDistancePixels;
 }

@@ -31,7 +31,7 @@ public:
 	virtual void BakeSelectionTransform(const glm::mat4& t) override;
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
-	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const override;
+	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const override;
 
 	virtual void AddSubSelection(uint32_t subID) override;
 	virtual void RemoveSubSelection(uint32_t subID) override;
@@ -52,10 +52,12 @@ public:
 	void UpdateLast(const glm::vec3& point);
 
 	inline size_t GetNumControlPoints() const { return m_Points.size(); }
-	inline size_t GetNumSegments() const { return m_Indecies.size() / 2; }
+	inline size_t GetNumSegments() const { return m_Indices.size() / 2; }
 	std::vector<glm::vec3> GetControlPoints(bool withSelectionTransform = true);
 
 	inline virtual unsigned GetID() const override { return m_ID; };
+
+	inline virtual int GetPrimitiveCount() const override { return (int) m_Indices.size() / 2; }
 
 	inline void SetModel(const glm::mat4& model) { m_Model = model; }
 
@@ -74,7 +76,7 @@ private:
 
 	unsigned m_ID;
 	bool m_Dashed, m_PointsOn;
-	std::vector<unsigned> m_Indecies;
+	std::vector<unsigned> m_Indices;
 
 	std::vector<uint32_t> m_SegmentSelectionBuffer, m_VertexSelectionBuffer;
 	std::unordered_map<int, int> m_VertexSelectionCounter;

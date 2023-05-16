@@ -12,8 +12,8 @@ PolyLine::PolyLine(const std::vector<glm::vec3>& points, bool dashed, unsigned i
 	m_Selected(false), m_PointsOn(false)
 {
 	for (unsigned i = 0U; i < points.size() - 1; i++) {
-		m_Indecies.push_back(i);
-		m_Indecies.push_back(i + 1);
+		m_Indices.push_back(i);
+		m_Indices.push_back(i + 1);
 	}
 	UpdateVertexArrays();
 }
@@ -68,8 +68,8 @@ void PolyLine::AddPoint(const glm::vec3& point)
 	m_Points.push_back(point);
 	if ((m_Points.size() - 1) % 32 == 1) m_SegmentSelectionBuffer.push_back(0U);
 	if ((m_Points.size())	  % 32 == 1) m_VertexSelectionBuffer.push_back(0U);
-	m_Indecies.push_back((unsigned)m_Points.size() - 2U);
-	m_Indecies.push_back((unsigned)m_Points.size() - 1U);
+	m_Indices.push_back((unsigned)m_Points.size() - 2U);
+	m_Indices.push_back((unsigned)m_Points.size() - 1U);
 	UpdateVertexArrays();
 }
 
@@ -80,7 +80,7 @@ AxisAlignedBoundingBox PolyLine::GetBoundingBox() const
 
 AxisAlignedBoundingBox PolyLine::GetBoundingBoxLocalSpace(uint32_t subID) const
 {
-	return AxisAlignedBoundingBox({ m_Points[m_Indecies[subID * 2]] , m_Points[m_Indecies[subID * 2 + 1]] });
+	return AxisAlignedBoundingBox({ m_Points[m_Indices[subID * 2]] , m_Points[m_Indices[subID * 2 + 1]] });
 }
 
 AxisAlignedBoundingBox PolyLine::GetSubSelectionBoundingBox() const
@@ -108,10 +108,10 @@ void PolyLine::SelectWithinFrustum(const Frustum& frustum, bool inclusive)
 	}
 	if (inclusive) 
 	{
-		for (int i = 0; i < m_Indecies.size() / 2; i++) {
+		for (int i = 0; i < m_Indices.size() / 2; i++) {
 			if (frustum.PartiallyContainsLine(
-				m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0), 
-				m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0))) 
+				m_Model * glm::vec4(m_Points[m_Indices[2 * i]], 1.0), 
+				m_Model * glm::vec4(m_Points[m_Indices[2 * i + 1]], 1.0))) 
 			{
 				ClearSubSelection();
 				m_Selected = true;
@@ -134,7 +134,7 @@ void PolyLine::SubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 	if (m_Selected) return;
 	AxisAlignedBoundingBox bb = GetBoundingBox();
 	if (bb.FullyWithin(frustum)) {
-		for (int i = 0; i < m_Indecies.size() / 2; i++) {
+		for (int i = 0; i < m_Indices.size() / 2; i++) {
 			AddSubSelectionLine(i);
 		}
 		for (int i = 0; i < m_Points.size(); i++) {
@@ -149,19 +149,19 @@ void PolyLine::SubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 			}
 		}
 		if (inclusive) {
-			for (int i = 0; i < m_Indecies.size() / 2; i++) {
+			for (int i = 0; i < m_Indices.size() / 2; i++) {
 				if (frustum.PartiallyContainsLine(
-					m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0),
-					m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
+					m_Model * glm::vec4(m_Points[m_Indices[2 * i]], 1.0),
+					m_Model * glm::vec4(m_Points[m_Indices[2 * i + 1]], 1.0)))
 				{
 					AddSubSelectionLine(i);
 				}
 			}
 		}
 		else {
-			for (int i = 0; i < m_Indecies.size() / 2; i++) {
-				if (frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0)) &&
-					frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
+			for (int i = 0; i < m_Indices.size() / 2; i++) {
+				if (frustum.Contains(m_Model * glm::vec4(m_Points[m_Indices[2 * i]], 1.0)) &&
+					frustum.Contains(m_Model * glm::vec4(m_Points[m_Indices[2 * i + 1]], 1.0)))
 				{
 					AddSubSelectionLine(i);
 				}
@@ -178,10 +178,10 @@ void PolyLine::UnSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 		m_Selected = false;
 	}
 	else if (inclusive) {
-		for (int i = 0; i < m_Indecies.size() / 2; i++) {
+		for (int i = 0; i < m_Indices.size() / 2; i++) {
 			if (frustum.PartiallyContainsLine(
-					m_Model * glm::vec4(m_Points[m_Indecies[i * 2]], 1.0), 
-					m_Model * glm::vec4(m_Points[m_Indecies[i * 2 * 1]], 1.0))) {
+					m_Model * glm::vec4(m_Points[m_Indices[i * 2]], 1.0), 
+					m_Model * glm::vec4(m_Points[m_Indices[i * 2 * 1]], 1.0))) {
 				m_Selected = false;
 				break;
 			}
@@ -207,19 +207,19 @@ void PolyLine::UnSubSelectWithinFrustum(const Frustum& frustum, bool inclusive)
 				RemoveSubSelectionPoint(i);
 		}
 		if (inclusive) {
-			for (int i = 0; i < m_Indecies.size() / 2; i++) {
+			for (int i = 0; i < m_Indices.size() / 2; i++) {
 				if (frustum.PartiallyContainsLine(
-					m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0),
-					m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
+					m_Model * glm::vec4(m_Points[m_Indices[2 * i]], 1.0),
+					m_Model * glm::vec4(m_Points[m_Indices[2 * i + 1]], 1.0)))
 				{
 					RemoveSubSelectionLine(i);
 				}
 			}
 		}
 		else {
-			for (int i = 0; i < m_Indecies.size() / 2; i++) {
-				if (frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i]], 1.0)) &&
-					frustum.Contains(m_Model * glm::vec4(m_Points[m_Indecies[2 * i + 1]], 1.0)))
+			for (int i = 0; i < m_Indices.size() / 2; i++) {
+				if (frustum.Contains(m_Model * glm::vec4(m_Points[m_Indices[2 * i]], 1.0)) &&
+					frustum.Contains(m_Model * glm::vec4(m_Points[m_Indices[2 * i + 1]], 1.0)))
 				{
 					RemoveSubSelectionLine(i);
 				}
@@ -239,13 +239,13 @@ void PolyLine::RemoveLast()
 	m_Points.pop_back();
 	if ((m_Points.size() - 1) % 32 == 0) m_SegmentSelectionBuffer.pop_back();
 	if ((m_Points.size()	) % 32 == 0) m_VertexSelectionBuffer.pop_back();
-	m_Indecies.pop_back(), m_Indecies.pop_back();
+	m_Indices.pop_back(), m_Indices.pop_back();
 	UpdateVertexArrays();
 }
 
 void PolyLine::UpdateVertexArrays()
 {
-	m_VertexArrayLines = std::make_unique<VertexArraySubSelectableLines>(m_Points, m_Color, m_ID, m_Indecies, 2.0f, m_Dashed, m_SegmentSelectionBuffer, m_VertexSelectionBuffer);
+	m_VertexArrayLines = std::make_unique<VertexArraySubSelectableLines>(m_Points, m_Color, m_ID, m_Indices, 2.0f, m_Dashed, m_SegmentSelectionBuffer, m_VertexSelectionBuffer);
 
 	m_VertexArrayPoints = std::make_unique<VertexArrayPoints>(m_Points, m_VertexSelectionBuffer, m_Color, (unsigned)GetNumSegments());
 }
@@ -343,17 +343,17 @@ void PolyLine::ClearSubSelection()
 
 glm::vec3 PolyLine::Intersect(Ray r, uint32_t subID) const
 {
-	glm::vec3 p1 = m_Model * glm::vec4(m_Points[m_Indecies[subID * 2]], 1.0f);
-	glm::vec3 p2 = m_Model * glm::vec4(m_Points[m_Indecies[subID * 2 + 1]], 1.0f);
+	glm::vec3 p1 = m_Model * glm::vec4(m_Points[m_Indices[subID * 2]], 1.0f);
+	glm::vec3 p2 = m_Model * glm::vec4(m_Points[m_Indices[subID * 2 + 1]], 1.0f);
 	return r.ClosestPointOnLine(p1, p2);
 }
 
-bool PolyLine::IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const
+bool PolyLine::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const
 {
-	glm::vec3 p1 = m_Points[m_Indecies[subID * 2]];
-	glm::vec3 p2 = m_Points[m_Indecies[subID * 2 + 1]];
+	glm::vec3 p1 = m_Points[m_Indices[subID * 2]];
+	glm::vec3 p2 = m_Points[m_Indices[subID * 2 + 1]];
 	float dist;
-	glm::vec3 intersection = r.ClosestPointOnLine(p1, p2, dist);
+	glm::vec3 intersection = r.ClosestPointOnLine(p1, p2, outT, dist);
 	float pixelSize = Scene::GetCamera()->GetPixelSizeAtPoint(intersection);
 	return dist / pixelSize >= MaxDistancePixels;
 }

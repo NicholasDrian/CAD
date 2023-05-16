@@ -47,11 +47,12 @@ public:
 	inline const std::vector<float>& GetKnots() const { return m_Knots; }
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
-	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float MaxDistancePixels) const override;
+	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const override;
 
 
 	inline virtual unsigned GetID() const override { return m_ID; }
 	inline size_t GetNumControlPoints() const { return m_Points.size(); };
+	inline virtual int GetPrimitiveCount() const override { return (int) m_Indices.size() / 2; }
 	inline int GetDegree() const { return m_Degree; }
 	inline const std::vector<glm::vec4>& GetControlPoints() const { return m_Points; }
 	inline std::vector<glm::vec4>& GetControlPoints() { return m_Points; }
@@ -91,7 +92,7 @@ protected:
 	std::vector<glm::vec4> m_Points;
 	glm::vec4 m_Color;
 	std::vector<float> m_Knots;
-	std::vector<unsigned> m_Indecies;
+	std::vector<unsigned> m_Indices;
 	int m_Degree;
 	unsigned m_ID;
 
