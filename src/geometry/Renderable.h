@@ -29,6 +29,7 @@ public:
 	// Always returns intersection
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const = 0;
 	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const = 0;
+	virtual bool Intersect(Ray r, float& outT) const = 0;
 
 	virtual bool IsSelected() const = 0;
 	virtual void Select() = 0;

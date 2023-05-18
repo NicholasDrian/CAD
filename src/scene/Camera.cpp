@@ -115,6 +115,11 @@ Ray Camera::GetRayAtPixel(int x, int y) const
 
 float Camera::GetPixelSizeAtPoint(const glm::vec3& point) const
 {
+
 	float dist = glm::dot(point - m_Position, GetForward());
-	return (dist * glm::tan(m_Fovy / 2.0f)) / (float)Window::GetSize().second * 2.0f;
+	float res = (dist * glm::tan(m_Fovy / 2.0f)) / (float)Window::GetSize().second * 2.0f;
+	//std::cout << "window size" << Window::GetSize().second << std::endl;
+	//std::cout << dist << ' ' << res << std::endl;
+	//std::cout << "pixel size = " << res << "\n";
+	return res;
 }

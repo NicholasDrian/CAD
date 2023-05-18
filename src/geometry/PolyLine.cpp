@@ -357,3 +357,9 @@ bool PolyLine::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float Ma
 	float pixelSize = Scene::GetCamera()->GetPixelSizeAtPoint(intersection);
 	return dist / pixelSize >= MaxDistancePixels;
 }
+
+bool PolyLine::Intersect(Ray r, float& outT) const
+{
+	//todo
+	return false;
+}

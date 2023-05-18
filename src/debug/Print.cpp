@@ -2,6 +2,12 @@
 
 #include "Print.h"
 
+#include "../geometry/NURBS/NURBS.h"
+#include "../geometry/PolyLine.h"
+#include "../geometry/Mesh.h"
+#include "../geometry/NURBS/NURBSurface.h"
+#include "../scene/ConstructionPlane.h"
+
 #include <iostream>
 
 void print(glm::vec3 v, bool newLine)
@@ -36,6 +42,42 @@ void print(AxisAlignedBoundingBox bb)
 {
 	printf("BB: X:[%.2f, %.2f], Y:[%.2f, %.2f], Z:[%.2f, %.2f]\n",
 		bb.MinX(), bb.MaxX(), bb.MinY(), bb.MaxY(), bb.MinZ(), bb.MaxZ());
+}
+
+void print(BVHNode* node, int depth)
+{
+	if (node == nullptr) return;
+	for (int i = 0; i < depth; i++) std::cout << '\t';
+	std::cout << node->m_Indices.size() << ' ';
+	print(node->m_BoundingBox);
+	print(node->m_ChildA.get(), depth + 1);
+	print(node->m_ChildB.get(), depth + 1);
+}
+
+void print(Renderable* r)
+{
+	if (NURBS* nurbs = dynamic_cast<NURBS*>(r)) print("NURBS");
+	else if (PolyLine* nurbs = dynamic_cast<PolyLine*>(r)) print("POLY LINE");
+	else if (NURBSurface* nurbs = dynamic_cast<NURBSurface*>(r)) print("NURBSurface");
+	else if (Mesh* nurbs = dynamic_cast<Mesh*>(r)) print("MESH");
+	else if (ConstructionPlane* nurbs = dynamic_cast<ConstructionPlane*>(r)) print("CONSTRUCTION PLANE");
+	else print("TODO: VOID PRINT(RENDERABLE* R);");
+	//todo
+
+
+}
+
+void print(Ray r)
+{
+	printf("Ray - O:");
+	print(r.GetOrigin());
+	printf(" D:");
+	print(r.GetDirection(), true);
+}
+
+void print(const char* s)
+{
+	printf(s);
 }
 
 void print(const glm::mat4& m)

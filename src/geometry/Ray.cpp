@@ -3,6 +3,8 @@
 #include "Ray.h"
 #include "glm/gtx/intersect.hpp"
 
+#include "../debug/Print.h"
+
 Ray::Ray(glm::vec3 origin, glm::vec3 direction)
 	:m_Origin(origin), m_Direction(glm::normalize(direction)) 
 {
@@ -94,25 +96,35 @@ bool Ray::IntersectTriangle(const glm::vec3& p1, const glm::vec3& p2, const glm:
 
 bool Ray::IntersectBoundingBox(const AxisAlignedBoundingBox& bb, glm::vec3& outPoint) const
 {
+	//print(bb);
+	//print(*this);
+	
+
 	// test!!!
 	glm::vec3 a = { bb.MinX(), bb.MinY(), bb.MinZ() };
 	glm::vec3 b = { bb.MaxX(), bb.MaxY(), bb.MaxZ() };
+
+	//print(a); print(b, true);
+
 	if (m_Direction.x < 0.0f) std::swap(a.x, b.x);
 	if (m_Direction.y < 0.0f) std::swap(a.y, b.y);
 	if (m_Direction.z < 0.0f) std::swap(a.z, b.z);
 	glm::vec3 trash;
-	float txmin = IntersectPlane(a, { 1.0f, 0.0f, 0.0f }, trash, true);
-	float tymin = IntersectPlane(a, { 0.0f, 1.0f, 0.0f }, trash, true);
-	float tzmin = IntersectPlane(a, { 0.0f, 0.0f, 1.0f }, trash, true);
-	float txmax = IntersectPlane(b, { 1.0f, 0.0f, 0.0f }, trash, true);
-	float tymax = IntersectPlane(b, { 0.0f, 1.0f, 0.0f }, trash, true);
-	float tzmax = IntersectPlane(b, { 0.0f, 0.0f, 1.0f }, trash, true);
+	float txmin, tymin, tzmin, txmax, tymax, tzmax;
+	bool bxmin = IntersectPlane(a, { 1.0f, 0.0f, 0.0f }, txmin, true);
+	bool bymin = IntersectPlane(a, { 0.0f, 1.0f, 0.0f }, tymin, true);
+	bool bzmin = IntersectPlane(a, { 0.0f, 0.0f, 1.0f }, tzmin, true);
+	bool bxmax = IntersectPlane(b, { 1.0f, 0.0f, 0.0f }, txmax, true);
+	bool bymax = IntersectPlane(b, { 0.0f, 1.0f, 0.0f }, tymax, true);
+	bool bzmax = IntersectPlane(b, { 0.0f, 0.0f, 1.0f }, tzmax, true);
 
 	float end = std::min(txmax, std::min(tymax, tzmax));
 	float start = std::max(txmin, std::max(tymin, tzmin));
+	//std::cout << "start" << start << "end" << end << std::endl;
 	if (end < 0.0f || start > end) return false;
 
 	outPoint = (start >= 0.0f) ? At(start) : At(end);
+	//print("true!\n");
 	return true;
 }
 
@@ -157,9 +169,13 @@ glm::vec3 Ray::ClosestPointOnLine(const glm::vec3& startP, const glm::vec3& endP
 
 	outT = (ab * bc + ac * bb) / denom;
 
-	glm::vec3 res = B + b * ((ab * ac - bc * aa) / denom);
+	float timeLine = ((ab * ac - bc * aa) / denom);
+
+
+	glm::vec3 res = (timeLine < 0) ? startP : (timeLine > glm::distance(startP, endP)) ? endP : B + b * timeLine;
 	glm::vec3 other = A + a * outT;
 
 	outDistance = glm::distance(res, other);
+	//print(outDistance, true);
 	return res;
 }

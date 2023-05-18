@@ -32,6 +32,7 @@ public:
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
 	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const override;
+	virtual bool Intersect(Ray r, float& outT) const override;
 
 	virtual void AddSubSelection(uint32_t subID) override;
 	virtual void RemoveSubSelection(uint32_t subID) override;

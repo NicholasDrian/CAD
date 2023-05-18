@@ -5,6 +5,7 @@
 #include "../../render/VertexArrayPoints.h"
 #include "../PolyLine.h"
 #include "../../scene/Scene.h"
+#include "../../ray_tracing/BoundingVolumeHeirarchy.h"
 
 #include "glm/glm.hpp"
 
@@ -48,7 +49,7 @@ public:
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
 	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const override;
-
+	virtual bool Intersect(Ray r, float& outT) const override;
 
 	inline virtual unsigned GetID() const override { return m_ID; }
 	inline size_t GetNumControlPoints() const { return m_Points.size(); };
@@ -98,6 +99,7 @@ protected:
 
 	std::vector<glm::vec3> m_Samples;
 
+	std::unique_ptr<BoundingVolumeHeirarchy> m_BoundingVolumeHeirarchy;
 	std::unique_ptr<VertexArrayLines> m_VertexArrayLines;
 	std::unique_ptr<PolyLine> m_ControlPolyLine;
 

@@ -170,6 +170,20 @@ AxisAlignedBoundingBox Scene::GetSelectedBoundingBox()
 
 void Scene::HandleClick(int x, int y, int mods) 
 {
+	float trash;
+	for (const auto& e : m_Contents) {
+		if (e.second->Intersect(m_Camera->GetRayAtPixel(x, y), trash)) {
+			print(e.second.get());
+			std::cout << "Here!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+		}
+	}
+
+
+
+
+
+
+
 	uint64_t IDs = Renderer::ReadIDAtPixel(x, y);
 	bool shift = GLFW_MOD_SHIFT & mods;
 	bool control = GLFW_MOD_CONTROL & mods;

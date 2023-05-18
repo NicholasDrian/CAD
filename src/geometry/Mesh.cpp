@@ -111,3 +111,9 @@ bool Mesh::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDis
 		m_Positions[m_Indices[subID * 3 + 1]],
 		m_Positions[m_Indices[subID * 3 + 2]], outT, false);
 }
+
+bool Mesh::Intersect(Ray r, float& outT) const
+{
+	// todo
+	return false;
+}

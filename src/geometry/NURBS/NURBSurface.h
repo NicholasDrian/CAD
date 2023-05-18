@@ -28,6 +28,8 @@ public:
 
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
 	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const override;
+	virtual bool Intersect(Ray r, float& outT) const override;
+
 
 	inline virtual const glm::mat4& GetModel() const override { return m_Model; }
 

@@ -88,8 +88,12 @@ glm::vec3 ConstructionPlane::Intersect(Ray r, uint32_t subID) const
 
 bool ConstructionPlane::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const
 {
-	float o = r.GetOrigin().z, d = r.GetDirection().z;
-	return o * d < 0.0f;
+	return r.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0 }, outT);
+}
+
+bool ConstructionPlane::Intersect(Ray r, float& outT) const
+{
+	return r.IntersectPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0 }, outT);
 }
 
 void ConstructionPlane::BakeSelectionTransform(const glm::mat4& t)

@@ -21,7 +21,7 @@ struct BVHNode {
 
 	AxisAlignedBoundingBox m_BoundingBox;
 	Renderable* m_Geometry;
-	std::vector<unsigned> m_Indices;
+	std::vector<int> m_Indices;
 	std::unique_ptr<BVHNode> m_ChildA, m_ChildB;
 
 };
@@ -33,8 +33,10 @@ public:
 	BoundingVolumeHeirarchy(Renderable* r);
 
 	bool Intersect(const Ray& ray, float& outT) const;
+	bool Intersect(const Ray& ray) const;
 
 	inline Renderable* GetGeometry() { return m_Geometry; }
+	inline BVHNode* GetRoot() { return m_Root.get(); }
 
 private:
 

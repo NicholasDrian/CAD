@@ -19,6 +19,7 @@ public:
 	// [WARNING] fails if there is no intersection!!!!
 	virtual glm::vec3 Intersect(Ray r, uint32_t subID) const override;
 	virtual bool IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const override;
+	virtual bool Intersect(Ray r, float& outT) const override;
 
 
 	virtual AxisAlignedBoundingBox GetBoundingBox() const override;

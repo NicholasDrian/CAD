@@ -53,6 +53,12 @@ bool NURBSurface::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float
 	return false;
 }
 
+bool NURBSurface::Intersect(Ray r, float& outT) const
+{
+	//todo
+	return false;
+}
+
 void NURBSurface::ControlPointsUpdated()
 {
 	int sampleCountU = NURBSUtils::SAMPLES_PER_EDGE * ((int)m_Points.size() - 1);

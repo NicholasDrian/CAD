@@ -22,6 +22,7 @@ NURBS::NURBS(std::vector<glm::vec3> points, glm::vec4 color, std::vector<float> 
 	while (m_Degree > m_Points.size() - 1) m_Degree--;
 	if (m_Knots.size() == 0) m_Knots = NURBSUtils::GenericKnotVector((int)GetNumControlPoints(), GetDegree());
 	UpdateSamples();
+	m_BoundingVolumeHeirarchy = std::make_unique<BoundingVolumeHeirarchy>(this);
 	UpdateVertexArray();
 }
 	
@@ -259,10 +260,23 @@ glm::vec3 NURBS::Intersect(Ray r, uint32_t subID) const
 
 bool NURBS::IntersectsLocalSpace(Ray r, uint32_t subID, float& outT, float MaxDistancePixels) const
 {
+	std::cout << "here!!!!!!!" << std::endl;
 	float dist;
-	glm::vec3 p = r.ClosestPointOnLine(glm::vec4(m_Samples[subID], 1.0f), glm::vec4(m_Samples[subID + 1], 1.0f), outT, dist);
+	//Ray worldRay(m_Model * glm::vec4{ r.GetOrigin(), 1.0f }, m_Model * glm::vec4{ r.GetDirection(), 0.0f });
+	glm::vec3 p = r.ClosestPointOnLine(
+		m_Samples[subID], 
+		m_Samples[subID + 1], outT, dist);
 	float size = Scene::GetCamera()->GetPixelSizeAtPoint(p);
+	std::cout << "dist" << dist << "pixelsize" << size << std::endl;
+	std::cout << (dist / size) << ' ' << (dist / size <= MaxDistancePixels) << std::endl;
+	//print(dist / size);
+	//std::cout << "pixel size at dist " << dist << ' ' << size << std::endl;
 	return dist / size <= MaxDistancePixels;
+}
+
+bool NURBS::Intersect(Ray r, float& outT) const
+{
+	return m_BoundingVolumeHeirarchy->Intersect(r, outT);
 }
 
 
